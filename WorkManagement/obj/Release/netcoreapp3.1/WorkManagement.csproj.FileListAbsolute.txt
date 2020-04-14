@@ -174,3 +174,17 @@ F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\pub
 F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\WorkManagement.deps.json
 F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\WorkManagement.runtimeconfig.json
 F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\wwwroot\lib\@microsoft\signalr\package.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\web.config
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\appsettings.Development.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\appsettings.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\libman.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\WorkManagement.deps.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\WorkManagement.runtimeconfig.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\wwwroot\lib\@microsoft\signalr\package.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\publish\web.config
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\publish\appsettings.Development.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\publish\appsettings.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\publish\libman.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\publish\WorkManagement.deps.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\publish\WorkManagement.runtimeconfig.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Release\netcoreapp3.1\publish\publish\publish\wwwroot\lib\@microsoft\signalr\package.json

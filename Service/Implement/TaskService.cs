@@ -77,8 +77,42 @@ namespace Service.Implement
         #region Helpers
         private List<TreeViewTask> MapperTreeViewTask(List<TreeViewTask> tasks)
         {
-
             List<TreeViewTask> hierarchy = new List<TreeViewTask>();
+            List<TreeViewTask> hierarchy2 = new List<TreeViewTask>();
+            foreach (var item in tasks.Where(x => x.ParentID > 0))
+            {
+                hierarchy2 = tasks.Where(c => c.ID == item.ID && c.ParentID == item.ParentID)
+                            .Select(c => new TreeViewTask
+                            {
+                                ID = c.ID,
+                                JobName = c.JobName,
+                                Level = c.Level,
+                                Remark = c.Remark,
+                                Description = c.Description,
+                                ProjectID = c.ProjectID,
+                                CreatedBy = c.CreatedBy,
+                                CreatedDate = c.CreatedDate,
+                                From = c.From,
+                                ProjectName = c.ProjectName,
+                                state = c.state,
+                                FromWho = c.FromWho,
+                                FromWhere = c.FromWhere,
+                                PIC = c.PIC,
+                                PriorityID = c.PriorityID,
+                                Priority = c.Priority,
+                                BeAssigneds = c.BeAssigneds,
+                                Follow = c.Follow,
+                                DueDateDaily = c.DueDateDaily,
+                                DueDateWeekly = c.DueDateWeekly,
+                                DueDateMonthly = c.DueDateMonthly,
+                                DueDateQuarterly = c.DueDateQuarterly,
+                                DueDateYearly = c.DueDateYearly,
+                                SpecificDate = c.SpecificDate,
+                                CreatedDateForEachTask = c.CreatedDateForEachTask,
+                                children = GetChildren(tasks, c.ID)
+                            })
+                            .ToList();
+            }
             hierarchy = tasks.Where(c => c.ParentID == 0)
                               .Select(c => new TreeViewTask
                               {
@@ -122,7 +156,8 @@ namespace Service.Implement
                                   children = GetChildren(tasks, c.ID)
                               })
                               .ToList();
-            return hierarchy;
+            var model = hierarchy.Union(hierarchy2).ToList();
+            return hierarchy.Union(hierarchy2).ToList();
         }
         private string CheckMessageRemark(int jobtype, string content, string project, string jobName, string username)
         {
@@ -550,6 +585,8 @@ namespace Service.Implement
                 levelItem.JobTypeID = item.JobTypeID;
                 levelItem.periodType = item.periodType;
 
+                levelItem.FromWhoID = item.FromWhoID;
+                levelItem.CreatedBy = item.CreatedBy;
                 levelItem.VideoStatus = statusTutorial;
                 levelItem.Tutorial = tutorialModel;
                 levelItem.VideoLink = statusTutorial ? tutorialModel.URL : "";
@@ -672,7 +709,7 @@ namespace Service.Implement
                 AlertType = Data.Enum.AlertType.BeLate
             };
             var update = await _context.Tasks.FindAsync(item.ID);
-            if (update.periodType != Data.Enum.PeriodType.SpecificDay)
+            if (update.periodType != Data.Enum.PeriodType.SpecificDate)
             {
                 update.Status = false;
                 update.FinishedMainTask = false;
@@ -742,7 +779,7 @@ namespace Service.Implement
                 case Data.Enum.PeriodType.Yearly:
                     mes = $"You are late for the task name: '{item.JobName}' on {item.DueDateYearly.ToStringFormatISO(formatDaily)}";
                     break;
-                case Data.Enum.PeriodType.SpecificDay:
+                case Data.Enum.PeriodType.SpecificDate:
                     mes = $"You are late for the task name: '{item.JobName}' on {item.SpecificDate.ToStringFormatISO(formatDaily)}";
                     break;
                 default:
@@ -791,7 +828,7 @@ namespace Service.Implement
                     if (currentDate > dateyearly.Date && !BeAlert(item.ID, belate))
                         await AlertTasksIsLate(item, mes, isProject);
                     break;
-                case Data.Enum.PeriodType.SpecificDay:
+                case Data.Enum.PeriodType.SpecificDate:
                     var specific = item.SpecificDate.ToParseIso8601();
                     if (!TimeComparator(specific) && !BeAlert(item.ID, belate))
                         await AlertTasksIsLate(item, mes, isProject);
@@ -862,7 +899,77 @@ namespace Service.Implement
             }
 
         }
-        //todolist
+        private List<Data.Models.Task> Fillter(List<Data.Models.Task> listTasks, string sort, string priority, int userid, string startDate, string endDate, string weekdays, string monthly, string quarterly)
+        {
+            if (!startDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
+            {
+                var timespan = new TimeSpan(0, 0, 0);
+                var start = DateTime.ParseExact(startDate, "MM-dd-yyyy", CultureInfo.InvariantCulture).Date;
+                var end = DateTime.ParseExact(endDate, "MM-dd-yyyy", CultureInfo.InvariantCulture).Date;
+                listTasks = listTasks.Where(x => x.CreatedDate.Date >= start.Date && x.CreatedDate.Date <= end.Date).ToList();
+            }
+
+            //Loc theo weekdays
+            if (!weekdays.IsNullOrEmpty())
+            {
+                listTasks = listTasks.Where(x => x.DueDateWeekly.ToSafetyString().ToLower().Equals(weekdays.ToLower())).ToList();
+            }
+            //loc theo thang
+            if (!monthly.IsNullOrEmpty())
+            {
+                listTasks = listTasks.Where(x => x.DueDateMonthly.ToSafetyString().ToLower().Equals(monthly.ToLower())).ToList();
+            }
+            //loc theo quy
+            if (!quarterly.IsNullOrEmpty())
+            {
+                listTasks = listTasks.Where(x => x.DueDateQuarterly.ToSafetyString().ToLower().Equals(quarterly.ToLower())).ToList();
+            }
+
+            if (!sort.IsNullOrEmpty())
+            {
+                sort = sort.ToLower();
+                if (sort == Data.Enum.JobType.Project.ToSafetyString().ToLower())
+                    listTasks = listTasks.Where(x => x.JobTypeID.Equals((int)Data.Enum.JobType.Project)).OrderByDescending(x => x.ProjectID).ToList();
+                if (sort == Data.Enum.JobType.Routine.ToSafetyString().ToLower())
+                    listTasks = listTasks.Where(x => x.JobTypeID.Equals((int)Data.Enum.JobType.Routine)).OrderByDescending(x => x.CreatedDate).ToList();
+                if (sort == Data.Enum.JobType.Abnormal.ToSafetyString().ToLower())
+                    listTasks = listTasks.Where(x => x.JobTypeID.Equals((int)Data.Enum.JobType.Abnormal)).OrderByDescending(x => x.CreatedDate).ToList();
+            }
+            if (!priority.IsNullOrEmpty())
+            {
+                priority = priority.ToUpper();
+                listTasks = listTasks.Where(x => x.Priority.Equals(priority)).ToList();
+            }
+            return listTasks;
+        }
+
+        private async Task<List<int>> GetTasksByUser(int userid)
+        {
+            // Lay tat ca task chua hoan thanh tren todolist
+            var listTasks = await _context.Tasks
+              .Where(x => (x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false))
+              .Include(x => x.User)
+              .OrderByDescending(x => x.ID).ToListAsync();
+            // Tim task ma user duoc chi dinh lam
+            var assignedTasks = _context.Tags.Where(x => x.UserID.Equals(userid)).Select(x => x.TaskID).ToArray();
+            var taskdeputy = _context.Deputies.Where(x => x.UserID.Equals(userid)).Select(x => x.TaskID).ToArray();
+
+            // Tim projectid lien quan den task
+            var taskManager = _context.Managers.Where(x => x.UserID.Equals(userid)).Select(x => x.ProjectID).ToArray();
+            var taskMember = _context.TeamMembers.Where(x => x.UserID.Equals(userid)).Select(x => x.ProjectID).ToArray();
+            var listProjectID = taskManager.Union(taskMember);
+
+            // Co duoc listProjectID tim list taskID
+            var listTaskIDProject = listTasks.Where(x => listProjectID.Contains(x.ProjectID)).Select(x => x.ID).ToList();
+            // Tim Asinged va beAsigned trong list nay
+            var listTaskIDBeAssignedProject = _context.Tags.Where(x => listTaskIDProject.Contains(x.TaskID) && x.UserID.Equals(userid)).Select(x => x.TaskID).ToArray();
+
+            var listCreateBy = listTasks.Where(x => x.CreatedBy == userid).Select(x => x.ID).ToList();
+            var listFromWho = listTasks.Where(x => x.FromWhoID == userid).Select(x => x.ID).ToList();
+            var listAll = assignedTasks.Union(taskdeputy).Union(listTaskIDBeAssignedProject).Union(listCreateBy).Union(listFromWho).ToList();
+            return listAll;
+        }
+        //todolist()
         public async Task<List<TreeViewTask>> GetListTree(string sort, string priority, int userid, string startDate, string endDate, string weekdays, string monthly, string quarterly)
         {
 
@@ -870,124 +977,13 @@ namespace Service.Implement
             {
                 //Lay tat ca list task chua hoan thanh va task co con chua hoan thnah
                 var listTasks = await _context.Tasks
-                //.Where(x => (x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false))
+                .Where(x => (x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false))
                 .Include(x => x.User)
-                .OrderBy(x => x.Level).ToListAsync();
-                var testID = new int [] { 3342, 3343, 3344, 3345};
-                var test = listTasks.Where(x => testID.Contains(x.ID)).ToList();
-                //Tim tat ca task dc chi dinh lam pic
-                var taskpic = _context.Tags.Where(x => x.UserID.Equals(userid)).Select(x => x.TaskID).ToArray();
-                var taskdeputy = _context.Deputies.Where(x => x.UserID.Equals(userid)).Select(x => x.TaskID).ToArray();
-                var taskPICDeputies = taskpic.Union(taskdeputy);
-
-                //tim tat ca task dc chi dinh lam manager, member
-                var taskManager = _context.Managers.Where(x => x.UserID.Equals(userid)).Select(x => x.ProjectID).ToArray();
-                var taskMember = _context.TeamMembers.Where(x => x.UserID.Equals(userid)).Select(x => x.ProjectID).ToArray();
-                var taskManagerMember = taskManager.Union(taskMember);
-
-                //vao bang pic tim tat ca nhung task va thanh vien giao cho nhau hoac manager giao cho member
-                //Tim dc tat ca cac task ma manager hoac thanh vien tao ra
-                var taskpicProject = listTasks.Where(x => taskManagerMember.Contains(x.ProjectID)).Select(x => x.ID).ToArray();
-                //Tim tiep nhung tag nao duoc giao cho user hien tai
-                var beAssignProject = _context.Tags.Where(x => taskpicProject.Contains(x.TaskID) && x.UserID.Equals(userid)).Select(x => x.TaskID).ToArray();
-                //var listbeAssignProject = new List<int>();
-                //var taskModel = await _context.Tasks.Where(x => beAssignProject.Contains(x.ID)).ToListAsync();
-
-                //foreach (var task in taskModel)
-                //{
-                //    var tasksTree = await GetListTree(task.ParentID, task.ID);
-                //    var arrTasks = GetAllTaskDescendants(tasksTree).Select(x => x.ID).ToList();
-                //    listbeAssignProject.AddRange(arrTasks);
-                //}
-
-                var listbeAssignProjectPICDeputy = taskPICDeputies.Union(beAssignProject).ToList();
-                listTasks = listTasks.Where(x =>listbeAssignProjectPICDeputy.Contains(x.ID)).ToList();
-
-                ////Lay tat ca list task chua hoan thanh va task co con chua hoan thnah
-                //var listTasks = await _context.Tasks
-                //.Where(x => (x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false))
-                //.Include(x => x.User)
-                //.OrderBy(x => x.Level).ToListAsync();
-
-                ////Tim tat ca task dc chi dinh lam pic
-                //var taskpic = _context.Tags.Where(x => x.UserID.Equals(userid)).Select(x => x.TaskID).ToArray();
-                //var taskdeputy = _context.Deputies.Where(x => x.UserID.Equals(userid)).Select(x => x.TaskID).ToArray();
-                //var taskPICDeputies = taskpic.Union(taskdeputy);
-
-                ////tim tat ca task dc chi dinh lam manager, member
-                //var taskManager = _context.Managers.Where(x => x.UserID.Equals(userid)).Select(x => x.ProjectID).ToArray();
-                //var taskMember = _context.TeamMembers.Where(x => x.UserID.Equals(userid)).Select(x => x.ProjectID).ToArray();
-
-                ////Tim ra duoc projectID cua bang taskManager va member
-                //var taskManagerMember = taskManager.Union(taskMember);
-
-                ////vao bang pic tim tat ca nhung task va thanh vien giao cho nhau hoac manager giao cho member
-                ////Tim dc tat ca cac task ma manager hoac thanh vien tao ra
-
-                ////Tim dc task cua project ma user hien tai co lien quan
-                //var taskpicProject = listTasks.Where(x => taskManagerMember.Contains(x.ProjectID)).Select(x => x.ID).ToArray();
-
-                ////Tim tiep nhung tag nao duoc giao cho user hien tai
-                //var beAssignProject = _context.Tags.Where(x => taskpicProject.Contains(x.TaskID) && x.UserID.Equals(userid)).Select(x => x.TaskID).ToArray();
-                //var listbeAssignProject = new List<int>();
-
-                ////Tim dc tag ma user duoc giao cua project 
-                //var taskModel = listTasks.Where(x => beAssignProject.Contains(x.ID)).ToList();
-                //var beAssignedOther = _context.Tags.Where(x => listTasks.Select(a => a.ID).Contains(x.TaskID) && x.UserID == userid).Select(x => x.TaskID);
-                //var createdBySelf = listTasks.Where(x => x.CreatedBy == userid).Select(x => x.ID).ToList();
-
-                //var listAllTaskRelatedUser = createdBySelf.Union(beAssignProject).Union(beAssignedOther);
-                //foreach (var task in taskModel)
-                //{
-                //    var tasksTree = await GetListTree(task.ParentID, task.ID);
-                //    var arrTasks = GetAllTaskDescendants(tasksTree).Select(x => x.ID).ToList();
-                //    listbeAssignProject.AddRange(arrTasks);
-                //}
-
-                //listTasks = listTasks.Where(x => listAllTaskRelatedUser.Union(listbeAssignProject).Contains(x.ID)).ToList();
-                ////listTasks = listTasks.Where(x => x.CreatedBy.Equals(userid) || taskPICDeputies.Contains(x.ID) || listbeAssignProject.Contains(x.ID)).Distinct().ToList();
-
-                if (!startDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
-                {
-                    var timespan = new TimeSpan(0, 0, 0);
-                    var start = DateTime.ParseExact(startDate, "MM-dd-yyyy", CultureInfo.InvariantCulture).Date;
-                    var end = DateTime.ParseExact(endDate, "MM-dd-yyyy", CultureInfo.InvariantCulture).Date;
-                    listTasks = listTasks.Where(x => x.CreatedDate.Date >= start.Date && x.CreatedDate.Date <= end.Date).ToList();
-                }
-
-                //Loc theo weekdays
-                if (!weekdays.IsNullOrEmpty())
-                {
-                    listTasks = listTasks.Where(x => x.DueDateWeekly.ToSafetyString().ToLower().Equals(weekdays.ToLower())).ToList();
-                }
-                //loc theo thang
-                if (!monthly.IsNullOrEmpty())
-                {
-                    listTasks = listTasks.Where(x => x.DueDateMonthly.ToSafetyString().ToLower().Equals(monthly.ToLower())).ToList();
-                }
-                //loc theo quy
-                if (!quarterly.IsNullOrEmpty())
-                {
-                    listTasks = listTasks.Where(x => x.DueDateQuarterly.ToSafetyString().ToLower().Equals(quarterly.ToLower())).ToList();
-                }
-
-                if (!sort.IsNullOrEmpty())
-                {
-                    sort = sort.ToLower();
-                    if (sort == Data.Enum.JobType.Project.ToSafetyString().ToLower())
-                        listTasks = listTasks.Where(x => x.JobTypeID.Equals((int)Data.Enum.JobType.Project)).OrderByDescending(x => x.ProjectID).ToList();
-                    if (sort == Data.Enum.JobType.Routine.ToSafetyString().ToLower())
-                        listTasks = listTasks.Where(x => x.JobTypeID.Equals((int)Data.Enum.JobType.Routine)).OrderByDescending(x => x.CreatedDate).ToList();
-                    if (sort == Data.Enum.JobType.Abnormal.ToSafetyString().ToLower())
-                        listTasks = listTasks.Where(x => x.JobTypeID.Equals((int)Data.Enum.JobType.Abnormal)).OrderByDescending(x => x.CreatedDate).ToList();
-                }
-                if (!priority.IsNullOrEmpty())
-                {
-                    priority = priority.ToUpper();
-                    listTasks = listTasks.Where(x => x.Priority.Equals(priority)).ToList();
-                }
-                var tasks = GetListTreeViewTask(listTasks, userid);
-
+                .OrderByDescending(x => x.ID).ToListAsync();
+                // Loc dieu kien
+                var listTasksFillter = Fillter(listTasks, sort, priority, userid, startDate, endDate, weekdays, monthly, quarterly);
+                var tasks = GetListTreeViewTask(listTasks, userid)
+                    .Where(x=>x.PICs.Contains(userid) || x.Deputies.Contains(userid) || x.FromWhoID == userid || x.CreatedBy == userid).ToList();
                 if (tasks.Count == 1)
                 {
                     if (!tasks.FirstOrDefault().HasChildren)
@@ -1216,7 +1212,7 @@ namespace Service.Implement
         private object GetAlertDueDate()
         {
             var date = DateTime.Now.Date;
-            var list = _context.Tasks.Where(x => x.periodType == Data.Enum.PeriodType.SpecificDay && x.CreatedDateForEachTask.Date == date).Select(x => new
+            var list = _context.Tasks.Where(x => x.periodType == Data.Enum.PeriodType.SpecificDate && x.CreatedDateForEachTask.Date == date).Select(x => new
             {
                 x.CreatedDate,
                 x.SpecificDate
@@ -1399,7 +1395,7 @@ namespace Service.Implement
                         DueDateQuarterly = x.task.periodType == Data.Enum.PeriodType.Quarterly ? x.his.Deadline.ToParseStringDateTime().ToString("d MMM, yyyy") : "",
                         DueDateWeekly = x.task.periodType == Data.Enum.PeriodType.Weekly ? x.his.Deadline.ToParseStringDateTime().ToString("ddd, d MMM, yyyy") : "",
                         DueDateYearly = x.task.periodType == Data.Enum.PeriodType.Yearly ? x.his.Deadline.ToParseStringDateTime().ToString("d MMM, yyyy") : "",
-                        SpecificDate = x.task.periodType == Data.Enum.PeriodType.SpecificDay ? x.his.Deadline.ToParseStringDateTime().ToString("d MMM, yyyy HH:mm:ss tt") : "",
+                        SpecificDate = x.task.periodType == Data.Enum.PeriodType.SpecificDate ? x.his.Deadline.ToParseStringDateTime().ToString("d MMM, yyyy HH:mm:ss tt") : "",
                         DateOfMonthly = x.task.DateOfMonthly,
                         DateOfWeekly = x.task.DateOfWeekly,
                         ModifyDateTime = x.his.ModifyDateTime,
@@ -1809,14 +1805,6 @@ namespace Service.Implement
                .Where(x => (x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false))
                .Include(x => x.User)
                .OrderBy(x => x.Level).ToListAsync();
-
-            //if (parentID > 0)
-            //{
-            //    foreach (var item in listTasks)
-            //    {
-
-            //    }
-            //}
             var tasks = new List<TreeViewTask>();
             foreach (var item in listTasks)
             {
@@ -2160,7 +2148,7 @@ namespace Service.Implement
                     task.DueDateYearly = task.DueDateYearly;
                     task.SpecificDate = "";
                     break;
-                case Data.Enum.PeriodType.SpecificDay:
+                case Data.Enum.PeriodType.SpecificDate:
                     task.DueDateDaily = "";
                     task.DueDateWeekly = "";
                     task.DueDateMonthly = "";
@@ -2424,7 +2412,7 @@ namespace Service.Implement
                             edit.DateOfWeekly = "";
                             edit.SpecificDate = "";
                             break;
-                        case Data.Enum.PeriodType.SpecificDay:
+                        case Data.Enum.PeriodType.SpecificDate:
                             var due = await AlertDeadlineChanging(Data.Enum.AlertDeadline.Deadline, edit, task.UserID, pics);
                             listUsers.AddRange(due.Item1);
                             edit.DueDateDaily = "";
@@ -2651,6 +2639,20 @@ namespace Service.Implement
             }
 
         }
+        // CheckSpecificDateOntime
+        private bool CheckSpecificDateOntime(Data.Models.Task update)
+        {
+            var currentDate = DateTime.Now;
+            if (update.DueDateYearly.ToParseStringDateTime() <= currentDate)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
         private async Task<Data.Models.Task> CloneEachPeriod(Data.Models.Task task, int parentID)
         {
             var update = await _context.Tasks.FindAsync(task.ID);
@@ -2686,8 +2688,14 @@ namespace Service.Implement
                     history.Status = CheckYearlyOntime(task);
                     update.DueDateYearly = PeriodYearly(task);
                     break;
+
                 default:
                     break;
+            }
+            if (update.periodType == Data.Enum.PeriodType.SpecificDate)
+            {
+                history.Deadline = update.SpecificDate.ToParseStringDateTime().ToString("d MMM, yyyy HH:mm:ss tt");
+                history.Status = CheckSpecificDateOntime(task);
             }
             await PushTaskToHistory(history);
             await _context.SaveChangesAsync();
@@ -2699,18 +2707,46 @@ namespace Service.Implement
             var listTaskUpdateStatus = new List<int>();
             foreach (var item in tasks)
             {
-                if (item.JobTypeID != (int)Data.Enum.JobType.Project)
+                if (item.Level == 1)
                 {
-                    if (item.Level == 1)
-                    {
-                        parentID = 0;
-                    }
-                    var itemAdd = await CloneEachPeriod(item, parentID);
-                    listTaskUpdateStatus.Add(itemAdd.ID);
-                    parentID = itemAdd.ID;
+                    parentID = 0;
                 }
+                var itemAdd = await CloneEachPeriod(item, parentID);
+                listTaskUpdateStatus.Add(itemAdd.ID);
+                parentID = itemAdd.ID;
             }
             return listTaskUpdateStatus;
+        }
+        private async System.Threading.Tasks.Task CloneItemTask(Data.Models.Task task)
+        {
+            var history = new History
+            {
+                TaskID = task.ID,
+                Status = task.Status
+
+            };
+            switch (task.periodType)
+            {
+                case Data.Enum.PeriodType.Daily:
+                    history.Deadline = task.DueDateDaily.ToParseStringDateTime().ToString("d MMM, yyyy");
+                    break;
+                case Data.Enum.PeriodType.Weekly:
+                    history.Deadline = task.DateOfWeekly.ToParseStringDateTime().ToString("ddd d MMM, yyyy");
+                    break;
+                case Data.Enum.PeriodType.Monthly:
+                    history.Deadline = task.DateOfMonthly.ToParseStringDateTime().ToString("d MMM, yyyy");
+                    break;
+                case Data.Enum.PeriodType.Quarterly:
+                    history.Deadline = task.DueDateQuarterly.ToParseStringDateTime().ToString("d MMM, yyyy");
+                    break;
+                case Data.Enum.PeriodType.Yearly:
+                    history.Deadline = (task.DueDateYearly + ", " + DateTime.Now.Year).ToParseStringDateTime().ToString("d MMM, yyyy");
+                    break;
+                default:
+                    break;
+            }
+            await _context.AddAsync(history);
+            await _context.SaveChangesAsync();
         }
         #endregion
         public async Task<Tuple<bool, bool, string>> Done(int id, int userid)
@@ -2751,7 +2787,23 @@ namespace Service.Implement
                     pathName = "history";
                     flag = true;
                 } //Neu level > 1 va co 2 con tro len thi chua chuyen qua history, doi trang thai thanh hoan thanh
-                else if (item.Level == 2 && seftAndDescendants.Where(x => x.Level > 1).ToList().Count >= 2)
+                else if (item.Level == 1 && seftAndDescendants.Where(x => x.Level > 1).ToList().Count >= 2)
+                {
+                    seftAndDescendants.Where(x => x.ID != id).ToList().ForEach(x =>
+                    {
+                        if (x.Status == false && x.Level > 1)
+                        {
+                            flag = false;
+                            return;
+                        }
+                        if (x.Status && x.Level == 1)
+                        {
+                            mainTaskID = seftAndDescendants.FirstOrDefault(x => x.Level == 1).ID;
+                        }
+                    });
+                    //item.Status = true;
+                }
+                else if (item.Level > 1 && seftAndDescendants.Where(x => x.Level > 1).ToList().Count >= 2)
                 {
                     seftAndDescendants.Where(x => x.ID != id).ToList().ForEach(x =>
                     {
@@ -2779,15 +2831,19 @@ namespace Service.Implement
                         }
                     });
                     pathName = "history";
-                    if (!Data.Enum.PeriodType.SpecificDay.Equals(item.periodType))
-                        listUpdateStatus.AddRange(await CloneTask(seftAndDescendants));
+                    listUpdateStatus.AddRange(await CloneTask(seftAndDescendants));
                 }
-                item.ModifyDateTime = DateTime.Now.ToString("MMMM dd, yyyy HH:mm:ss tt");
+                item.ModifyDateTime = DateTime.Now.ToString("MMMM d, yyyy HH:mm:ss tt");
                 await _context.SaveChangesAsync();
                 if (!flag && item.Level == 1)
                 {
                     return Tuple.Create(false, false, "Please finish all sub-tasks!");
                 }
+                //else
+                //{
+                //    pathName = "history";
+                //    listUpdateStatus.AddRange(await CloneTask(seftAndDescendants));
+                //}
                 if (listUpdateStatus.Count() > 0)
                 {
                     var reupdateStatus = await _context.Tasks.Where(x => listUpdateStatus.Contains(x.ID)).ToListAsync();
@@ -2987,7 +3043,7 @@ namespace Service.Implement
                     item.DueDateYearly = "";
 
                     break;
-                case Data.Enum.PeriodType.SpecificDay:
+                case Data.Enum.PeriodType.SpecificDate:
                     his = his.Where(x => x.TaskID == id && x.Deadline.Equals(item.SpecificDate)).ToList();
                     item.SpecificDate = "";
                     break;

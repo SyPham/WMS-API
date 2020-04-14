@@ -48,7 +48,7 @@ namespace WorkManagement.Hub
                 case Data.Enum.PeriodType.Yearly:
                     mes = $"You are late for the task name: '{item.JobName}' on {item.DueDateYearly.ToStringFormatISO(formatDaily)}";
                     break;
-                case Data.Enum.PeriodType.SpecificDay:
+                case Data.Enum.PeriodType.SpecificDate:
                     mes = $"You are late for the task name: '{item.JobName}' on {item.SpecificDate.ToStringFormatISO(formatDaily)}";
                     break;
                 default:
@@ -163,7 +163,7 @@ namespace WorkManagement.Hub
                 AlertType = Data.Enum.AlertType.BeLate
             };
             var update = await _context.Tasks.FindAsync(item.ID);
-            if (update.periodType != Data.Enum.PeriodType.SpecificDay)
+            if (update.periodType != Data.Enum.PeriodType.SpecificDate)
             {
                 update.Status = false;
                 update.FinishedMainTask = false;
@@ -200,7 +200,7 @@ namespace WorkManagement.Hub
             {
                 await PushTaskToHistory(history);
                 await Create(notifyParams);
-                if (update.periodType != Data.Enum.PeriodType.SpecificDay)
+                if (update.periodType != Data.Enum.PeriodType.SpecificDate)
                 {
                     mes = $"{update.JobName}<br/>{update.SpecificDate.ToParseStringDateTime().ToStringFormat("{0:f}")}";
                 }
@@ -293,7 +293,7 @@ namespace WorkManagement.Hub
                     if (!CompareDate(dateyearly) && !BeAlert(item.ID, belate))
                         await AlertTasksIsLate(item, mes, isProject);
                     break;
-                case Data.Enum.PeriodType.SpecificDay:
+                case Data.Enum.PeriodType.SpecificDate:
                     var specific = item.SpecificDate.ToParseIso8601();
                     if (!TimeComparator(specific) && !BeAlert(item.ID, belate))
                         return await AlertTasksIsLate(item, mes, isProject);

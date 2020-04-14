@@ -31,6 +31,7 @@ namespace Data.ViewModel.Task
         public string ProjectName { get; set; }
         public string Follow { get; set; }
         public int JobTypeID { get; set; }
+        public int FromWhoID { get; set; }
         public Data.Enum.PeriodType periodType { get; set; }
 
         public int CreatedBy { get; set; }
