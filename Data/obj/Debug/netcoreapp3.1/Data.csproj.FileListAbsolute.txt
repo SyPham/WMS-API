@@ -34,3 +34,15 @@ F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Debug\netcoreapp3.1\Data.Assembl
 F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Debug\netcoreapp3.1\Data.dll
 F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Debug\netcoreapp3.1\Data.pdb
 F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Debug\netcoreapp3.1\Data.genruntimeconfig.cache
+D:\wwwroot\WMS-API\Data\bin\Debug\netcoreapp3.1\Data.deps.json
+D:\wwwroot\WMS-API\Data\bin\Debug\netcoreapp3.1\Data.runtimeconfig.json
+D:\wwwroot\WMS-API\Data\bin\Debug\netcoreapp3.1\Data.runtimeconfig.dev.json
+D:\wwwroot\WMS-API\Data\bin\Debug\netcoreapp3.1\Data.dll
+D:\wwwroot\WMS-API\Data\bin\Debug\netcoreapp3.1\Data.pdb
+D:\wwwroot\WMS-API\Data\obj\Debug\netcoreapp3.1\Data.csprojAssemblyReference.cache
+D:\wwwroot\WMS-API\Data\obj\Debug\netcoreapp3.1\Data.csproj.CoreCompileInputs.cache
+D:\wwwroot\WMS-API\Data\obj\Debug\netcoreapp3.1\Data.AssemblyInfoInputs.cache
+D:\wwwroot\WMS-API\Data\obj\Debug\netcoreapp3.1\Data.AssemblyInfo.cs
+D:\wwwroot\WMS-API\Data\obj\Debug\netcoreapp3.1\Data.dll
+D:\wwwroot\WMS-API\Data\obj\Debug\netcoreapp3.1\Data.pdb
+D:\wwwroot\WMS-API\Data\obj\Debug\netcoreapp3.1\Data.genruntimeconfig.cache

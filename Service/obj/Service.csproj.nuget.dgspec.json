@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Service\\Service.csproj": {}
+    "D:\\wwwroot\\WMS-API\\Service\\Service.csproj": {}
   },
   "projects": {
-    "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\Data.csproj": {
+    "D:\\wwwroot\\WMS-API\\Data\\Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\Data.csproj",
+        "projectUniqueName": "D:\\wwwroot\\WMS-API\\Data\\Data.csproj",
         "projectName": "Data",
-        "projectPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\Data.csproj",
-        "packagesPath": "C:\\Users\\sy.pham\\.nuget\\packages\\",
-        "outputPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\obj\\",
+        "projectPath": "D:\\wwwroot\\WMS-API\\Data\\Data.csproj",
+        "packagesPath": "C:\\Users\\henry\\.nuget\\packages\\",
+        "outputPath": "D:\\wwwroot\\WMS-API\\Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\sy.pham\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\henry\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -89,20 +89,20 @@
         }
       }
     },
-    "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Service\\Service.csproj": {
+    "D:\\wwwroot\\WMS-API\\Service\\Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Service\\Service.csproj",
+        "projectUniqueName": "D:\\wwwroot\\WMS-API\\Service\\Service.csproj",
         "projectName": "Service",
-        "projectPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Service\\Service.csproj",
-        "packagesPath": "C:\\Users\\sy.pham\\.nuget\\packages\\",
-        "outputPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Service\\obj\\",
+        "projectPath": "D:\\wwwroot\\WMS-API\\Service\\Service.csproj",
+        "packagesPath": "C:\\Users\\henry\\.nuget\\packages\\",
+        "outputPath": "D:\\wwwroot\\WMS-API\\Service\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\sy.pham\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\henry\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -115,8 +115,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\Data.csproj": {
-                "projectPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\Data.csproj"
+              "D:\\wwwroot\\WMS-API\\Data\\Data.csproj": {
+                "projectPath": "D:\\wwwroot\\WMS-API\\Data\\Data.csproj"
               }
             }
           }

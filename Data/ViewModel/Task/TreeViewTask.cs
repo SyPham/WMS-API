@@ -131,6 +131,7 @@ namespace Data.ViewModel.Task
         public string SpecificDate { get; set; }
         public string CreatedDateForEachTask { get; set; }
         public string ModifyDateTime { get; set; }
+        public bool BeAssigned { get; set; }
         public bool HasChildren
         {
             get { return children.Any(); }
