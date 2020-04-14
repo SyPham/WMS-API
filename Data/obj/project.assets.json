@@ -8225,11 +8225,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\0.Document\\wwroot\\WorkManagement\\Data\\Data.csproj",
+      "projectUniqueName": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\Data.csproj",
       "projectName": "Data",
-      "projectPath": "F:\\0.Document\\wwroot\\WorkManagement\\Data\\Data.csproj",
+      "projectPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\Data.csproj",
       "packagesPath": "C:\\Users\\sy.pham\\.nuget\\packages\\",
-      "outputPath": "F:\\0.Document\\wwroot\\WorkManagement\\Data\\obj\\",
+      "outputPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

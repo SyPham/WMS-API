@@ -14,7 +14,10 @@ namespace Service.Helpers
 {
     public static class CodeUtility
     {
-
+        public static IEnumerable<T> Flatten<T>(
+    this IEnumerable<T> e
+, Func<T, IEnumerable<T>> f
+) => e.SelectMany(c => f(c).Flatten(f)).Concat(e);
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>
    (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {

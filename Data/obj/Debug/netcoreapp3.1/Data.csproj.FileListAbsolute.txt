@@ -22,3 +22,15 @@ D:\wwwroot\WorkManagement\WorkManagement-api\Data\obj\Debug\netcoreapp3.1\Data.A
 D:\wwwroot\WorkManagement\WorkManagement-api\Data\obj\Debug\netcoreapp3.1\Data.dll
 D:\wwwroot\WorkManagement\WorkManagement-api\Data\obj\Debug\netcoreapp3.1\Data.pdb
 D:\wwwroot\WorkManagement\WorkManagement-api\Data\obj\Debug\netcoreapp3.1\Data.genruntimeconfig.cache
+F:\0.Document\wwroot\WM\WorkManagement\Data\bin\Debug\netcoreapp3.1\Data.deps.json
+F:\0.Document\wwroot\WM\WorkManagement\Data\bin\Debug\netcoreapp3.1\Data.runtimeconfig.json
+F:\0.Document\wwroot\WM\WorkManagement\Data\bin\Debug\netcoreapp3.1\Data.runtimeconfig.dev.json
+F:\0.Document\wwroot\WM\WorkManagement\Data\bin\Debug\netcoreapp3.1\Data.dll
+F:\0.Document\wwroot\WM\WorkManagement\Data\bin\Debug\netcoreapp3.1\Data.pdb
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Debug\netcoreapp3.1\Data.csprojAssemblyReference.cache
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Debug\netcoreapp3.1\Data.csproj.CoreCompileInputs.cache
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Debug\netcoreapp3.1\Data.AssemblyInfoInputs.cache
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Debug\netcoreapp3.1\Data.AssemblyInfo.cs
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Debug\netcoreapp3.1\Data.dll
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Debug\netcoreapp3.1\Data.pdb
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Debug\netcoreapp3.1\Data.genruntimeconfig.cache

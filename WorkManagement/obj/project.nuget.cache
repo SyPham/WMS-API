@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rbhV/jufMEeWGGRtN23kgvQkNs32iQUvfZkJQbcvQY+Cq/383FtF5cnIfDaHQhRryVY8r+eM0wfOBBU3IkLt+g==",
+  "dgSpecHash": "ZYeQLGz9o2j7UkOV1u3x4Y8OuYExNP3e3KwvRPDj8sudZ4BqYdnyODH6L66BQiHtL1WrsrIZ0XtRlb5EetjsHw==",
   "success": true,
-  "projectFilePath": "F:\\0.Document\\wwroot\\WorkManagement\\WorkManagement\\WorkManagement.csproj",
+  "projectFilePath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\WorkManagement\\WorkManagement.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\sy.pham\\.nuget\\packages\\automapper\\9.0.0\\automapper.9.0.0.nupkg.sha512",
     "C:\\Users\\sy.pham\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\7.0.0\\automapper.extensions.microsoft.dependencyinjection.7.0.0.nupkg.sha512",

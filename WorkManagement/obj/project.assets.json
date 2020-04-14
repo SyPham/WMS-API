@@ -9227,11 +9227,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\0.Document\\wwroot\\WorkManagement\\WorkManagement\\WorkManagement.csproj",
+      "projectUniqueName": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\WorkManagement\\WorkManagement.csproj",
       "projectName": "WorkManagement",
-      "projectPath": "F:\\0.Document\\wwroot\\WorkManagement\\WorkManagement\\WorkManagement.csproj",
+      "projectPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\WorkManagement\\WorkManagement.csproj",
       "packagesPath": "C:\\Users\\sy.pham\\.nuget\\packages\\",
-      "outputPath": "F:\\0.Document\\wwroot\\WorkManagement\\WorkManagement\\obj\\",
+      "outputPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\WorkManagement\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -9250,11 +9250,11 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "F:\\0.Document\\wwroot\\WorkManagement\\Data\\Data.csproj": {
-              "projectPath": "F:\\0.Document\\wwroot\\WorkManagement\\Data\\Data.csproj"
+            "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\Data.csproj": {
+              "projectPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\Data.csproj"
             },
-            "F:\\0.Document\\wwroot\\WorkManagement\\Service\\Service.csproj": {
-              "projectPath": "F:\\0.Document\\wwroot\\WorkManagement\\Service\\Service.csproj"
+            "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Service\\Service.csproj": {
+              "projectPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Service\\Service.csproj"
             }
           }
         }

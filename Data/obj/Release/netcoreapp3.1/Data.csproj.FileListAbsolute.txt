@@ -10,3 +10,15 @@ F:\0.Document\wwroot\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.dll
 F:\0.Document\wwroot\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.pdb
 F:\0.Document\wwroot\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.csproj.CoreCompileInputs.cache
 F:\0.Document\wwroot\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.genruntimeconfig.cache
+F:\0.Document\wwroot\WM\WorkManagement\Data\bin\Release\netcoreapp3.1\Data.deps.json
+F:\0.Document\wwroot\WM\WorkManagement\Data\bin\Release\netcoreapp3.1\Data.runtimeconfig.json
+F:\0.Document\wwroot\WM\WorkManagement\Data\bin\Release\netcoreapp3.1\Data.runtimeconfig.dev.json
+F:\0.Document\wwroot\WM\WorkManagement\Data\bin\Release\netcoreapp3.1\Data.dll
+F:\0.Document\wwroot\WM\WorkManagement\Data\bin\Release\netcoreapp3.1\Data.pdb
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.csprojAssemblyReference.cache
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.csproj.CoreCompileInputs.cache
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.AssemblyInfoInputs.cache
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.AssemblyInfo.cs
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.dll
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.pdb
+F:\0.Document\wwroot\WM\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.genruntimeconfig.cache

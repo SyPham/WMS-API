@@ -8229,11 +8229,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\0.Document\\wwroot\\WorkManagement\\Service\\Service.csproj",
+      "projectUniqueName": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Service\\Service.csproj",
       "projectName": "Service",
-      "projectPath": "F:\\0.Document\\wwroot\\WorkManagement\\Service\\Service.csproj",
+      "projectPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Service\\Service.csproj",
       "packagesPath": "C:\\Users\\sy.pham\\.nuget\\packages\\",
-      "outputPath": "F:\\0.Document\\wwroot\\WorkManagement\\Service\\obj\\",
+      "outputPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Service\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -8252,8 +8252,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "F:\\0.Document\\wwroot\\WorkManagement\\Data\\Data.csproj": {
-              "projectPath": "F:\\0.Document\\wwroot\\WorkManagement\\Data\\Data.csproj"
+            "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\Data.csproj": {
+              "projectPath": "F:\\0.Document\\wwroot\\WM\\WorkManagement\\Data\\Data.csproj"
             }
           }
         }
