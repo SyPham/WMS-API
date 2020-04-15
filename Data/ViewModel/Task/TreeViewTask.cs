@@ -204,8 +204,25 @@ namespace Data.ViewModel.Task
             }
             return null;
         }
-    }
+        public static List<TreeViewTask> Flatten(TreeViewTask root)
+        {
 
+            var flattened = new List<TreeViewTask> { root };
+
+            var children = root.children;
+
+            if (children.Count > 0)
+            {
+                foreach (var child in children)
+                {
+                    flattened.AddRange(Flatten(child));
+                }
+            }
+
+            return flattened;
+        }
+    }
+   
     public class BeAssigned
     {
         public int ID { get; set; }

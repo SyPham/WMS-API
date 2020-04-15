@@ -79,16 +79,20 @@ namespace Service.Implement
         private List<TreeViewTask> MapperTreeViewTask(List<TreeViewTask> tasks, int userid)
         {
             var roots = tasks.Where(c => c.ParentID == 0).ToList();
-
             var childs = tasks.Where(c => c.ParentID > 0).ToList();
             var hierarchyTemp = new List<TreeViewTask>();
-            var listChildsID = new List<TreeViewTask>();
+            var listRootTree = new List<TreeViewTask>();
+            //Lap tat ca task root
             foreach (var c in roots)
             {
+                //Neu user hien tai tao ra task hoac Assgined, thi get all task
                 if (c.CreatedBy == userid || c.FromWhoID == userid)
                 {
-                    hierarchyTemp.AddRange(GetListTreeByParent(c.ParentID, c.ID, userid).Result);
-                } else
+                    var item = GetListTreeByParent(c.ParentID, c.ID, userid).Result;
+                    hierarchyTemp.AddRange(item);
+                    listRootTree.AddRange(item);
+                }
+                else // Nguoc lai thi vao list childs de lay con
                 {
                     var item = new TreeViewTask
                     {
@@ -131,22 +135,38 @@ namespace Service.Implement
                         children = GetChildren(childs, c.ID)
                     };
                     hierarchyTemp.Add(item);
-                    listChildsID.AddRange(item.children);
+                    listRootTree.Add(item);
                 }
 
             }
-            var ids = listChildsID.Where(x => !listChildsID.Select(a => a.ID).Contains(x.ID)).ToList();
-            if (roots.Count == 0)
+            //lam phang list tree vao so sanh voi list ban dau
+            var flattenNodes = new List<TreeViewTask>();
+
+            foreach (var item in listRootTree)
             {
-                foreach (var item in childs)
+                flattenNodes.AddRange(TreeViewTask.Flatten(item));
+            }
+            //So sanh voi childs ban dau. Neu chua gan het thi se gan tiep
+            //var childsFlatten = flattenNodes.Where(x => x.ParentID > 0).Select(a => a.ID).ToArray();
+            //var ids = childs.Where(x => !childsFlatten.Contains(x.ID)).ToList();
+
+            //Lay ket qua trong tasks ma khong co trong flattentNodes
+            var except = tasks.Select(x => x.ID).Except(flattenNodes.Select(x => x.ID)).ToList();
+
+            if (except.Count > 0)
+            {
+                var taskTemp = tasks = tasks.Where(x => except.Contains(x.ID)).ToList();
+                foreach (var item in taskTemp)
                 {
                     hierarchyTemp.AddRange(FindListTreeByParentID(childs, item.ParentID, item.ID));
                 }
             }
-            hierarchyTemp.AddRange(ids);
+
             return hierarchyTemp;
 
         }
+
+
         private string CheckMessageRemark(int jobtype, string content, string project, string jobName, string username)
         {
             string message = string.Empty;
@@ -1015,11 +1035,10 @@ namespace Service.Implement
                 .Where(x => (x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false))
                 .Include(x => x.User)
                 .OrderByDescending(x => x.ID).ToListAsync();
-                //var dasdas = new int[] { 3349, 3350, 3351 };
-                //listTasks = listTasks.Where(x => dasdas.Contains(x.ID)).ToList();
-                // Loc dieu kien
+
                 var listTasksFillter = Fillter(listTasks, sort, priority, userid, startDate, endDate, weekdays, monthly, quarterly);
                 var tasks = GetListTreeViewTask(listTasksFillter, userid).ToList();
+
 
                 tasks = tasks.Where(x =>
                        x.BeAssigneds.Select(x => x.ID).Contains(userid)
@@ -1848,28 +1867,39 @@ namespace Service.Implement
                                 ID = c.ID,
                                 JobName = c.JobName,
                                 Level = c.Level,
-                                Remark = c.Remark,
-                                Description = c.Description,
                                 ProjectID = c.ProjectID,
                                 CreatedBy = c.CreatedBy,
                                 CreatedDate = c.CreatedDate,
                                 From = c.From,
                                 ProjectName = c.ProjectName,
                                 state = c.state,
-                                FromWho = c.FromWho,
-                                FromWhere = c.FromWhere,
-                                PIC = c.PIC,
                                 PriorityID = c.PriorityID,
                                 Priority = c.Priority,
-                                BeAssigneds = c.BeAssigneds,
                                 Follow = c.Follow,
+                                PIC = c.PIC,
+                                Histories = c.Histories,
+                                PICs = c.PICs,
+                                DateOfWeekly = c.DateOfWeekly,
+                                DateOfMonthly = c.DateOfMonthly,
+                                JobTypeID = c.JobTypeID,
+                                FromWho = c.FromWho,
+                                FromWhere = c.FromWhere,
+                                BeAssigneds = c.BeAssigneds,
+                                Deputies = c.Deputies,
+                                VideoLink = c.VideoLink,
+                                VideoStatus = c.VideoStatus,
+                                DeputiesList = c.DeputiesList,
                                 DueDateDaily = c.DueDateDaily,
                                 DueDateWeekly = c.DueDateWeekly,
                                 DueDateMonthly = c.DueDateMonthly,
                                 DueDateQuarterly = c.DueDateQuarterly,
                                 DueDateYearly = c.DueDateYearly,
                                 SpecificDate = c.SpecificDate,
+                                DeputyName = c.DeputyName,
                                 CreatedDateForEachTask = c.CreatedDateForEachTask,
+                                Tutorial = c.Tutorial,
+                                periodType = c.periodType,
+                                ModifyDateTime = c.ModifyDateTime,
                                 children = GetChildren(tasks, c.ID)
                             })
                             .ToList();
@@ -2673,6 +2703,22 @@ namespace Service.Implement
 
 
         #region Helpers Done()
+        /// <summary>
+        /// Truyen vao dateTime, hoac date
+        /// </summary>
+        /// <param name="date1"></param>
+        /// <returns></returns>
+        private bool DateComparator(DateTime date1)
+        {
+            var date2 = DateTime.Now.Date;
+            int result = DateTime.Compare(date1.Date, date2);
+            // result > 0 date 1 muon hon date 2
+            // Deadline la ngay 17 ma ngay hien tai la ngay 15 ta hoan thanh han tuc la ta dung han
+            // 17 muon hon 15 thi dung han
+            if (result > 0 || result == 0)
+                return true;
+            else return false;
+        }
         private string PeriodMonthly(Data.Models.Task task)
         {
             var duedateMonthly = task.DateOfMonthly.ToParseIso8601();
@@ -2703,67 +2749,23 @@ namespace Service.Implement
         }
         private bool CheckDailyOntime(Data.Models.Task update)
         {
-            var currentDate = DateTime.Now.Date;
-            if (update.DueDateDaily.ToParseStringDateTime().Date == currentDate)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            return DateComparator(update.DueDateDaily.ToParseStringDateTime());
         }
         private bool CheckWeeklyOntime(Data.Models.Task update)
         {
-            var currentDate = DateTime.Now.Date;
-            if (update.DateOfWeekly.ToParseStringDateTime().Date <= currentDate)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            return DateComparator(update.DateOfWeekly.ToParseStringDateTime());
         }
         private bool CheckMonthlyOntime(Data.Models.Task update)
         {
-            var currentDate = DateTime.Now.Date;
-            if (update.DateOfMonthly.ToParseStringDateTime().Date <= currentDate)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            return DateComparator(update.DateOfMonthly.ToParseStringDateTime());
         }
         private bool CheckQuarterlyOntime(Data.Models.Task update)
         {
-            var currentDate = DateTime.Now.Date;
-            if (update.DueDateQuarterly.ToParseStringDateTime().Date <= currentDate)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            return DateComparator(update.DueDateQuarterly.ToParseStringDateTime());
         }
         private bool CheckYearlyOntime(Data.Models.Task update)
         {
-            var currentDate = DateTime.Now.Date;
-            if (update.DueDateYearly.ToParseStringDateTime().Date <= currentDate)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return DateComparator(update.DueDateYearly.ToParseStringDateTime());
 
         }
         // CheckSpecificDateOntime
@@ -2956,11 +2958,11 @@ namespace Service.Implement
                 {
                     return Tuple.Create(false, false, "Please finish all sub-tasks!");
                 }
-                //else
-                //{
-                //    pathName = "history";
-                //    listUpdateStatus.AddRange(await CloneTask(seftAndDescendants));
-                //}
+                else if (!flag && item.Level > 1)
+                {
+                    pathName = "history";
+                    listUpdateStatus.AddRange(await CloneTask(seftAndDescendants.Where(x=>x.ID == item.ID).ToList()));
+                }
                 if (listUpdateStatus.Count() > 0)
                 {
                     var reupdateStatus = await _context.Tasks.Where(x => listUpdateStatus.Contains(x.ID)).ToListAsync();
