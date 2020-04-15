@@ -14,10 +14,34 @@ namespace Service.Helpers
 {
     public static class CodeUtility
     {
+
+        //        public static IEnumerable<T> Flatten<T>(
+        //    this IEnumerable<T> e
+        //, Func<T, IEnumerable<T>> f
+        //) => e.SelectMany(c => f(c).Flatten(f)).Concat(e);
         public static IEnumerable<T> Flatten<T>(
-    this IEnumerable<T> e
-, Func<T, IEnumerable<T>> f
-) => e.SelectMany(c => f(c).Flatten(f)).Concat(e);
+            this IEnumerable<T> source,
+            Func<T, IEnumerable<T>> childSelector)
+        {
+            HashSet<T> added = new HashSet<T>();
+            Queue<T> queue = new Queue<T>();
+            foreach (T t in source)
+                if (added.Add(t))
+                    queue.Enqueue(t);
+            while (queue.Count > 0)
+            {
+                T current = queue.Dequeue();
+                yield return current;
+                if (current != null)
+                {
+                    IEnumerable<T> children = childSelector(current);
+                    if (children != null)
+                        foreach (T t in childSelector(current))
+                            if (added.Add(t))
+                                queue.Enqueue(t);
+                }
+            }
+        }
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>
    (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
@@ -84,13 +108,13 @@ namespace Service.Helpers
         {
             return AllDatesInMonth(month).Where(x => x.DayOfWeek.Equals(DayOfWeek.Sunday));
         }
-
+        
         public static string ToParseDatetimeToStringISO8061(this DateTime dateTime)
         {
             return dateTime.Date.ToString("yyyy-MM-ddTHH:mm:ssZ");
         }
         public static string ToStringDateTime(this DateTime? dt, string format)
-        => dt == null ? "n/a" : ((DateTime)dt).ToString(format);
+        => dt == null ? "" : ((DateTime)dt).ToString(format);
         public static bool IsDouble(this object value)
         {
             var flag = false;
@@ -944,7 +968,25 @@ namespace Service.Helpers
             else
                 return String.Format(format, date);
         }
-
+        public static string ToFormatStringDateTime(this string date, string format = "{0:MM/dd/yyyy}")
+        {
+            if (!date.CheckDate())
+                return "";
+            else
+                return String.Format(format, date.ToParseStringDateTime());
+        }
+        private static bool CheckDate(this string date)
+        {
+            try
+            {
+                DateTime dt = DateTime.Parse(date);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public static string ToStringFormatISO(this string dateISO, string format = "{0:MM/dd/yyyy}")
         {
             var date = dateISO.ToParseIso8601();

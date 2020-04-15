@@ -204,6 +204,54 @@ namespace Data.ViewModel.Task
             }
             return null;
         }
+        public static List<TreeViewTask> FillRecursive(List<TreeViewTask> flatTasks, int parentId)
+        {
+            List<TreeViewTask> recursiveObjects = new List<TreeViewTask>();
+            foreach (var c in flatTasks.Where(x => x.ParentID.Equals(parentId)))
+            {
+                recursiveObjects.Add(new TreeViewTask
+                {
+                    ID = c.ID,
+                    JobName = c.JobName,
+                    Level = c.Level,
+                    ProjectID = c.ProjectID,
+                    CreatedBy = c.CreatedBy,
+                    CreatedDate = c.CreatedDate,
+                    From = c.From,
+                    ProjectName = c.ProjectName,
+                    state = c.state,
+                    PriorityID = c.PriorityID,
+                    Priority = c.Priority,
+                    Follow = c.Follow,
+                    PIC = c.PIC,
+                    Histories = c.Histories,
+                    PICs = c.PICs,
+                    DateOfWeekly = c.DateOfWeekly,
+                    DateOfMonthly = c.DateOfMonthly,
+                    JobTypeID = c.JobTypeID,
+                    FromWho = c.FromWho,
+                    FromWhere = c.FromWhere,
+                    BeAssigneds = c.BeAssigneds,
+                    Deputies = c.Deputies,
+                    VideoLink = c.VideoLink,
+                    VideoStatus = c.VideoStatus,
+                    DeputiesList = c.DeputiesList,
+                    DueDateDaily = c.DueDateDaily,
+                    DueDateWeekly = c.DueDateWeekly,
+                    DueDateMonthly = c.DueDateMonthly,
+                    DueDateQuarterly = c.DueDateQuarterly,
+                    DueDateYearly = c.DueDateYearly,
+                    SpecificDate = c.SpecificDate,
+                    DeputyName = c.DeputyName,
+                    Tutorial = c.Tutorial,
+                    ModifyDateTime = c.ModifyDateTime,
+                    CreatedDateForEachTask = c.CreatedDateForEachTask,
+                    periodType = c.periodType,
+                    children = FillRecursive(flatTasks, c.ID)
+                });
+            }
+            return recursiveObjects;
+        }
         public static List<TreeViewTask> Flatten(TreeViewTask root)
         {
 
