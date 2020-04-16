@@ -1494,7 +1494,7 @@ namespace Service.Implement
             try
             {
                 var listTasks = await _context.Tasks
-                .Where(x => (x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false))
+                 .Where(x => ((x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false)) && x.JobTypeID != 1 || (x.JobTypeID == 1 && x.Status == false && x.FinishedMainTask == false))
                 .Include(x => x.User)
                 .OrderByDescending(x => x.ID).ToListAsync();
                 var listTasksFillter = Fillter(listTasks, sort, priority, userid, startDate, endDate, weekdays, monthly, quarterly);
@@ -1917,7 +1917,12 @@ namespace Service.Implement
                     levelItem.CreatedDateForEachTask = item.CreatedDateForEachTask.ToString("d MMM, yyyy HH:mm:ss tt");
                     tasks.Add(levelItem);
                 }
-                return tasks.OrderByDescending(x => x.ID).ToList();
+                var hierarchy = MapperTreeViewTask(tasks, userid)
+               .OrderByDescending(x => x.ID)
+               .ToList();
+
+                return hierarchy;
+                //return tasks.OrderByDescending(x => x.ID).ToList();
 
             }
             catch (Exception ex)
@@ -2731,7 +2736,7 @@ namespace Service.Implement
                     pathName = "history";
                     flag = true;
                 } //Neu level > 1 va co 2 con tro len thi chua chuyen qua history, doi trang thai thanh hoan thanh
-                else if (item.Level == 1 && seftAndDescendants.Where(x => x.Level > 1).ToList().Count >= 2)
+                else if (item.Level == 1 && seftAndDescendants.Where(x => x.Level > 1).ToList().Count > 1)
                 {
                     seftAndDescendants.Where(x => x.ID != id).ToList().ForEach(x =>
                     {
@@ -2783,11 +2788,11 @@ namespace Service.Implement
                 {
                     return Tuple.Create(false, false, "Please finish all sub-tasks!");
                 }
-                else if (!flag && item.Level > 1)
-                {
-                    pathName = "history";
-                    listUpdateStatus.AddRange(await CloneTask(seftAndDescendants.Where(x => x.ID == item.ID).ToList()));
-                }
+                //else if (!flag && item.Level > 1)
+                //{
+                //    pathName = "history";
+                //    listUpdateStatus.AddRange(await CloneTask(seftAndDescendants.Where(x => x.ID == item.ID).ToList()));
+                //}
                 if (listUpdateStatus.Count() > 0)
                 {
                     var reupdateStatus = await _context.Tasks.Where(x => listUpdateStatus.Contains(x.ID)).ToListAsync();
