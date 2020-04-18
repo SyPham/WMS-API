@@ -529,6 +529,10 @@ namespace WorkManagement.Hub
 
             await Clients.All.SendAsync("ReceiveOnline", user, message);
         }
+        public async System.Threading.Tasks.Task Ping(string message)
+        {
+            //await Clients.All.SendAsync("ReceivePing", 200);
+        }
         public async System.Threading.Tasks.Task SendMessage(string user, string message)
         {
             var id = Context.ConnectionId;//"LzX9uE94Ovlp6Yx8s6PvhA"

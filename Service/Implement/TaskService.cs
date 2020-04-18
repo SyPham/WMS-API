@@ -314,8 +314,8 @@ namespace Service.Implement
         }
         private async Task<List<int>> GetListUsersAlert(int jobType, int userid, int projectid, int taskid)
         {
-            var listUsers = new List<int>();
-
+            var task = await _context.Tasks.FindAsync(taskid);
+            var listUsers = new List<int> { task.FromWhoID, task.CreatedBy };
             switch (jobType)
             {
                 case (int)Data.Enum.JobType.Project:
@@ -334,7 +334,7 @@ namespace Service.Implement
                     break;
             }
             //khong gui thong bao den chinh nguoi hoan thanh task
-            return listUsers.Where(x => x != userid).ToList();
+            return listUsers.Where(x => x != userid).Distinct().ToList();
         }
 
         private async Task<Tuple<List<int>>> AlertDeadlineChanging(Data.Enum.AlertDeadline alert, Data.Models.Task task, int userid, List<int> users)
@@ -498,54 +498,54 @@ namespace Service.Implement
             var BeAdded = new List<TreeViewTask>();
             foreach (var c in roots)
             {
-                    var item = new TreeViewTask
-                    {
-                        ID = c.ID,
-                        JobName = c.JobName,
-                        Level = c.Level,
-                        ProjectID = c.ProjectID,
-                        CreatedBy = c.CreatedBy,
-                        CreatedDate = c.CreatedDate,
-                        From = c.From,
-                        ProjectName = c.ProjectName,
-                        state = c.state,
-                        PriorityID = c.PriorityID,
-                        Priority = c.Priority,
-                        Follow = c.Follow,
-                        PIC = c.PIC,
-                        Histories = c.Histories,
-                        PICs = c.PICs,
-                        DateOfWeekly = c.DateOfWeekly,
-                        DateOfMonthly = c.DateOfMonthly,
-                        JobTypeID = c.JobTypeID,
-                        FromWho = c.FromWho,
-                        FromWhere = c.FromWhere,
-                        BeAssigneds = c.BeAssigneds,
-                        Deputies = c.Deputies,
-                        VideoLink = c.VideoLink,
-                        VideoStatus = c.VideoStatus,
-                        DeputiesList = c.DeputiesList,
-                        DueDateDaily = c.DueDateDaily,
-                        DueDateWeekly = c.DueDateWeekly,
-                        DueDateMonthly = c.DueDateMonthly,
-                        DueDateQuarterly = c.DueDateQuarterly,
-                        DueDateYearly = c.DueDateYearly,
-                        SpecificDate = c.SpecificDate,
-                        DeputyName = c.DeputyName,
-                        Tutorial = c.Tutorial,
-                        ModifyDateTime = c.ModifyDateTime,
-                        CreatedDateForEachTask = c.CreatedDateForEachTask,
-                        periodType = c.periodType,
-                        children = GetChildren(tasks, c.ID)
-                    };
-                    hierarchyTemp.Add(item);
+                var item = new TreeViewTask
+                {
+                    ID = c.ID,
+                    JobName = c.JobName,
+                    Level = c.Level,
+                    ProjectID = c.ProjectID,
+                    CreatedBy = c.CreatedBy,
+                    CreatedDate = c.CreatedDate,
+                    From = c.From,
+                    ProjectName = c.ProjectName,
+                    state = c.state,
+                    PriorityID = c.PriorityID,
+                    Priority = c.Priority,
+                    Follow = c.Follow,
+                    PIC = c.PIC,
+                    Histories = c.Histories,
+                    PICs = c.PICs,
+                    DateOfWeekly = c.DateOfWeekly,
+                    DateOfMonthly = c.DateOfMonthly,
+                    JobTypeID = c.JobTypeID,
+                    FromWho = c.FromWho,
+                    FromWhere = c.FromWhere,
+                    BeAssigneds = c.BeAssigneds,
+                    Deputies = c.Deputies,
+                    VideoLink = c.VideoLink,
+                    VideoStatus = c.VideoStatus,
+                    DeputiesList = c.DeputiesList,
+                    DueDateDaily = c.DueDateDaily,
+                    DueDateWeekly = c.DueDateWeekly,
+                    DueDateMonthly = c.DueDateMonthly,
+                    DueDateQuarterly = c.DueDateQuarterly,
+                    DueDateYearly = c.DueDateYearly,
+                    SpecificDate = c.SpecificDate,
+                    DeputyName = c.DeputyName,
+                    Tutorial = c.Tutorial,
+                    ModifyDateTime = c.ModifyDateTime,
+                    CreatedDateForEachTask = c.CreatedDateForEachTask,
+                    periodType = c.periodType,
+                    children = GetChildren(tasks, c.ID)
+                };
+                hierarchyTemp.Add(item);
                 BeAdded.Add(item);
             }
 
             var flatBedAdded = BeAdded.Flatten().ToList();
-            var except = childs.Where(x => !flatBedAdded.Select(c => c.ID).Contains(x.ID)).Select(x=>x.ID).ToList();
+            var except = childs.Where(x => !flatBedAdded.Select(c => c.ID).Contains(x.ID)).Select(x => x.ID).ToList();
             var lastChilds = childs.Where(x => except.Contains(x.ID)).ToList();
-           var result = hierarchyTemp.Union(lastChilds).ToList();
+            var result = hierarchyTemp.Union(lastChilds).ToList();
             return result;
         }
         private List<TreeViewTask> GetListTreeViewTask(List<Data.Models.Task> listTasks, int userid)
@@ -1494,7 +1494,7 @@ namespace Service.Implement
             try
             {
                 var listTasks = await _context.Tasks
-                 .Where(x => ((x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false)) && x.JobTypeID != 1 || (x.JobTypeID == 1 && x.Status == false && x.FinishedMainTask == false))
+                 .Where(x => ((x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false)) && x.JobTypeID != 1 || (x.JobTypeID == 1 && x.Status == false && x.FinishedMainTask == false || x.JobTypeID == 1 && x.Status == true && x.FinishedMainTask == false))
                 .Include(x => x.User)
                 .OrderByDescending(x => x.ID).ToListAsync();
                 var listTasksFillter = Fillter(listTasks, sort, priority, userid, startDate, endDate, weekdays, monthly, quarterly);
@@ -1565,7 +1565,7 @@ namespace Service.Implement
                 || x.Deputies.Contains(userid)).ToList();
 
                 var hierarchy = MapperTreeViewTask(tasks, userid)
-                  
+
                 .OrderByDescending(x => x.ID)
                 .ToList();
 
@@ -1763,7 +1763,7 @@ namespace Service.Implement
                 var tags = _context.Tags;
                 var listTasks = new List<Data.Models.Task>();
                 var listTasks2 = await _context.Histories.Join(
-               _context.Tasks.Include(x=>x.User),
+               _context.Tasks.Include(x => x.User),
                 his => his.TaskID,
                 task => task.ID,
                (his, task) => new
@@ -1924,11 +1924,11 @@ namespace Service.Implement
                   || x.FromWhoID == userid
                   || x.CreatedBy == userid
                   || x.Deputies.Contains(userid)).ToList();
-               // var hierarchy = MapperTreeViewTask(tasks, userid)
-               //.OrderByDescending(x => x.ID)
-               //.ToList();
-               // return hierarchy;
-                 return tasks.OrderByDescending(x => x.ID).ToList();
+                // var hierarchy = MapperTreeViewTask(tasks, userid)
+                //.OrderByDescending(x => x.ID)
+                //.ToList();
+                // return hierarchy;
+                return tasks.OrderByDescending(x => x.ID).ToList();
             }
             catch (Exception ex)
             {
@@ -2809,11 +2809,6 @@ namespace Service.Implement
                 {
                     return Tuple.Create(false, false, "Please finish all sub-tasks!");
                 }
-                //else if (!flag && item.Level > 1)
-                //{
-                //    pathName = "history";
-                //    listUpdateStatus.AddRange(await CloneTask(seftAndDescendants.Where(x => x.ID == item.ID).ToList()));
-                //}
                 if (listUpdateStatus.Count() > 0)
                 {
                     var reupdateStatus = await _context.Tasks.Where(x => listUpdateStatus.Contains(x.ID)).ToListAsync();
