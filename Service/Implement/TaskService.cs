@@ -1488,6 +1488,7 @@ namespace Service.Implement
             }
 
         }
+
         public async Task<List<TreeViewTask>> GetListTree(string sort, string priority, int userid, string startDate, string endDate, string weekdays, string monthly, string quarterly)
         {
 
@@ -2735,6 +2736,8 @@ namespace Service.Implement
                 {
                     var project = await _context.Projects.FindAsync(item.ProjectID);
                     projectName = project.Name;
+                    if (item.Level == 1 && item.periodType == Data.Enum.PeriodType.SpecificDate)
+                        item.FinishedMainTask = true;
                 }
 
                 var user = await _context.Users.FindAsync(userid);
