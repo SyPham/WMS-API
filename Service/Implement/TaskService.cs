@@ -992,12 +992,12 @@ namespace Service.Implement
                     mes = $"You are late for the task name: '{item.JobName}' on {item.DueDateDaily.ToStringFormatISO(formatDaily)}";
                     break;
                 case Data.Enum.PeriodType.Weekly:
-                    mes = $"You are late for the task name: '{item.JobName}' on {item.DateOfWeekly.ToStringFormatISO(formatDaily)}";
+                    var dateofWeely = item.DateOfWeekly.ToParseStringDateTime().ToString("d MMM, yyyy");
+                    mes = $"You are late for the task name: '{item.JobName}' on {dateofWeely}";
                     break;
                 case Data.Enum.PeriodType.Monthly:
-                    var month = item.DueDateMonthly.Substring(0, item.DueDateMonthly.Length - 2);
-                    var dateofmonthly = new DateTime(DateTime.Now.Year, month.ToInt(), 1).ToParseDatetimeToStringISO8061();
-                    mes = $"You are late for the task name: '{item.JobName}' on {dateofmonthly.ToStringFormatISO(formatDaily)}";
+                    var dateofmonthly = item.DateOfMonthly.ToParseStringDateTime().ToString("d MMM, yyyy");
+                    mes = $"You are late for the task name: '{item.JobName}' on {dateofmonthly}";
                     break;
                 case Data.Enum.PeriodType.Quarterly:
                     var dateofquarterly = (item.DueDateQuarterly.Split(",")[1].Trim() + ", " + DateTime.Now.Year).ToParseStringDateTime().ToParseDatetimeToStringISO8061();

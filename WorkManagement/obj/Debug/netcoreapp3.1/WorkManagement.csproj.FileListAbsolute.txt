@@ -955,10 +955,3 @@ F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\li
 F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\WorkManagement.deps.json
 F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\WorkManagement.runtimeconfig.json
 F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\wwwroot\lib\@microsoft\signalr\package.json
-F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\web.config
-F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\appsettings.Development.json
-F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\appsettings.json
-F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\libman.json
-F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\WorkManagement.deps.json
-F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\WorkManagement.runtimeconfig.json
-F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\wwwroot\lib\@microsoft\signalr\package.json

@@ -561,3 +561,10 @@ F:\0.Document\angular9\WMS-API\WorkManagement\obj\Release\netcoreapp3.1\staticwe
 F:\0.Document\angular9\WMS-API\WorkManagement\obj\Release\netcoreapp3.1\WorkManagement.dll
 F:\0.Document\angular9\WMS-API\WorkManagement\obj\Release\netcoreapp3.1\WorkManagement.pdb
 F:\0.Document\angular9\WMS-API\WorkManagement\obj\Release\netcoreapp3.1\WorkManagement.genruntimeconfig.cache
+F:\0.Document\angular9\WMS-API\WorkManagement\bin\Release\netcoreapp3.1\publish\web.config
+F:\0.Document\angular9\WMS-API\WorkManagement\bin\Release\netcoreapp3.1\publish\appsettings.Development.json
+F:\0.Document\angular9\WMS-API\WorkManagement\bin\Release\netcoreapp3.1\publish\appsettings.json
+F:\0.Document\angular9\WMS-API\WorkManagement\bin\Release\netcoreapp3.1\publish\libman.json
+F:\0.Document\angular9\WMS-API\WorkManagement\bin\Release\netcoreapp3.1\publish\WorkManagement.deps.json
+F:\0.Document\angular9\WMS-API\WorkManagement\bin\Release\netcoreapp3.1\publish\WorkManagement.runtimeconfig.json
+F:\0.Document\angular9\WMS-API\WorkManagement\bin\Release\netcoreapp3.1\publish\wwwroot\lib\@microsoft\signalr\package.json
