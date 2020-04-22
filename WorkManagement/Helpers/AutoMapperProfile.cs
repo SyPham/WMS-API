@@ -25,8 +25,12 @@ namespace WorkManagement.Helpers
                 .ForMember(x => x.Role, option => option.Ignore())
                 .ForMember(x => x.Email, option => option.Ignore())
                 .ForMember(x => x.OCID, option => option.Ignore());
-            CreateMap<Data.Models.Task, CreateTaskViewModel>().ForMember(x => x.PIC, option => option.Ignore())
+
+            CreateMap<Data.Models.Task, CreateTaskViewModel>()
+                .ForMember(x => x.PIC, option => option.Ignore())
+                .ForMember(x => x.DueDate, option => option.Ignore())
                 .ForMember(d => d.CreatedBy, s => s.MapFrom(p => p.FromWhoID));
+
             CreateMap<CreateTaskViewModel, Data.Models.Task>();
                 
             CreateMap<Data.Models.Task, TreeViewTask>();

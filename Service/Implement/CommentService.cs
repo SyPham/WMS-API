@@ -36,11 +36,11 @@ namespace Service.Implement
             string urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
             switch (task.JobTypeID)
             {
-                case (int)Data.Enum.JobType.Project:
+                case Data.Enum.JobType.Project:
                     message = $"{user.Username.ToTitleCase()} commented on your task' {task.JobName}' of {projectName}.";
                     break;
-                case (int)Data.Enum.JobType.Abnormal:
-                case (int)Data.Enum.JobType.Routine:
+                case Data.Enum.JobType.Abnormal:
+                case Data.Enum.JobType.Routine:
                     message = $"{user.Username.ToTitleCase()} commented on your task '{task.JobName}'.";
                     break;
                 default:
@@ -60,11 +60,11 @@ namespace Service.Implement
             string urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
             switch (task.JobTypeID)
             {
-                case (int)Data.Enum.JobType.Project:
+                case Data.Enum.JobType.Project:
                     message = $"{user.Username.ToTitleCase()} replied to the comment: '{comment}'.";
                     break;
-                case (int)Data.Enum.JobType.Abnormal:
-                case (int)Data.Enum.JobType.Routine:
+                case Data.Enum.JobType.Abnormal:
+                case Data.Enum.JobType.Routine:
                     message = $"{user.Username.ToTitleCase()} replied to the comment: '{comment}'.";
                     break;
                 default:

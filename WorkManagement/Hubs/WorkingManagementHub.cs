@@ -35,18 +35,11 @@ namespace WorkManagement.Hub
                     mes = $"You are late for the task name: '{item.JobName}' on {item.DueDateDaily.ToStringFormatISO(formatDaily)}";
                     break;
                 case Data.Enum.PeriodType.Weekly:
-                    mes = $"You are late for the task name: '{item.JobName}' on {item.DateOfWeekly.ToStringFormatISO(formatDaily)}";
+                    mes = $"You are late for the task name: '{item.JobName}' on {item.DueDateWeekly.ToStringFormatISO(formatDaily)}";
                     break;
                 case Data.Enum.PeriodType.Monthly:
                     var dateofmonthly = new DateTime(DateTime.Now.Year, item.DueDateMonthly.ToInt(), 1).ToParseDatetimeToStringISO8061();
                     mes = $"You are late for the task name: '{item.JobName}' on {dateofmonthly.ToStringFormatISO(formatDaily)}";
-                    break;
-                case Data.Enum.PeriodType.Quarterly:
-                    var dateofquarterly = (item.DueDateQuarterly.Split(",")[1].Trim() + ", " + DateTime.Now.Year).ToParseStringDateTime().ToParseDatetimeToStringISO8061();
-                    mes = $"You are late for the task name: '{item.JobName}' on {dateofquarterly.ToStringFormatISO(formatDaily)}";
-                    break;
-                case Data.Enum.PeriodType.Yearly:
-                    mes = $"You are late for the task name: '{item.JobName}' on {item.DueDateYearly.ToStringFormatISO(formatDaily)}";
                     break;
                 case Data.Enum.PeriodType.SpecificDate:
                     mes = $"You are late for the task name: '{item.JobName}' on {item.SpecificDate.ToStringFormatISO(formatDaily)}";
@@ -64,7 +57,7 @@ namespace WorkManagement.Hub
         {
             string result = string.Empty;
             int year = DateTime.Now.Year;
-            var dateOfWeek = task.DateOfWeekly; //30 mar
+            var dateOfWeek = task.DueDateWeekly; //30 mar
             var duedateweekly = task.DueDateWeekly;//Mon
             //Tim dayofweek
             var monthWeekly = dateOfWeek.ToParseStringDateTime().Month;
@@ -99,7 +92,7 @@ namespace WorkManagement.Hub
         }
         private string PeriodMonthly(Data.Models.Task task)
         {
-            var duedateMonthly = task.CreatedDateForEachTask;
+            var duedateMonthly = task.CreatedDate;
             var day = task.DueDateMonthly.ToInt();
             var currentYear = duedateMonthly.Year;
             var month = duedateMonthly.Month + 1;
@@ -139,18 +132,6 @@ namespace WorkManagement.Hub
                 throw;
             }
         }
-        private string PeriodQuarterly(Data.Models.Task task)
-        {
-            var quarter = task.DueDateQuarterly.Split(",");
-            var duedatequarterly = quarter[0].ToSafetyString().GetLastDateOfNextQuarter();
-            return duedatequarterly;
-        }
-        private string PeriodYearly(Data.Models.Task task)
-        {
-            var duedateYearly = task.DueDateYearly.ToParseIso8601();
-            var newDueDateYealy = new DateTime(duedateYearly.Year + 1, duedateYearly.Month, duedateYearly.Day).ToParseDatetimeToStringISO8061();
-            return newDueDateYealy;
-        }
         private async Task<string> AlertTasksIsLate(TreeViewTask item, string message, bool isProject)
         {
             var mes = string.Empty;
@@ -182,16 +163,10 @@ namespace WorkManagement.Hub
                     history.Deadline = update.DueDateDaily;
                     break;
                 case Data.Enum.PeriodType.Weekly:
-                    history.Deadline = update.DateOfWeekly;
+                    history.Deadline = update.DueDateWeekly;
                     break;
                 case Data.Enum.PeriodType.Monthly:
-                    history.Deadline = update.DateOfMonthly;
-                    break;
-                case Data.Enum.PeriodType.Quarterly:
-                    history.Deadline = update.DueDateQuarterly;
-                    break;
-                case Data.Enum.PeriodType.Yearly:
-                    history.Deadline = update.DueDateYearly + ", " + DateTime.Now.Year;
+                    history.Deadline = update.DueDateMonthly;
                     break;
                 default:
                     break;
@@ -281,16 +256,6 @@ namespace WorkManagement.Hub
                 case Data.Enum.PeriodType.Monthly:
                     var dateofmonthly = PeriodMonthly(task).ToParseStringDateTime();
                     if (!CompareDate(dateofmonthly) && !BeAlert(item.ID, belate))
-                        await AlertTasksIsLate(item, mes, isProject);
-                    break;
-                case Data.Enum.PeriodType.Quarterly:
-                    var dateofquarterly = (PeriodQuarterly(task).Split(",")[1].Trim() + ", " + DateTime.Now.Year).ToParseStringDateTime();
-                    if (!CompareDate(dateofquarterly) && !BeAlert(item.ID, belate))
-                        await AlertTasksIsLate(item, mes, isProject);
-                    break;
-                case Data.Enum.PeriodType.Yearly:
-                    var dateyearly = PeriodYearly(task).ToParseStringDateTime();
-                    if (!CompareDate(dateyearly) && !BeAlert(item.ID, belate))
                         await AlertTasksIsLate(item, mes, isProject);
                     break;
                 case Data.Enum.PeriodType.SpecificDate:
@@ -399,10 +364,7 @@ namespace WorkManagement.Hub
                 levelItem.DueDateDaily = item.DueDateDaily.ToStringFormatISO(formatDaily).IsNotAvailable();
                 levelItem.DueDateWeekly = item.DueDateWeekly.IsNotAvailable();
                 levelItem.DueDateMonthly = item.DueDateMonthly.FindShortDatesOfMonth().IsNotAvailable();
-                levelItem.DueDateQuarterly = item.DueDateQuarterly.IsNotAvailable();
-                levelItem.DueDateYearly = item.DueDateYearly.ToStringFormatISO(formatYearly).IsNotAvailable();
                 levelItem.SpecificDate = item.SpecificDate.ToStringFormatISO(formatSpecificDate).IsNotAvailable();
-                levelItem.DateOfWeekly = item.DateOfWeekly;
                 levelItem.periodType = item.periodType;
 
                 levelItem.User = item.User;
@@ -418,7 +380,6 @@ namespace WorkManagement.Hub
                 levelItem.Deputies = deputiesList.Select(_ => _.ID).ToList();
                 levelItem.FromWhere = ocModel.Where(x => x.ID == item.OCID).Select(x => new FromWhere { ID = x.ID, Name = x.Name }).FirstOrDefault() ?? new FromWhere();
                 levelItem.FromWho = userModel.Where(x => x.ID == item.FromWhoID).Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).FirstOrDefault() ?? new BeAssigned();
-                levelItem.CreatedDateForEachTask = item.CreatedDateForEachTask.ToStringFormat(formatCreatedDate).IsNotAvailable();
                 levelItem.JobTypeID = item.JobTypeID;
                 levelItem.periodType = item.periodType;
 
@@ -441,7 +402,7 @@ namespace WorkManagement.Hub
             var tasks = GetListTreeViewTask(listTasks, userid);
             try
             {
-                return await ProjectTaskIsLate(tasks.Where(x => x.JobTypeID == (int)Data.Enum.JobType.Project).ToList());
+                return await ProjectTaskIsLate(tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Project).ToList());
             }
             catch (Exception ex)
             {

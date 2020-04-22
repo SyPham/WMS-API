@@ -54,6 +54,7 @@ namespace Service.Helpers
                 }
             }
         }
+
         public static DateTime ToParseStringDateTime(this string dateString)
         {
             DateTime dateTime;
@@ -62,6 +63,7 @@ namespace Service.Helpers
             else
                 return DateTime.MinValue;
         }
+       
         public static IEnumerable<DateTime> AllDatesInMonth(this int month, int year)
         {
 
@@ -968,6 +970,16 @@ namespace Service.Helpers
             else
                 return String.Format(format, date);
         }
+        public static string ToStringFormatDateTime(this string date, string format = "dd MMM, yyyy hh:mm:ss tt")
+        {
+            if (!date.CheckDate())
+                return "";
+            DateTime dateTime;
+            if (DateTime.TryParse(date, out dateTime))
+                return dateTime.ToString(format);
+            else
+                return "";
+        }
         public static string ToFormatStringDateTime(this string date, string format = "{0:MM/dd/yyyy}")
         {
             if (!date.CheckDate())
@@ -986,6 +998,14 @@ namespace Service.Helpers
             {
                 return false;
             }
+        }
+        public static string ToStringFormat(this string dateISO, string format = "{0:MM/dd/yyyy}")
+        {
+            var date = dateISO.ToParseIso8601();
+            if (date.Date == new DateTime().Date)
+                return "";
+            else
+                return String.Format(format, date);
         }
         public static string ToStringFormatISO(this string dateISO, string format = "{0:MM/dd/yyyy}")
         {

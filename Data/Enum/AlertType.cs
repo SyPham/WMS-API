@@ -11,7 +11,7 @@ namespace Data.Enum
         Undone = 3,
         UpdateRemark = 4,
         Assigned = 5,
-        Deputy = 6,
+        ChangeDeputy = 6,
         Manager = 7,
         Member = 8,
         ChangeDeadline = 9,
@@ -20,7 +20,8 @@ namespace Data.Enum
         ChangeQuarterly = 12,
         PostComment = 13,
         ReplyComment = 14,
-        BeLate = 15
-
+        BeLate = 15,
+        AddDeputy = 16,
+        ChangeFromWho = 17
     }
 }

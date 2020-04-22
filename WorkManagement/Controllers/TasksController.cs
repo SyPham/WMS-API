@@ -48,11 +48,6 @@ namespace WorkManagement.Controllers
             return Ok(await _taskService.LoadTaskHistory(name, userID, OCID, page, pageSize));
         }
 
-        [HttpGet("{taskId}/{remark}")]
-        public async Task<IActionResult> CreateRemark(int taskId, string remark)
-        {
-            return Ok(await _taskService.CreateRemark(taskId, remark));
-        }
         [HttpGet("{sort}")]
         [HttpGet("{priority}/{sort}")]
         [HttpGet("{priority}/{sort}/{start}/{end}")]
@@ -174,19 +169,6 @@ namespace WorkManagement.Controllers
                 });
             }
 
-        }
-        [HttpPost]
-        public async Task<IActionResult> Remark([FromBody] RemarkViewModel remark)
-        {
-            string token = Request.Headers["Authorization"];
-            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
-            remark.UserID = userID;
-            var model = await _taskService.Remark(remark);
-            //Co followed thi moi thong bao
-            if (model.Item2)
-                await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item3, "message");
-
-            return Ok(model.Item1);
         }
         [AllowAnonymous]
         [HttpGet]

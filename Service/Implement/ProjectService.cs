@@ -106,8 +106,6 @@ namespace Service.Implement
                                 ID = c.ID,
                                 JobName = c.JobName,
                                 Level = c.Level,
-                                Remark = c.Remark,
-                                Description = c.Description,
                                 ProjectID = c.ProjectID,
                                 CreatedBy = c.CreatedBy,
                                 CreatedDate = c.CreatedDate,
@@ -124,8 +122,6 @@ namespace Service.Implement
                                 DueDateDaily = c.DueDateDaily,
                                 DueDateWeekly = c.DueDateWeekly,
                                 DueDateMonthly = c.DueDateMonthly,
-                                DueDateQuarterly = c.DueDateQuarterly,
-                                DueDateYearly = c.DueDateYearly,
                                 SpecificDate = c.SpecificDate,
                                 children = GetChildren(tasks, c.ID)
                             })
@@ -150,8 +146,6 @@ namespace Service.Implement
                         ID = c.ID,
                         JobName = c.JobName,
                         Level = c.Level,
-                        Remark = c.Remark,
-                        Description = c.Description,
                         ProjectID = c.ProjectID,
                         CreatedBy = c.CreatedBy,
                         CreatedDate = c.CreatedDate,
@@ -172,8 +166,6 @@ namespace Service.Implement
                         DueDateDaily = c.DueDateDaily,
                         DueDateWeekly = c.DueDateWeekly,
                         DueDateMonthly = c.DueDateMonthly,
-                        DueDateQuarterly = c.DueDateQuarterly,
-                        DueDateYearly = c.DueDateYearly,
                         SpecificDate = c.SpecificDate,
                         DeputyName = c.DeputyName,
                         periodType = c.periodType,
@@ -328,7 +320,7 @@ namespace Service.Implement
             int parentID = 0;
             foreach (var item in tasks)
             {
-                if (item.JobTypeID == (int)Data.Enum.JobType.Project)
+                if (item.JobTypeID == Data.Enum.JobType.Project)
                 {
 
                     if (item.Level == 1)

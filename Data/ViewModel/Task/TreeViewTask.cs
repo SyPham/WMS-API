@@ -18,7 +18,7 @@ namespace Data.ViewModel.Task
             int ParentID,
             int Level,
             int ProjectID,
-            int JobTypeID,
+            Enum.JobType JobTypeID,
             Enum.PeriodType periodType,
             int CreatedBy,
             List<int> Deputies,
@@ -32,13 +32,8 @@ namespace Data.ViewModel.Task
            string DueDateDaily,
            string DueDateWeekly,
            string DueDateMonthly,
-           string DueDateQuarterly,
-           string DueDateYearly,
            string SpecificDate,
-           string CreatedDateForEachTask,
            string ModifyDateTime,
-            string DateOfWeekly,
-            string DateOfMonthly,
             string state,
              List<BeAssigned> BeAssigneds,
              List<BeAssigned> DeputiesList,
@@ -68,13 +63,8 @@ namespace Data.ViewModel.Task
             this.DueDateDaily = DueDateDaily;
             this.DueDateWeekly = DueDateWeekly;
             this.DueDateMonthly = DueDateMonthly;
-            this.DueDateQuarterly = DueDateQuarterly;
-            this.DueDateYearly = DueDateYearly;
             this.SpecificDate = SpecificDate;
-            this.CreatedDateForEachTask = CreatedDateForEachTask;
             this.ModifyDateTime = ModifyDateTime;
-            this.DateOfWeekly = DateOfWeekly;
-            this.DateOfMonthly = DateOfMonthly;
             this.state = state;
             this.BeAssigneds = BeAssigneds;
             this.DeputiesList = DeputiesList;
@@ -86,27 +76,24 @@ namespace Data.ViewModel.Task
             this.Tutorial = Tutorial;
             this.children = new List<TreeViewTask>();
         }
+        public int ID { get; set; }
+        public string Follow { get; set; }
+        public string Priority { get; set; }
+        public string PriorityID { get; set; }
+        public string ProjectName { get; set; }
+        public string JobName { get; set; }
+        public string PIC { get; set; }
         public bool VideoStatus { get; set; }
         public Models.Tutorial Tutorial { get; set; }
         public string VideoLink { get; set; }
-        public int ID { get; set; }
-        public string JobName { get; set; }
-        public string Priority { get; set; }
-        public string PriorityID { get; set; }
-        public string Description { get; set; }
         public int Level { get; set; }
         public int ParentID { get; set; }
         public string CreatedDate { get; set; }
-        public string Remark { get; set; }
-        public string PIC { get; set; }
-        public string From { get; set; }
         public string DeputyName { get; set; }
-        public string ProjectName { get; set; }
-        public string Follow { get; set; }
-        public int JobTypeID { get; set; }
+        public Enum.JobType JobTypeID { get; set; }
         public int FromWhoID { get; set; }
         public Enum.PeriodType periodType { get; set; }
-
+        public string From { get; set; }
         public int CreatedBy { get; set; }
         public int ProjectID { get; set; }
         public Models.User User { get; set; }
@@ -116,20 +103,16 @@ namespace Data.ViewModel.Task
         public List<int> PICs { get; set; }
         public BeAssigned FromWho { get; set; }
         public FromWhere FromWhere { get; set; }
-        public string DateOfWeekly { get; set; }
-        public string DateOfMonthly { get; set; }
         public Models.Project Project { get; set; }
         public List<History.History> Histories { get; set; }
 
         public string state { get; set; }
         public bool FinishTask { get; set; }
         public string DueDateDaily { get; set; }
+        public string DueDate { get; set; }
         public string DueDateWeekly { get; set; }
         public string DueDateMonthly { get; set; }
-        public string DueDateQuarterly { get; set; }
-        public string DueDateYearly { get; set; }
         public string SpecificDate { get; set; }
-        public string CreatedDateForEachTask { get; set; }
         public string ModifyDateTime { get; set; }
         public bool BeAssigned { get; set; }
         public bool HasChildren
@@ -143,7 +126,7 @@ namespace Data.ViewModel.Task
             int ParentID,
             int Level,
             int ProjectID,
-            int JobTypeID,
+            Enum.JobType JobTypeID,
             Enum.PeriodType periodType,
             int CreatedBy,
             List<int> Deputies,
@@ -157,13 +140,8 @@ namespace Data.ViewModel.Task
            string DueDateDaily,
            string DueDateWeekly,
            string DueDateMonthly,
-           string DueDateQuarterly,
-           string DueDateYearly,
            string SpecificDate,
-           string CreatedDateForEachTask,
            string ModifyDateTime,
-            string DateOfWeekly,
-            string DateOfMonthly,
             string state,
              List<BeAssigned> BeAssigneds,
              List<BeAssigned> DeputiesList,
@@ -172,13 +150,14 @@ namespace Data.ViewModel.Task
             Models.Project Project,
             List<History.History> Histories,
             Models.User User,
-            Models.Tutorial Tutorial
+            Models.Tutorial Tutorial,
+            string CreatedDate
             )
         {
             var newTree = new TreeViewTask(ID, ParentID, Level, ProjectID, JobTypeID, periodType, CreatedBy, Deputies,
-            PICs, PIC, JobName, DeputyName, ProjectName, Follow, VideoLink, DueDateDaily, DueDateWeekly, DueDateMonthly, DueDateQuarterly,
-            DueDateYearly, SpecificDate, CreatedDateForEachTask, ModifyDateTime, DateOfWeekly, DateOfMonthly, state,
-            BeAssigneds, DeputiesList, FromWho, FromWhere, Project, Histories, User, Tutorial);
+            PICs, PIC, JobName, DeputyName, ProjectName, Follow, VideoLink, DueDateDaily, DueDateWeekly, DueDateMonthly,
+           SpecificDate, ModifyDateTime, state, BeAssigneds, DeputiesList, FromWho, FromWhere, Project, Histories, User, Tutorial);
+
             children.Add(newTree);
             return newTree;
         }
@@ -217,7 +196,6 @@ namespace Data.ViewModel.Task
                     ProjectID = c.ProjectID,
                     CreatedBy = c.CreatedBy,
                     CreatedDate = c.CreatedDate,
-                    From = c.From,
                     ProjectName = c.ProjectName,
                     state = c.state,
                     PriorityID = c.PriorityID,
@@ -226,8 +204,6 @@ namespace Data.ViewModel.Task
                     PIC = c.PIC,
                     Histories = c.Histories,
                     PICs = c.PICs,
-                    DateOfWeekly = c.DateOfWeekly,
-                    DateOfMonthly = c.DateOfMonthly,
                     JobTypeID = c.JobTypeID,
                     FromWho = c.FromWho,
                     FromWhere = c.FromWhere,
@@ -239,13 +215,10 @@ namespace Data.ViewModel.Task
                     DueDateDaily = c.DueDateDaily,
                     DueDateWeekly = c.DueDateWeekly,
                     DueDateMonthly = c.DueDateMonthly,
-                    DueDateQuarterly = c.DueDateQuarterly,
-                    DueDateYearly = c.DueDateYearly,
                     SpecificDate = c.SpecificDate,
                     DeputyName = c.DeputyName,
                     Tutorial = c.Tutorial,
                     ModifyDateTime = c.ModifyDateTime,
-                    CreatedDateForEachTask = c.CreatedDateForEachTask,
                     periodType = c.periodType,
                     children = FillRecursive(flatTasks, c.ID)
                 });

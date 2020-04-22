@@ -22,14 +22,12 @@ namespace Service.Interface
         Task<List<TreeViewTask>> GetListTree();
         Task<Tuple<bool, string, object>> CreateTask(CreateTaskViewModel task);
         Task<object> CreateSubTask(CreateTaskViewModel task);
-        Task<object> CreateRemark(int taskID, string remark);
         Task<object> Delete(int id, int userid);
         Task<object> From(int userid);
         Task<Tuple<bool, bool, string>> Done(int id, int userid);
         Task<object> GetListUser(int userid, int projectid);
         Task<List<ProjectViewModel>> GetListProject();
         Task<object> UpdateTask(UpdateTaskViewModel task);
-        Task<Tuple<bool, bool, string>> Remark(RemarkViewModel remark);
         Task<object> Follow(int userid, int taskid);
         Task<object> Undo(int id);
         Task<object> GetDeputies();
