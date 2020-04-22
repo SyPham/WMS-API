@@ -2047,6 +2047,7 @@ namespace Service.Implement
                     edit.DueDateMonthly = task.DueDateMonthly;
                     edit.DueDateQuarterly = task.DueDateQuarterly;
                     edit.OCID = task.OCID;
+                    edit.FromWhoID = task.FromWhoID;
                     edit.SpecificDate = task.SpecificDate;
 
                     if (task.PIC != null)
@@ -2247,6 +2248,8 @@ namespace Service.Implement
                     edit.JobName = task.JobName;
                     edit.Priority = task.Priority;
                     edit.DepartmentID = task.DepartmentID;
+                    edit.FromWhoID = task.FromWhoID;
+
                     if (task.PIC != null)
                     {
                         //Lay la danh sach assigned
@@ -2885,6 +2888,7 @@ namespace Service.Implement
             update.JobName = task.JobName;
             update.Description = task.Description;
             update.From = task.From;
+            update.FromWhoID = task.FromWhoID;
             update.CreatedBy = task.CreatedBy;
             update.Status = task.Status;
             try

@@ -14,7 +14,7 @@ namespace Data.ViewModel.Task
         public int CreatedBy { get; set; }
         public int ProjectID { get; set; }
         public int ParentID { get; set; }
-
+        public int FromWhoID { get; set; }
         public bool Status { get; set; }
         public int CurrentUser { get; set; }
 
