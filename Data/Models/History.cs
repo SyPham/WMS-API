@@ -16,6 +16,7 @@ namespace Data.Models
         }
 
         public int ID { get; set; }
+        public string TaskCode { get; set; }
         public int TaskID { get; set; }
         public int UserID { get; set; }
         public bool Status { get; set; }

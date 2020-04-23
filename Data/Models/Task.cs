@@ -14,6 +14,7 @@ namespace Data.Models
             CreatedDate = DateTime.Now;
         }
         public int ID { get; set; }
+        public string Code { get; set; }
         public string JobName { get; set; }
         public int ParentID { get; set; }
         public int Level { get; set; }
