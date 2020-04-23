@@ -14,34 +14,8 @@ namespace Service.Helpers
 {
     public static class CodeUtility
     {
-
-        //        public static IEnumerable<T> Flatten<T>(
-        //    this IEnumerable<T> e
-        //, Func<T, IEnumerable<T>> f
-        //) => e.SelectMany(c => f(c).Flatten(f)).Concat(e);
-        public static IEnumerable<T> Flatten<T>(
-            this IEnumerable<T> source,
-            Func<T, IEnumerable<T>> childSelector)
-        {
-            HashSet<T> added = new HashSet<T>();
-            Queue<T> queue = new Queue<T>();
-            foreach (T t in source)
-                if (added.Add(t))
-                    queue.Enqueue(t);
-            while (queue.Count > 0)
-            {
-                T current = queue.Dequeue();
-                yield return current;
-                if (current != null)
-                {
-                    IEnumerable<T> children = childSelector(current);
-                    if (children != null)
-                        foreach (T t in childSelector(current))
-                            if (added.Add(t))
-                                queue.Enqueue(t);
-                }
-            }
-        }
+       
+      
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>
    (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
@@ -63,7 +37,7 @@ namespace Service.Helpers
             else
                 return DateTime.MinValue;
         }
-       
+
         public static IEnumerable<DateTime> AllDatesInMonth(this int month, int year)
         {
 
@@ -110,7 +84,7 @@ namespace Service.Helpers
         {
             return AllDatesInMonth(month).Where(x => x.DayOfWeek.Equals(DayOfWeek.Sunday));
         }
-        
+
         public static string ToParseDatetimeToStringISO8061(this DateTime dateTime)
         {
             return dateTime.Date.ToString("yyyy-MM-ddTHH:mm:ssZ");

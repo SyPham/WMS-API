@@ -1890,6 +1890,7 @@ namespace Service.Implement
         {
             try
             {
+                task.DueDate = task.DueDate.ToStringFormatDateTime();
                 if (!await _context.Tasks.AnyAsync(x => x.ID == task.ID))
                 {
                     var item = _mapper.Map<Data.Models.Task>(task);
@@ -1900,10 +1901,10 @@ namespace Service.Implement
                     item.ParentID = task.ParentID;
                     item.ProjectID = task.ProjectID;
                     item.JobTypeID = taskParent.JobTypeID;
-                    taskParent = CheckDuedate(taskParent, task);
+                    item = CheckDuedate(item, task);
                     await _context.Tasks.AddAsync(item);
                     await _context.SaveChangesAsync();
-
+                    await CloneCode(item);
                     if (task.PIC != null)
                     {
                         var tags = new List<Tag>();
@@ -2710,6 +2711,23 @@ namespace Service.Implement
             await _context.AddAsync(clone);
             await _context.SaveChangesAsync();
         }
+        private async System.Threading.Tasks.Task CloneMultiTask(List<Data.Models.Task> tasks)
+        {
+            var root = tasks.FirstOrDefault(x => x.Level == 1);
+            var clone = root;
+            clone.ID = 0;
+            await _context.AddAsync(clone);
+            await _context.SaveChangesAsync();
+
+            foreach (var item in tasks.Where(x => x.Level > 1))
+            {
+                var cloneChilds = item;
+                cloneChilds.ID = 0;
+                cloneChilds.ParentID = clone.ParentID;
+                await _context.AddAsync(cloneChilds);
+                await _context.SaveChangesAsync();
+            }
+        }
         private async Task<List<int>> CloneTaskWhenDone(Data.Models.Task task)
         {
             var userLists = new List<int>();
@@ -2910,7 +2928,7 @@ namespace Service.Implement
 
                 // Neu khong fai la main thi kiem tra xem co bao nhieu task hoan thanh roi.
                 // Neu chi con task minh chua hoan thanh thi chuyen cha qua history
-                if (item.Level > 1 && decendants.Count() >= 2)
+                if (item.Level > 1 && seftAndDescendants.Where(x => x.Level > 1).Count() >= 2)
                 {
 
                     var temp = true;
@@ -2921,14 +2939,26 @@ namespace Service.Implement
                     {
                         if (x.Status == false)
                         {
+                            temp = false;
                             count++;
                         }
                     });
-                    // Tao them 1 bo moi trong todolist
+                    // dieu kien nay de push task cha va task hien tai vao db
                     if (!temp && count == 0)
                     {
-                        var parent = await _context.Tasks.FindAsync(rootTask);
-                        await CloneSingleTask(parent);
+                        var parent = await _context.Tasks.FindAsync(item.ParentID);
+                        parent.ModifyDateTime = DateTime.Now.ToString("dd MMM, yyyy hh:mm:ss tt");
+                        await _context.SaveChangesAsync();
+                        await CheckPeriodToPushTaskToHistory(parent);
+                    }
+                    // Tao them 1 bo moi trong todolist
+                    if (!temp && count >= 1)
+                    {
+                        var hierachy = seftAndDescendants.AsEnumerable().AsHierarchy(x => x.ID, x => x.ParentID).ToList();
+                        foreach (var clone in seftAndDescendants)
+                        {
+                            await CloneSingleTask(clone);
+                        }
                     }
                 }
                 item.ModifyDateTime = DateTime.Now.ToString("dd MMM, yyyy hh:mm:ss tt");

@@ -243,7 +243,7 @@ namespace Data.ViewModel.Task
             return flattened;
         }
     }
-   
+
     public class BeAssigned
     {
         public int ID { get; set; }

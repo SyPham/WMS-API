@@ -59,7 +59,7 @@ namespace WorkManagement.Controllers
         {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
-            return Ok(await _taskService.GetListTree(sort, priority, userID, start, end, weekdays, monthly, quarterly));
+            return Ok(await _taskService.GetListTree2(sort, priority, userID, start, end, weekdays, monthly, quarterly));
         }
         [HttpGet("beAssigned/{assigned}")]
         [HttpGet("assigned/{assigned}")]

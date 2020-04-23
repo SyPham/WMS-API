@@ -571,8 +571,6 @@ F:\0.Document\wwroot\WM\WorkManagement\workmanagement\obj\Debug\netcoreapp3.1\Wo
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\appsettings.Development.json
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\appsettings.json
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\publish\web.config
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\web.config
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\web.config
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\web.config
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\libman.json
@@ -582,18 +580,6 @@ D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\libman.json
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\appsettings.Development.json
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\appsettings.json
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\libman.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\appsettings.Development.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\appsettings.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\libman.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\publish\appsettings.Development.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\publish\appsettings.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\publish\libman.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\publish\WorkManagement.deps.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\publish\WorkManagement.runtimeconfig.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\publish\wwwroot\lib\@microsoft\signalr\package.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\WorkManagement.deps.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\WorkManagement.runtimeconfig.json
-D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\publish\wwwroot\lib\@microsoft\signalr\package.json
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\WorkManagement.deps.json
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\WorkManagement.runtimeconfig.json
 D:\wwwroot\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\publish\wwwroot\lib\@microsoft\signalr\package.json

@@ -367,7 +367,7 @@ namespace WorkManagement.Hub
                 levelItem.SpecificDate = item.SpecificDate.ToStringFormatISO(formatSpecificDate).IsNotAvailable();
                 levelItem.periodType = item.periodType;
 
-                levelItem.User = item.User;
+                //levelItem.User = item.User;
                 levelItem.Level = item.Level;
                 levelItem.ProjectID = item.ProjectID;
                 levelItem.ParentID = item.ParentID;
