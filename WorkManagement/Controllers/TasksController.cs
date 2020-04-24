@@ -69,6 +69,26 @@ namespace WorkManagement.Controllers
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             return Ok(await _taskService.Routine(sort, priority, userID, ocid));
         }
+        [HttpGet]
+        [HttpGet("{ocid}")]
+        [HttpGet("{ocid}/{priority}")]
+        [HttpGet("{ocid}/{priority}/{start}")]
+        [HttpGet("{ocid}/{priority}/{start}/{end}")]
+        [HttpGet("{ocid}/{priority}/{start}/{end}/{weekdays}")]
+        public async Task<IActionResult> Abnormal(int ocid = 0, string priority = "", string start = "", string end = "", string weekdays = "")
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.Abnormal(ocid, priority, userID, start, end, weekdays));
+        }
+        [HttpGet]
+        [HttpGet("{start}/{end}")]
+        public async Task<IActionResult> History(string start, string end)
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.History(userID, start, end));
+        }
         [HttpGet("{sort}")]
         [HttpGet("{priority}/{sort}")]
         [HttpGet("{priority}/{sort}/{start}/{end}")]
