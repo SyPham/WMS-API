@@ -69,6 +69,16 @@ namespace WorkManagement.Helpers
                 .ForMember(x => x.Level, option => option.Ignore())
                 .ForMember(x => x.Name, option => option.Ignore());
 
+            CreateMap<Data.Models.Task, CloneTaskViewModel>()
+              .ForMember(x => x.IDTemp, option => option.MapFrom(x => x.ID))
+              .ForMember(x => x.ParentTemp, option => option.MapFrom(x => x.ParentID));
+
+            CreateMap<CloneTaskViewModel, Data.Models.Task> ()
+          .ForMember(x => x.ID, option => option.Ignore());
+
+            CreateMap<HierarchyNode<TreeViewTask>, TreeViewTask>();
+            CreateMap<TreeViewTask, HierarchyNode <TreeViewTask>>()
+                .ForMember(d => d.Entity, s => s.MapFrom(p => p));
             //CreateMap<UserAccount, UserModel>();
             //CreateMap<RegisterModel, UserAccount>();
             //CreateMap<UpdateModel, UserAccount>();

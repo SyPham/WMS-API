@@ -47,7 +47,28 @@ namespace WorkManagement.Controllers
 
             return Ok(await _taskService.LoadTaskHistory(name, userID, OCID, page, pageSize));
         }
-
+        [HttpGet("{sort}")]
+        [HttpGet("{priority}/{sort}")]
+        [HttpGet("{priority}/{sort}/{start}/{end}")]
+        [HttpGet("{priority}/{sort}/{start}/{end}/{weekdays}")]
+        [HttpGet("{priority}/{sort}/{start}/{end}/{weekdays}/{monthly}")]
+        [HttpGet("{priority}/{sort}/{start}/{end}/{weekdays}/{monthly}/{quarterly}")]
+        [HttpGet]
+        public async Task<IActionResult> Todolist(string sort = "", string priority = "", string start = "", string end = "", string weekdays = "", string monthly = "", string quarterly = "")
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.Todolist(sort, priority, userID, start, end, weekdays, monthly, quarterly));
+        }
+        [HttpGet("{ocid}/{sort}")]
+        [HttpGet("{ocid}/{priority}/{sort}")]
+        [HttpGet("{ocid}")]
+        public async Task<IActionResult> Routine(int ocid, string sort = "", string priority = "")
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.Routine(sort, priority, userID, ocid));
+        }
         [HttpGet("{sort}")]
         [HttpGet("{priority}/{sort}")]
         [HttpGet("{priority}/{sort}/{start}/{end}")]
@@ -59,7 +80,7 @@ namespace WorkManagement.Controllers
         {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
-            return Ok(await _taskService.GetListTree2(sort, priority, userID, start, end, weekdays, monthly, quarterly));
+            return Ok(await _taskService.GetListTree(sort, priority, userID, start, end, weekdays, monthly, quarterly));
         }
         [HttpGet("beAssigned/{assigned}")]
         [HttpGet("assigned/{assigned}")]
