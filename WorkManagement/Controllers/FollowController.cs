@@ -33,7 +33,7 @@ namespace WorkManagement.Controllers
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             var OCID = JWTExtensions.GetDecodeTokenByProperty(token, "OCID").ToInt();
-            return Ok((await _taskService.GetListTreeFollow(sort, priority, userID)).Where(x => "Yes".Equals(x.Follow)).ToList());
+            return Ok(await _taskService.Follow(sort, priority, userID));
         }
 
         [HttpDelete("{taskid}")]

@@ -89,6 +89,16 @@ namespace WorkManagement.Controllers
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             return Ok(await _taskService.History(userID, start, end));
         }
+        [HttpGet("{projectid}/{sort}")]
+        [HttpGet("{projectid}/{priority}/{sort}")]
+        [HttpGet("{projectid}")]
+        public async Task<IActionResult> ProjectDetail(int projectid = 0, string sort = "", string priority = "")
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.ProjectDetail(sort, priority, userID, projectid));
+        }
+
         [HttpGet("{sort}")]
         [HttpGet("{priority}/{sort}")]
         [HttpGet("{priority}/{sort}/{start}/{end}")]
@@ -109,8 +119,8 @@ namespace WorkManagement.Controllers
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             if (!assigned.IsNullOrEmpty() && assigned == "Assigned")
-                return Ok(await _taskService.GetListTree("", assigned, userID));
-            else return Ok(await _taskService.GetListTree(assigned, "", userID));
+                return Ok(await _taskService.TodolistSortBy("", assigned, userID));
+            else return Ok(await _taskService.TodolistSortBy(assigned, "", userID));
         }
 
         [HttpGet]

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\wwwroot\\WMS-API\\Data\\Data.csproj": {}
+    "F:\\0.Document\\angular9\\WMS-API\\Data\\Data.csproj": {}
   },
   "projects": {
-    "D:\\wwwroot\\WMS-API\\Data\\Data.csproj": {
+    "F:\\0.Document\\angular9\\WMS-API\\Data\\Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\wwwroot\\WMS-API\\Data\\Data.csproj",
+        "projectUniqueName": "F:\\0.Document\\angular9\\WMS-API\\Data\\Data.csproj",
         "projectName": "Data",
-        "projectPath": "D:\\wwwroot\\WMS-API\\Data\\Data.csproj",
-        "packagesPath": "C:\\Users\\henry\\.nuget\\packages\\",
-        "outputPath": "D:\\wwwroot\\WMS-API\\Data\\obj\\",
+        "projectPath": "F:\\0.Document\\angular9\\WMS-API\\Data\\Data.csproj",
+        "packagesPath": "C:\\Users\\sy.pham\\.nuget\\packages\\",
+        "outputPath": "F:\\0.Document\\angular9\\WMS-API\\Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\henry\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\sy.pham\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

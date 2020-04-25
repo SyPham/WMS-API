@@ -186,15 +186,15 @@ namespace WorkManagement.Controllers
             return Ok(await _projectService.Delete(id));
         }
 
-        [HttpGet("{projectid}/{sort}")]
-        [HttpGet("{projectid}/{priority}/{sort}")]
-        [HttpGet("{projectid}")]
-        public async Task<IActionResult> GetListTreeProjectDetail(int projectid = 0, string sort = "", string priority = "")
-        {
-            string token = Request.Headers["Authorization"];
-            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
-            return Ok(await _taskService.GetListTreeProjectDetail(sort, priority, userID, projectid));
-        }
+        //[HttpGet("{projectid}/{sort}")]
+        //[HttpGet("{projectid}/{priority}/{sort}")]
+        //[HttpGet("{projectid}")]
+        //public async Task<IActionResult> ProjectDetail(int projectid = 0, string sort = "", string priority = "")
+        //{
+        //    string token = Request.Headers["Authorization"];
+        //    var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+        //    return Ok(await _taskService.ProjectDetail(sort, priority, userID, projectid));
+        //}
 
     }
 }
