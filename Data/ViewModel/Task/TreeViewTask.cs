@@ -80,6 +80,7 @@ namespace Data.ViewModel.Task
         public string Follow { get; set; }
         public string Priority { get; set; }
         public string PriorityID { get; set; }
+        public string TaskCode { get; set; }
         public string ProjectName { get; set; }
         public string JobName { get; set; }
         public string PIC { get; set; }

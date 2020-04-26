@@ -11,6 +11,6 @@ namespace Data.ViewModel.Comment
         public int CurrentUser { get; set; }
         public int TaskID { get; set; }
         public string Content { get; set; }
-       
+        public string TaskCode { get; set; }
     }
 }

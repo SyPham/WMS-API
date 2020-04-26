@@ -35,7 +35,6 @@ namespace WorkManagement.Controllers
             _hubContext = hubContext;
         }
 
-        
         // GET: api/Projects
         [HttpGet("{page}/{pageSize}/{keyword}")]
         [HttpGet("{page}/{pageSize}")]

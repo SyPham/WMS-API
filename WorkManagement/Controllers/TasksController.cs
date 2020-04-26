@@ -122,7 +122,13 @@ namespace WorkManagement.Controllers
                 return Ok(await _taskService.TodolistSortBy("", assigned, userID));
             else return Ok(await _taskService.TodolistSortBy(assigned, "", userID));
         }
-
+        [HttpGet("{status}")]
+        public async Task<IActionResult> SortBy(Data.Enum.Status status)
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+                return Ok(await _taskService.TodolistSortBy(status, userID));
+        }
         [HttpGet]
         [HttpGet("{ocid}")]
         [HttpGet("{ocid}/{priority}")]

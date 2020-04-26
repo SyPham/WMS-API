@@ -16,6 +16,7 @@ namespace Data.Models
         public int UserID { get; set; }
         public int ParentID { get; set; }
         public string Content { get; set; }
+        public string TaskCode { get; set; }
         public int Level { get; set; }
         public DateTime CreatedTime { get; set; }
     }

@@ -303,9 +303,9 @@ namespace Service.Implement
 
                 var tasks = GetListTree(listTask);
                 var arrTasks = GetAllTaskDescendants(tasks).Select(x => x.ID).ToArray();
-                var tasksForClone =await _context.Tasks.Where(x => arrTasks.Contains(x.ID)).ToListAsync();
-               
-                await CloneTask(tasksForClone,project.ID);
+                var tasksForClone = await _context.Tasks.Where(x => arrTasks.Contains(x.ID)).ToListAsync();
+
+                await CloneTask(tasksForClone, project.ID);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -315,7 +315,7 @@ namespace Service.Implement
             }
         }
 
-        private async System.Threading.Tasks.Task CloneTask(List<Data.Models.Task> tasks,int projectId)
+        private async System.Threading.Tasks.Task CloneTask(List<Data.Models.Task> tasks, int projectId)
         {
             int parentID = 0;
             foreach (var item in tasks)
@@ -360,17 +360,28 @@ namespace Service.Implement
 
         public async Task<PagedList<ProjectViewModel>> GetAllPaging(int userid, int page, int pageSize, string keyword)
         {
-            var model = await _context.Projects
+            var source = await _context.Projects
                 .Include(x => x.TeamMembers)
                 .ThenInclude(x => x.User)
                 .Include(x => x.Managers)
                 .ThenInclude(x => x.User)
-                .OrderByDescending(x=>x.ID)
+                .OrderByDescending(x => x.ID)
+                  .Where(_ => _.Managers.Select(a => a.UserID).Contains(userid)
+                || _.TeamMembers.Select(a => a.UserID).Contains(userid)
+                || _.CreatedBy == userid)
+                .Select(x => new ProjectViewModel
+                {
+                    ID = x.ID,
+                    Name = x.Name,
+                    CreatedByName = x.CreatedByName,
+                    CreatedBy = x.CreatedBy,
+                    CreatedDate = x.CreatedDate.ToString("MMM d, yyyy"),
+                    Room = x.Room,
+                    Status = x.Status,
+                    Members = x.TeamMembers.Select(a => a.UserID).ToList(),
+                    Manager = x.Managers.Select(a => a.UserID).ToList(),
+                })
                 .ToListAsync();
-
-            var source = _mapper.Map<List<ProjectViewModel>>(model);
-            source = source.Where(_ => _.Manager.Contains(userid) || _.Members.Contains(userid) || _.CreatedBy == userid).ToList();
-
             if (!keyword.IsNullOrEmpty())
             {
                 source = source.Where(x => x.Name.ToLower().Contains(keyword.Trim().ToLower()) || x.CreatedByName.ToLower().Contains(keyword.Trim().ToLower())).ToList();

@@ -118,6 +118,7 @@ namespace Service.Implement
                 {
                     ParentID = subcomment.ParentID,
                     TaskID = subcomment.TaskID,
+                    TaskCode = subcomment.TaskCode,
                     UserID = subcomment.UserID,
                     Content = subcomment.Content,
                     Level = item.Level + 1
@@ -129,7 +130,7 @@ namespace Service.Implement
                 await _context.SaveChangesAsync();
 
                 var comtParent = await _context.Comments.FindAsync(subcomment.ParentID);
-                //Neu tra loi chinh binh luan cua minh thi khong 
+                //Neu tra loi chinh binh luan cua minh thi khong
                 if (subcomment.CurrentUser.Equals(comtParent.UserID))
                     return Tuple.Create(true, string.Empty);
                 else
@@ -157,13 +158,14 @@ namespace Service.Implement
         }
         private async Task<List<CommentTreeView>> GetAll(int taskID, int userID)
         {
+            var task =await _context.Tasks.FindAsync(taskID);
             var detail = _context.CommentDetails;
             return await _context.Comments
                 .Join(_context.Users,
                 comt => comt.UserID,
                 user => user.ID,
                 (comt, user) => new { comt, user })
-                .Where(x => x.comt.TaskID.Equals(taskID))
+                .Where(x => x.comt.TaskCode.Equals(task.Code))
                 .Select(_ => new CommentTreeView
                 {
                     ID = _.comt.ID,
@@ -287,7 +289,7 @@ namespace Service.Implement
             var tasks = _context.Tasks.ToList().Join(hierarchy,
                 t => t.ID,
                 ct => ct.TaskID,
-                (t, ct) => new 
+                (t, ct) => new
                 {
                    t, ct
                 }).Select(x=> new TaskHasComment {
