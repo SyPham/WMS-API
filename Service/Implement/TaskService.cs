@@ -765,7 +765,10 @@ namespace Service.Implement
             update.Status = false;
             update.FinishedMainTask = false;
             await _context.SaveChangesAsync();
-            await CloneSingleTask(update);
+            if (!update.periodType.Equals(Data.Enum.PeriodType.SpecificDate))
+            {
+                await CloneSingleTask(update);
+            }
             //var history = new History
             //{
             //    TaskID = update.ID,
@@ -2546,12 +2549,12 @@ namespace Service.Implement
                 if (status != Data.Enum.Status.Unknown)
                 {
                     switch (status)
-                    { 
+                    {
                         case Data.Enum.Status.Done:
                             tree = tree.Where(x => x.Entity.state.Equals(Data.Enum.Status.Done.ToString())).ToList();
                             break;
                         case Data.Enum.Status.Undone:
-                            tree = tree.Where(x =>x.Entity.state.Equals(Data.Enum.Status.Undone.ToString())).ToList();
+                            tree = tree.Where(x => x.Entity.state.Equals(Data.Enum.Status.Undone.ToString())).ToList();
                             break;
                     }
                 }
