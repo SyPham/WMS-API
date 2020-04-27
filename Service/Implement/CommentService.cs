@@ -158,14 +158,14 @@ namespace Service.Implement
         }
         private async Task<List<CommentTreeView>> GetAll(int taskID, int userID)
         {
-            var task =await _context.Tasks.FindAsync(taskID);
+            //var task =await _context.Tasks.FindAsync(taskID);
             var detail = _context.CommentDetails;
             return await _context.Comments
                 .Join(_context.Users,
                 comt => comt.UserID,
                 user => user.ID,
                 (comt, user) => new { comt, user })
-                .Where(x => x.comt.TaskCode.Equals(task.Code))
+                .Where(x => x.comt.TaskID.Equals(taskID))
                 .Select(_ => new CommentTreeView
                 {
                     ID = _.comt.ID,

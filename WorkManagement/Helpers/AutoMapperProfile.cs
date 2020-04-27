@@ -57,7 +57,7 @@ namespace WorkManagement.Helpers
             CreateMap<Project, ProjectViewModel>()
                 .ForMember(d => d.Members, s => s.MapFrom(p => p.TeamMembers.Select(_=> _.UserID).ToList()))
                 .ForMember(d => d.Manager, s => s.MapFrom(p => p.Managers.Select(_ => _.UserID).ToList()))
-             .ForMember(d => d.CreatedDate, s => s.MapFrom(p => p.CreatedDate.ToString("MMM d, yyyy")));
+             .ForMember(d => d.CreatedDate, s => s.MapFrom(p => p.CreatedDate.ToString("d MMM, yyyy")));
 
             CreateMap<ProjectViewModel, Project>()
                 .ForMember(x => x.Managers, option => option.Ignore())

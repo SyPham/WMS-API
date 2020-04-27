@@ -135,6 +135,13 @@ namespace WorkManagement.Controllers
             Response.AddPagination(model.CurrentPage, model.PageSize, model.TotalCount, model.TotalPages);
             return Ok(model);
         }
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<ActionResult> ResetPassword(int id)
+        {
+            var model = await _userService.ResetPassword(id);
+            return Ok(model);
+        }
         [HttpGet]
         public async Task<ActionResult> GetUsernames()
         {

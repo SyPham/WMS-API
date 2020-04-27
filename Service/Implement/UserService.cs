@@ -198,5 +198,26 @@ namespace Service.Implement
             return await _context.Users.Where(x => x.Username != "admin").Select(x => x.Username).ToListAsync();
 
         }
+
+        public async Task<bool> ResetPassword(int id)
+        {
+            byte[] passwordHash, passwordSalt;
+            var item = await _context.Users.FindAsync(id);
+            string pass = "1";
+            CreatePasswordHash("1", out passwordHash, out passwordSalt);
+            try
+            {
+                item.PasswordHash = passwordHash;
+                item.PasswordSalt = passwordSalt;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            throw new NotImplementedException();
+        }
     }
 }

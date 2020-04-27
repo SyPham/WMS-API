@@ -375,7 +375,7 @@ namespace Service.Implement
                     Name = x.Name,
                     CreatedByName = x.CreatedByName,
                     CreatedBy = x.CreatedBy,
-                    CreatedDate = x.CreatedDate.ToString("MMM d, yyyy"),
+                    CreatedDate = x.CreatedDate.ToString("dd MMM, yyyy"),
                     Room = x.Room,
                     Status = x.Status,
                     Members = x.TeamMembers.Select(a => a.UserID).ToList(),
