@@ -27,7 +27,6 @@ namespace Service.Helpers
     }
     public static class Extension
     {
-
         public static IEnumerable<T> Flatten<T>(
           this IEnumerable<T> source,
           Func<T, IEnumerable<T>> childSelector)

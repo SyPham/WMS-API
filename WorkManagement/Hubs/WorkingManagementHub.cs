@@ -115,7 +115,7 @@ namespace WorkManagement.Hub
             if (isProject)
                 return listPIC;
             else
-                return listPIC.Union(listDeputie).Distinct() .ToList();
+                return listPIC.Union(listDeputie).Distinct().ToList();
         }
         private async Task<bool> PushTaskToHistory(History history)
         {
@@ -431,7 +431,7 @@ namespace WorkManagement.Hub
             var project = await _context.Rooms.FirstOrDefaultAsync(x => x.ID.Equals(id));
             return project.Name;
         }
-        private async Task<object> AddMessageGroup(int roomid, string message, int userid)
+        private async Task<bool> AddMessageGroup(int roomid, string message, int userid)
         {
             try
             {
@@ -476,13 +476,13 @@ namespace WorkManagement.Hub
         }
         public async System.Threading.Tasks.Task CheckAlert(string user)
         {
-            int userId = user.ToInt();
-            var list = await ProjectTaskIsLate(userId);
-            var id = Context.ConnectionId;//"LzX9uE94Ovlp6Yx8s6PvhA"
+            //int userId = user.ToInt();
+            //var list = await ProjectTaskIsLate(userId);
+            //var id = Context.ConnectionId;//"LzX9uE94Ovlp6Yx8s6PvhA"
 
-            if (list.Count > 0)
-                await Clients.User(id).SendAsync("ReceiveCheckAlert", user, list);
-            else await Clients.User(id).SendAsync("NotCheckAlert", user, "From Server: There is no some alert!!!");
+            //if (list.Count > 0)
+            //    await Clients.User(id).SendAsync("ReceiveCheckAlert", user, list);
+            //else await Clients.User(id).SendAsync("NotCheckAlert", user, "From Server: There is no some alert!!!");
         }
         public async System.Threading.Tasks.Task Online(string user, string message)
         {
@@ -535,8 +535,9 @@ namespace WorkManagement.Hub
             ///
             int roomid = group.ToInt();
             int userid = user.ToInt();
-            await AddMessageGroup(roomid, message, userid);
-            await Clients.Group(group).SendAsync("ReceiveMessageGroup", message);
+            var check = await AddMessageGroup(roomid, message, userid);
+            if (check)
+                await Clients.Group(group).SendAsync("ReceiveMessageGroup", roomid);
         }
         public override async System.Threading.Tasks.Task OnDisconnectedAsync(Exception ex)
         {
@@ -544,6 +545,6 @@ namespace WorkManagement.Hub
             await base.OnDisconnectedAsync(ex);
 
         }
-       
+
     }
 }
