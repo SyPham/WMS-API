@@ -431,7 +431,7 @@ namespace WorkManagement.Hub
             var project = await _context.Rooms.FirstOrDefaultAsync(x => x.ID.Equals(id));
             return project.Name;
         }
-        private async Task<bool> AddMessageGroup(int roomid, string message, int userid)
+        private async Task<bool> AddMessageGroup(int roomid, string message, int userid, List<string> images )
         {
             try
             {
@@ -439,15 +439,15 @@ namespace WorkManagement.Hub
                 var managers = await _context.Managers.Where(x => x.ProjectID.Equals(project.ID)).Select(x => x.UserID).ToListAsync();
                 var members = await _context.TeamMembers.Where(x => x.ProjectID.Equals(project.ID)).Select(x => x.UserID).ToListAsync();
                 var listAll = managers.Union(members);
-                var listChats = new List<Data.Models.Chat>();
-                var listParticipants = new List<Data.Models.Participant>();
+                var listChats = new List<Chat>();
+                var listParticipants = new List<Participant>();
 
                 //Neu chua co participan thi them vao
                 if (!await _context.Participants.AnyAsync(x => x.RoomID == roomid))
                 {
                     foreach (var user in listAll)
                     {
-                        listParticipants.Add(new Data.Models.Participant
+                        listParticipants.Add(new Participant
                         {
                             UserID = user,
                             RoomID = roomid
@@ -455,16 +455,30 @@ namespace WorkManagement.Hub
                     }
                     await _context.AddRangeAsync(listParticipants);
                 }
-                //add message userid
-                await _context.AddAsync(new Data.Models.Chat
+                var chat = new Chat
                 {
                     Message = message,
                     UserID = userid,
                     ProjectID = project.ID,
                     RoomID = roomid
-                });
+                };
+                //add message userid
+                await _context.AddAsync(chat);
                 await _context.SaveChangesAsync();
-
+                if(images.Count > 0)
+                {
+                    var imagesList = new List<UploadImage>();
+                    foreach (var item in images)
+                    {
+                        imagesList.Add(new UploadImage
+                        {
+                            ChatID = chat.ID,
+                            Image = item
+                        });
+                    }
+                    await _context.AddRangeAsync(imagesList);
+                    await _context.SaveChangesAsync();
+                }
                 return true;
             }
             catch (Exception ex)
@@ -528,14 +542,14 @@ namespace WorkManagement.Hub
         {
             await Clients.Group(group).SendAsync("ReceiveStopTyping", user);
         }
-        public async System.Threading.Tasks.Task SendMessageToGroup(string group, string message, string user)
+        public async System.Threading.Tasks.Task SendMessageToGroup(string group, string message, string user, List<string> images)
         {
             ////Luu vo db
             ////Chi gui den nhung nguoi tham gia phong
             ///
             int roomid = group.ToInt();
             int userid = user.ToInt();
-            var check = await AddMessageGroup(roomid, message, userid);
+            var check = await AddMessageGroup(roomid, message, userid, images);
             if (check)
                 await Clients.Group(group).SendAsync("ReceiveMessageGroup", roomid);
         }

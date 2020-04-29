@@ -408,6 +408,28 @@ namespace Service.Implement
             }
             return result != string.Empty ? result.ToParseStringDateTime().ToString("d MMM, yyyy hh:mm:ss tt") : string.Empty;
         }
+        private string MapSpecificDueDateWithPeriod(Data.Models.Task task)
+        {
+            string result = string.Empty;
+            switch (task.periodType)
+            {
+                case Data.Enum.PeriodType.Daily:
+                    result = task.DueDateDaily.ToParseStringDateTime().ToString("dd MMM, yyyy hh:tt:ss tt");
+                    break;
+                case Data.Enum.PeriodType.Weekly:
+                    result = task.DueDateWeekly.ToParseStringDateTime().AddDays(7).ToString("dd MMM, yyyy hh:tt:ss tt");
+                    break;
+                case Data.Enum.PeriodType.Monthly:
+                    result = task.DueDateMonthly.ToParseStringDateTime().AddMonths(1).ToString("dd MMM, yyyy hh:tt:ss tt");
+                    break;
+                case Data.Enum.PeriodType.SpecificDate:
+                    result = task.SpecificDate.ToParseStringDateTime().ToString("dd MMM, yyyy hh:tt:ss tt");
+                    break;
+                default:
+                    break;
+            }
+            return result != string.Empty ? result.ToParseStringDateTime().ToString("d MMM, yyyy hh:mm:ss tt") : string.Empty;
+        }
         private DateTime MapDueDatTimeeWithPeriod(Data.Models.Task task)
         {
             string result = string.Empty;
@@ -535,6 +557,7 @@ namespace Service.Implement
                 levelItem.SpecificDate = item.SpecificDate.ToStringFormatISO(formatSpecificDate).IsNotAvailable();
                 levelItem.periodType = item.periodType;
                 levelItem.DueDateTime = MapDueDatTimeeWithPeriod(item);
+                levelItem.SpecificDueDate = MapSpecificDueDateWithPeriod(item);
                 levelItem.ModifyDateTime = item.ModifyDateTime;
                 levelItem.User = item.User;
                 levelItem.TaskCode = item.Code;
@@ -1659,8 +1682,8 @@ namespace Service.Implement
                 var arrTasks = GetAllTaskDescendants(tasks).Select(x => x.ID).ToArray();
 
                 _context.Tags.RemoveRange(await _context.Tags.Where(x => arrTasks.Contains(x.TaskID)).ToListAsync());
-                _context.Tasks.RemoveRange(await _context.Tasks.Where(x => arrTasks.Contains(x.ID)).ToListAsync());
                 _context.Follows.RemoveRange(await _context.Follows.Where(x => arrTasks.Contains(x.TaskID)).ToListAsync());
+                _context.Tasks.RemoveRange(await _context.Tasks.Where(x => arrTasks.Contains(x.ID)).ToListAsync());
 
                 await _context.SaveChangesAsync();
                 return true;
@@ -1918,25 +1941,30 @@ namespace Service.Implement
             return res;
         }
         // Check Period
-        private bool ValidPeriod(Data.Models.Task task)
+        private bool ValidPeriod(Data.Models.Task task, out string message)
         {
             switch (task.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
                     var date = task.DueDateDaily.ToParseStringDateTime().Date;
                     var result = PeriodComparator(date);
-                    return result > 0 ? true : false;
+                    message = "";
+                    return true;
                 case Data.Enum.PeriodType.Weekly:
                     var weekly = task.DueDateWeekly.ToParseStringDateTime().Date.AddDays(3);
                     var resultW = PeriodComparator(weekly);
+                    message = $"You can only finish this task after on  {task.DueDateWeekly.ToParseStringDateTime().AddDays(3).ToString("dd MMMM, yyyy")}";
                     return resultW > 0 ? true : false;
                 case Data.Enum.PeriodType.Monthly:
                     var monthly = task.DueDateMonthly.ToParseStringDateTime().Date.AddDays(10);
                     var resultM = PeriodComparator(monthly);
+                    message = $"You can only finish this task after on {task.DueDateMonthly.ToParseStringDateTime().AddDays(10).ToString("dd MMMM, yyyy")}";
                     return resultM > 0 ? true : false;
                 case Data.Enum.PeriodType.SpecificDate:
+                    message = "";
                     return true;
                 default:
+                    message = "";
                     return false;
             }
         }
@@ -2200,9 +2228,10 @@ namespace Service.Implement
                 var listUserAlertHub = new List<int>();
 
                 var item = await _context.Tasks.FindAsync(id);
-                var check = ValidPeriod(item);
-                if (!ValidPeriod(item))
-                    return Tuple.Create(false, false, "This task not available!");
+                string mes = string.Empty;
+                var check = ValidPeriod(item, out mes);
+                if (!check)
+                    return Tuple.Create(false, false, mes);
                 if (item.Status)
                 {
                     return Tuple.Create(false, false, "This task was completed!");

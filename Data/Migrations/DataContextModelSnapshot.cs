@@ -542,6 +542,27 @@ namespace Data.Migrations
                     b.ToTable("Tutorials");
                 });
 
+            modelBuilder.Entity("Data.Models.UploadImage", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ChatID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommentID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("UploadImages");
+                });
+
             modelBuilder.Entity("Data.Models.User", b =>
                 {
                     b.Property<int>("ID")

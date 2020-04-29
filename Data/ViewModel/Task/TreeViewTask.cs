@@ -111,6 +111,7 @@ namespace Data.ViewModel.Task
         public bool FinishTask { get; set; }
         public string DueDateDaily { get; set; }
         public string DueDate { get; set; }
+        public string SpecificDueDate { get; set; }
         public string DueDateWeekly { get; set; }
         public string DueDateMonthly { get; set; }
         public string SpecificDate { get; set; }
