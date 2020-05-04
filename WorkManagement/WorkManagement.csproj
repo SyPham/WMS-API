@@ -44,7 +44,8 @@
 
   <ItemGroup>
     <Folder Include="publish\" />
-    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\images\comments\" />
+    <Folder Include="wwwroot\images\chats\" />
     <Folder Include="wwwroot\video\" />
   </ItemGroup>
 

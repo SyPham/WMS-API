@@ -61,16 +61,16 @@ namespace WorkManagement.Controllers
                 var chat = Request.Form["Chat"];
                 if (file != null)
                 {
-                    if (!Directory.Exists(_environment.WebRootPath + "\\images\\"))
+                    if (!Directory.Exists(_environment.WebRootPath + "\\images\\chats\\"))
                     {
-                        Directory.CreateDirectory(_environment.WebRootPath + "\\images\\");
+                        Directory.CreateDirectory(_environment.WebRootPath + "\\images\\chats\\");
                     }
                     for (int i = 0; i < Request.Form.Files.Count; i++)
                     {
                         var currentFile = Request.Form.Files[i];
-                        using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + currentFile.FileName))
+                        using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\images\\chats\\" + currentFile.FileName))
                         {
-                            file.CopyTo(fileStream);
+                          await currentFile.CopyToAsync(fileStream);
                             fileStream.Flush();
                             list.Add(new UploadImage
                             {
@@ -91,6 +91,6 @@ namespace WorkManagement.Controllers
             }
             return Ok(entity);
         }
-      
+
     }
 }

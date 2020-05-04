@@ -48,6 +48,32 @@ namespace Service.Implement
             }
             return Tuple.Create(pics, message, urlResult);
         }
+        public async Task<bool> UploadImage(List<UploadImage> uploadImages)
+        {
+            var imagesList = new List<UploadImage>();
+            foreach (var item in uploadImages)
+            {
+                imagesList.Add(new UploadImage
+                {
+                    ChatID = item.ChatID,
+                    Image = item.Image
+                });
+            }
+            try
+            {
+                await _context.AddRangeAsync(imagesList);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+
+
+            throw new NotImplementedException();
+        }
         private async Task<Tuple<List<int>, string, string>> AlertReplyComment(int taskid, int userid, string comment)
         {
             var task = await _context.Tasks.FindAsync(taskid);
@@ -72,7 +98,7 @@ namespace Service.Implement
             }
             return Tuple.Create(pics, message, urlResult);
         }
-        public async Task<Tuple<bool, string>> Add(Comment comment, int currentUser)
+        public async Task<Tuple<bool, string, Comment>> Add(Comment comment, int currentUser)
         {
             try
             {
@@ -96,20 +122,20 @@ namespace Service.Implement
                         URL = alert.Item3,
                         UserID = comment.UserID
                     });
-                    return Tuple.Create(true, string.Join(",", listUsers.ToArray()));
+                    return Tuple.Create(true, string.Join(",", listUsers.ToArray()), comment);
                 }
                 else
                 {
-                    return Tuple.Create(true, string.Empty);
+                    return Tuple.Create(true, string.Empty, comment);
                 }
 
             }
             catch (Exception)
             {
-                return Tuple.Create(false, string.Empty);
+                return Tuple.Create(false, string.Empty, new Comment());
             }
         }
-        public async Task<Tuple<bool, string>> AddSub(AddSubViewModel subcomment)
+        public async Task<Tuple<bool, string, Comment>> AddSub(AddSubViewModel subcomment)
         {
             try
             {
@@ -132,7 +158,7 @@ namespace Service.Implement
                 var comtParent = await _context.Comments.FindAsync(subcomment.ParentID);
                 //Neu tra loi chinh binh luan cua minh thi khong
                 if (subcomment.CurrentUser.Equals(comtParent.UserID))
-                    return Tuple.Create(true, string.Empty);
+                    return Tuple.Create(true, string.Empty, comment);
                 else
                 {
                     var alert = await AlertReplyComment(comment.TaskID, comment.UserID, comtParent.Content);
@@ -147,12 +173,12 @@ namespace Service.Implement
                         URL = alert.Item3,
                         UserID = comment.UserID
                     });
-                    return Tuple.Create(true, string.Join(",", listUsers.ToArray()));
+                    return Tuple.Create(true, string.Join(",", listUsers.ToArray()), comment);
                 }
             }
             catch (Exception)
             {
-                return Tuple.Create(false, string.Empty);
+                return Tuple.Create(false, string.Empty, new Comment());
 
             }
         }
