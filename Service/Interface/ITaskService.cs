@@ -11,6 +11,8 @@ namespace Service.Interface
     public interface ITaskService
     {
         System.Threading.Tasks.Task TaskListIsLate(int userid);
+        Task<bool> CheckTask();
+        Task<bool> CreateCheckTask();
         Task<List<TreeViewTask>> GetListTree(string beAssigned = "", string assigned = "", int userid = 0);
         Task<List<TreeViewTask>> GetListTree();
         Task<Tuple<bool, string, object>> CreateTask(CreateTaskViewModel task);

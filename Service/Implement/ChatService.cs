@@ -1,6 +1,7 @@
 ﻿using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Service.Helpers;
 using Service.Interface;
 using System;
@@ -15,9 +16,11 @@ namespace Service.Implement
     {
 
         private readonly DataContext _context;
-        public ChatService(DataContext context)
+        private readonly IConfiguration _configuaration;
+        public ChatService(DataContext context, IConfiguration configuaration)
         {
             _context = context;
+            _configuaration = configuaration;
         }
 
         public async Task<object> AddMessageGroup(int roomid, string message)
@@ -63,19 +66,20 @@ namespace Service.Implement
         {
             var userModel = _context.Users;
             var uploadImages = _context.UploadImages;
+            var appSettings = _configuaration.GetSection("AppSettings").Get<AppSettings>();
             return await _context.Chats.Where(x => x.RoomID.Equals(roomid)).Select(x => new Data.ViewModel.Chat.Chat
             {
-              UserID=  x.UserID,
-               Message= x.Message,
-               CreatedTime= x.CreatedTime,
-               RoomID= x.RoomID,
-               ProjectID =x.ProjectID,
-               ImageBase64= userModel.FirstOrDefault(_ => _.ID.Equals(x.UserID)).ImageBase64,
-               Images= uploadImages.Where(_=>_.ChatID == x.ID).Select(_=>_.Image).ToList(),
-                Username = userModel.FirstOrDefault(_=>_.ID.Equals(x.UserID)).Username.ToTitleCase()
+                UserID = x.UserID,
+                Message = x.Message,
+                CreatedTime = x.CreatedTime,
+                RoomID = x.RoomID,
+                ProjectID = x.ProjectID,
+                ImageBase64 = userModel.FirstOrDefault(_ => _.ID.Equals(x.UserID)).ImageBase64,
+                Images = uploadImages.Where(_ => _.ChatID == x.ID).Select(_ => appSettings.applicationUrl + "/images/" +_.Image).ToList(),
+                Username = userModel.FirstOrDefault(_ => _.ID.Equals(x.UserID)).Username.ToTitleCase()
             }).ToListAsync();
         }
-        public async Task<bool> AddMessageGroup(int roomid, string message, int userid, List<string> images)
+        public async Task<Chat> AddMessageGroup(int roomid, string message, int userid)
         {
             try
             {
@@ -109,29 +113,17 @@ namespace Service.Implement
                 //add message userid
                 await _context.AddAsync(chat);
                 await _context.SaveChangesAsync();
-                if (images.Count > 0)
-                {
-                    var imagesList = new List<UploadImage>();
-                    foreach (var item in images)
-                    {
-                        imagesList.Add(new UploadImage
-                        {
-                            ChatID = chat.ID,
-                            Image = item
-                        });
-                    }
-                    await _context.AddRangeAsync(imagesList);
-                    await _context.SaveChangesAsync();
-                }
-                return true;
+
+                return chat;
             }
             catch (Exception ex)
             {
-                return false;
+                return new Chat();
                 throw;
             }
             throw new NotImplementedException();
         }
+
         public async Task<int> JoinGroup(int projectid)
         {
             //if (!await _context.Projects.AnyAsync(x => x.ID.Equals(projectid)))
@@ -172,6 +164,33 @@ namespace Service.Implement
                 }
             }
             this.disposed = true;
+        }
+
+        public async Task<bool> UploadImage(List<UploadImage> uploadImages)
+        {
+            var imagesList = new List<UploadImage>();
+            foreach (var item in uploadImages)
+            {
+                imagesList.Add(new UploadImage
+                {
+                    ChatID = item.ChatID,
+                    Image = item.Image
+                });
+            }
+            try
+            {
+                await _context.AddRangeAsync(imagesList);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+
+
+            throw new NotImplementedException();
         }
     }
 }

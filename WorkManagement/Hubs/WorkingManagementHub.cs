@@ -390,7 +390,6 @@ namespace WorkManagement.Hub
             }
             return tasks.OrderByDescending(x => x.ID).ToList();
         }
-
         #endregion
         private async System.Threading.Tasks.Task<List<string>> ProjectTaskIsLate(int userid)
         {
@@ -410,7 +409,6 @@ namespace WorkManagement.Hub
             }
 
         }
-
         private async Task<string> GetUsername(string user)
         {
             try

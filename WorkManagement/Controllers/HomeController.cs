@@ -36,7 +36,6 @@ namespace WorkManagement.Controllers
         [HttpGet]
         public async Task<IActionResult> TaskListIsLate()
         {
-
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             await _taskService.TaskListIsLate(userID);

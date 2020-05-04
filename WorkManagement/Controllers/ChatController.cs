@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Models;
 using Data.ViewModel.Chat;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Service.Helpers;
 using Service.Interface;
 using WorkManagement.Hub;
-
+using Microsoft.Extensions.Configuration;
 namespace WorkManagement.Controllers
 {
     [Route("api/[controller]/[action]")]
@@ -20,10 +23,18 @@ namespace WorkManagement.Controllers
     {
         private readonly IHubContext<WorkingManagementHub> _hubContext;
         private readonly IChatService _chatService;
-        public ChatController(IChatService chatService, IHubContext<WorkingManagementHub> hubContext)
+        private static IWebHostEnvironment _environment;
+        private readonly IConfiguration _configuaration;
+        public ChatController(IChatService chatService,
+            IHubContext<WorkingManagementHub> hubContext,
+            IWebHostEnvironment environment,
+            IConfiguration configuaration
+            )
         {
             _chatService = chatService;
             _hubContext = hubContext;
+            _environment = environment;
+            _configuaration = configuaration;
         }
         [AllowAnonymous]
         [HttpGet("{room}")]
@@ -35,10 +46,51 @@ namespace WorkManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> AddMessageGroup([FromBody]CreateChatParameters chat)
         {
-            var res = await _chatService.AddMessageGroup(chat.RoomID.ToInt(), chat.Message, chat.UserID, chat.Images);
+            var res = await _chatService.AddMessageGroup(chat.RoomID.ToInt(), chat.Message, chat.UserID);
             await _hubContext.Clients.Group(chat.RoomID.ToString()).SendAsync("ReceiveMessageGroup", chat.RoomID.ToInt());
             return Ok(res);
         }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult<UploadImage>> Created([FromForm]List<UploadImage> entity)
+        {
+            if (ModelState.IsValid)
+            {
+                var list = new List<UploadImage>();
+                var file = Request.Form.Files["UploadedFile"];
+                var chat = Request.Form["Chat"];
+                if (file != null)
+                {
+                    if (!Directory.Exists(_environment.WebRootPath + "\\images\\"))
+                    {
+                        Directory.CreateDirectory(_environment.WebRootPath + "\\images\\");
+                    }
+                    for (int i = 0; i < Request.Form.Files.Count; i++)
+                    {
+                        var currentFile = Request.Form.Files[i];
+                        using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + currentFile.FileName))
+                        {
+                            file.CopyTo(fileStream);
+                            fileStream.Flush();
+                            list.Add(new UploadImage
+                            {
+                                ChatID = chat.ToInt(),
+                                Image = currentFile.FileName
+                            });
+                        }
+                    }
+                }
 
+               var model = await _chatService.UploadImage(list);
+                return Ok(model);
+
+            }
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+            }
+            return Ok(entity);
+        }
+      
     }
 }

@@ -33,6 +33,7 @@ namespace Data
         public DbSet<History> Histories { get; set; }
         public DbSet<UserJoinHub> UserJoinHubs { get; set; }
         public DbSet<UploadImage> UploadImages { get; set; }
+        public DbSet<CheckTask> CheckTasks { get; set; }
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 

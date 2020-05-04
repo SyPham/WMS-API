@@ -9,6 +9,5 @@ namespace Data.ViewModel.Chat
         public string RoomID { get; set; }
         public int UserID { get; set; }
         public string Message { get; set; }
-        public List<string> Images { get; set; }
     }
 }

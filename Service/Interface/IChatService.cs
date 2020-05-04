@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace Service.Interface
         Task<object> AddMessageGroup(int roomid,string message);
         Task<object> Remove(int projectid, int roomid);
         Task<int> JoinGroup(int projectid);
-        Task<bool> AddMessageGroup(int roomid, string message, int userid, List<string> images);
+        Task<Chat> AddMessageGroup(int roomid, string message, int userid);
+        Task<bool> UploadImage(List<UploadImage> uploadImages);
     }
 }
