@@ -1,8 +1,10 @@
-﻿using Data;
+﻿using AutoMapper;
+using Data;
 using Data.Models;
 using Data.ViewModel.Comment;
 using Data.ViewModel.Notification;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Service.Helpers;
 using Service.Interface;
 using System;
@@ -17,14 +19,17 @@ namespace Service.Implement
     {
         private readonly DataContext _context;
         private readonly INotificationService _notificationService;
-
-        public CommentService(DataContext context, INotificationService notificationService)
+        private readonly IConfiguration _configuaration;
+        private readonly IMapper _mapper;
+        public CommentService(DataContext context, IMapper mapper, IConfiguration configuaration, INotificationService notificationService)
         {
             _context = context;
             _notificationService = notificationService;
+            _configuaration = configuaration;
+            _mapper = mapper;
         }
 
-        private async Task<Tuple<List<int>, string, string>> AlertComment(int taskid, int userid)
+        private async Task<Tuple<List<int>, string, string>> AlertComment(int taskid, int userid , Data.Enum.ClientRouter clientRouter)
         {
             var task = await _context.Tasks.FindAsync(taskid);
             var user = await _context.Users.FindAsync(userid);
@@ -33,7 +38,30 @@ namespace Service.Implement
             if (task.ProjectID > 0)
                 projectName = (await _context.Projects.FindAsync(task.ProjectID)).Name;
             string message = string.Empty;
-            string urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+            string urlResult = string.Empty;
+            switch (clientRouter)
+            {
+                case Data.Enum.ClientRouter.ToDoList:
+                    urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+                    break;
+                case Data.Enum.ClientRouter.History:
+                    urlResult = $"/history-comment/{taskid}/{task.JobName}";
+                    break;
+                case Data.Enum.ClientRouter.Follow:
+                    urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+                    break;
+                case Data.Enum.ClientRouter.ProjectDetail:
+                    urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+                    break;
+                case Data.Enum.ClientRouter.Abnormal:
+                    urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+                    break;
+                case Data.Enum.ClientRouter.Routine:
+                    urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+                    break;
+                default:
+                    break;
+            }
             switch (task.JobTypeID)
             {
                 case Data.Enum.JobType.Project:
@@ -55,7 +83,7 @@ namespace Service.Implement
             {
                 imagesList.Add(new UploadImage
                 {
-                    ChatID = item.ChatID,
+                    CommentID = item.CommentID,
                     Image = item.Image
                 });
             }
@@ -74,7 +102,7 @@ namespace Service.Implement
 
             throw new NotImplementedException();
         }
-        private async Task<Tuple<List<int>, string, string>> AlertReplyComment(int taskid, int userid, string comment)
+        private async Task<Tuple<List<int>, string, string>> AlertReplyComment(int taskid, int userid, string comment, Data.Enum.ClientRouter clientRouter)
         {
             var task = await _context.Tasks.FindAsync(taskid);
             var user = await _context.Users.FindAsync(userid);
@@ -83,7 +111,30 @@ namespace Service.Implement
             if (task.ProjectID > 0)
                 projectName = (await _context.Projects.FindAsync(task.ProjectID)).Name;
             string message = string.Empty;
-            string urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+            string urlResult = string.Empty;
+            switch (clientRouter)
+            {
+                case Data.Enum.ClientRouter.ToDoList:
+                    urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+                    break;
+                case Data.Enum.ClientRouter.History:
+                    urlResult = $"/history-comment/{taskid}/{task.JobName}";
+                    break;
+                case Data.Enum.ClientRouter.Follow:
+                    urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+                    break;
+                case Data.Enum.ClientRouter.ProjectDetail:
+                    urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+                    break;
+                case Data.Enum.ClientRouter.Abnormal:
+                    urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+                    break;
+                case Data.Enum.ClientRouter.Routine:
+                    urlResult = $"/todolist-comment/{taskid}/{task.JobName}";
+                    break;
+                default:
+                    break;
+            }
             switch (task.JobTypeID)
             {
                 case Data.Enum.JobType.Project:
@@ -98,16 +149,17 @@ namespace Service.Implement
             }
             return Tuple.Create(pics, message, urlResult);
         }
-        public async Task<Tuple<bool, string, Comment>> Add(Comment comment, int currentUser)
+        public async Task<Tuple<bool, string, Comment>> Add(AddCommentViewModel commentViewModel, int currentUser)
         {
             try
             {
+                var comment = _mapper.Map<Comment>(commentViewModel);
                 comment.Level = 1;
                 await _context.AddAsync(comment);
                 await _context.SaveChangesAsync();
                 await _context.AddAsync(new CommentDetail { CommentID = comment.ID, UserID = comment.UserID, Seen = true });
                 await _context.SaveChangesAsync();
-                var alert = await AlertComment(comment.TaskID, comment.UserID);
+                var alert = await AlertComment(comment.TaskID, comment.UserID, commentViewModel.ClientRouter);
                 var task = await _context.Tasks.FindAsync(comment.TaskID);
                 if (!currentUser.Equals(task.CreatedBy))
                 {
@@ -142,14 +194,21 @@ namespace Service.Implement
                 var item = _context.Comments.Find(subcomment.ParentID);
                 var comment = new Comment
                 {
-                    ParentID = subcomment.ParentID,
                     TaskID = subcomment.TaskID,
                     TaskCode = subcomment.TaskCode,
                     UserID = subcomment.UserID,
                     Content = subcomment.Content,
-                    Level = item.Level + 1
                 };
-
+                if (item.Level == 1)
+                {
+                    comment.ParentID = subcomment.ParentID;
+                    comment.Level = item.Level + 1;
+                }
+                if (item.Level >=2)
+                {
+                    comment.Level = 2;
+                    comment.ParentID = item.ParentID;
+                }
                 await _context.AddAsync(comment);
                 await _context.SaveChangesAsync();
                 await _context.AddAsync(new CommentDetail { CommentID = comment.ID, UserID = comment.UserID, Seen = true });
@@ -161,7 +220,7 @@ namespace Service.Implement
                     return Tuple.Create(true, string.Empty, comment);
                 else
                 {
-                    var alert = await AlertReplyComment(comment.TaskID, comment.UserID, comtParent.Content);
+                    var alert = await AlertReplyComment(comment.TaskID, comment.UserID, comtParent.Content, subcomment.ClientRouter);
                     alert.Item1.Add(comtParent.UserID);
                     var listUsers = alert.Item1.Where(x => x != subcomment.CurrentUser).Distinct().ToList();
                     await _notificationService.Create(new CreateNotifyParams
@@ -231,6 +290,8 @@ namespace Service.Implement
         }
         public List<CommentTreeView> GetChildren(List<CommentTreeView> comments, int parentid)
         {
+            var uploadImage = _context.UploadImages;
+            var appSettings = _configuaration.GetSection("AppSettings").Get<AppSettings>();
             return comments
                     .Where(c => c.ParentID == parentid)
                     .Select(c => new CommentTreeView()
@@ -238,12 +299,13 @@ namespace Service.Implement
                         ID = c.ID,
                         UserID = c.UserID,
                         Username = c.Username,
-                        Content = c.Content,
+                        Content = c.Content ?? "",
                         ImageBase64 = c.ImageBase64,
                         ParentID = c.ParentID,
                         CreatedTime = c.CreatedTime,
                         Seen = c.Seen,
                         Level = c.Level,
+                        Images = uploadImage.Where(x => x.CommentID == c.ID).Select(x => appSettings.applicationUrl + "/images/comments/" + x.Image).ToList() ?? new List<string>(),
                         children = GetChildren(comments, c.ID)
                     })
                     .OrderByDescending(x => x.CreatedTime)
@@ -251,6 +313,8 @@ namespace Service.Implement
         }
         public async Task<IEnumerable<CommentTreeView>> GetAllTreeView(int taskid, int userid)
         {
+            var appSettings = _configuaration.GetSection("AppSettings").Get<AppSettings>();
+            var uploadImage = _context.UploadImages;
             var listComments = await GetAll(taskid, userid);
             List<CommentTreeView> hierarchy = new List<CommentTreeView>();
             hierarchy = listComments.Where(c => c.ParentID.Equals(0))
@@ -259,13 +323,14 @@ namespace Service.Implement
                                 ID = c.ID,
                                 UserID = c.UserID,
                                 Username = c.Username,
-                                Content = c.Content,
+                                Content = c.Content ?? "",
                                 ImageBase64 = c.ImageBase64,
                                 ParentID = c.ParentID,
                                 Seen = c.Seen,
                                 CreatedTime = c.CreatedTime,
                                 TaskID = c.TaskID,
                                 Level = c.Level,
+                                Images = uploadImage.Where(x => x.CommentID == c.ID).Select(x => appSettings.applicationUrl + "/images/comments/" + x.Image).ToList() ?? new List<string>(),
                                 children = GetChildren(listComments, c.ID)
                             })
                             .ToList();
@@ -317,8 +382,10 @@ namespace Service.Implement
                 ct => ct.TaskID,
                 (t, ct) => new
                 {
-                   t, ct
-                }).Select(x=> new TaskHasComment {
+                    t,
+                    ct
+                }).Select(x => new TaskHasComment
+                {
                     TaskID = x.t.ID,
                     TaskName = x.t.JobName,
                     CommentTreeViews = x.ct

@@ -75,7 +75,7 @@ namespace Service.Implement
                 RoomID = x.RoomID,
                 ProjectID = x.ProjectID,
                 ImageBase64 = userModel.FirstOrDefault(_ => _.ID.Equals(x.UserID)).ImageBase64,
-                Images = uploadImages.Where(_ => _.ChatID == x.ID).Select(_ => appSettings.applicationUrl + "/images/" +_.Image).ToList(),
+                Images = uploadImages.Where(_ => _.ChatID == x.ID).Select(_ => appSettings.applicationUrl + "/images/chats/" +_.Image).ToList(),
                 Username = userModel.FirstOrDefault(_ => _.ID.Equals(x.UserID)).Username.ToTitleCase()
             }).ToListAsync();
         }

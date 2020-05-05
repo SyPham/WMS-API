@@ -55,7 +55,7 @@ namespace WorkManagement.Controllers
             {
                 var list = new List<UploadImage>();
                 var file = Request.Form.Files["UploadedFile"];
-                var chat = Request.Form["Chat"];
+                var chat = Request.Form["Comment"];
                 if (file != null)
                 {
                     if (!Directory.Exists(_environment.WebRootPath + "\\images\\comments\\"))
@@ -87,7 +87,7 @@ namespace WorkManagement.Controllers
             return Ok(entity);
         }
         [HttpPost]
-        public async Task<IActionResult> Add(Comment comment)
+        public async Task<IActionResult> Add(AddCommentViewModel comment)
         {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();

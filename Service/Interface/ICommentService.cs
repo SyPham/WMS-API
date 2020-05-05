@@ -9,7 +9,7 @@ namespace Service.Interface
 {
    public interface ICommentService
     {
-        Task<Tuple<bool, string, Comment>> Add(Comment comment,int currentUser);
+        Task<Tuple<bool, string, Comment>> Add(AddCommentViewModel comment,int currentUser);
         //Task<object> Delete();
         Task<Tuple<bool, string, Comment>> AddSub(AddSubViewModel subcomment);
         Task<object> Seen(int comtID, int userID);

@@ -417,10 +417,10 @@ namespace Service.Implement
                     result = task.DueDateDaily.ToParseStringDateTime().ToString("dd MMM, yyyy hh:tt:ss tt");
                     break;
                 case Data.Enum.PeriodType.Weekly:
-                    result = task.DueDateWeekly.ToParseStringDateTime().AddDays(7).ToString("dd MMM, yyyy hh:tt:ss tt");
+                    result = task.DueDateWeekly.ToParseStringDateTime().ToString("dd MMM, yyyy hh:tt:ss tt");
                     break;
                 case Data.Enum.PeriodType.Monthly:
-                    result = task.DueDateMonthly.ToParseStringDateTime().AddMonths(1).ToString("dd MMM, yyyy hh:tt:ss tt");
+                    result = task.DueDateMonthly.ToParseStringDateTime().ToString("dd MMM, yyyy hh:tt:ss tt");
                     break;
                 case Data.Enum.PeriodType.SpecificDate:
                     result = task.SpecificDate.ToParseStringDateTime().ToString("dd MMM, yyyy hh:tt:ss tt");
@@ -847,8 +847,8 @@ namespace Service.Implement
                     break;
                 case Data.Enum.PeriodType.Weekly:
                     var checkWeekly = CheckNotification(item.ID);
-                    if(!checkWeekly)
-                    await AlertTasksIsLate(item, mes, isProject);
+                    if (!checkWeekly)
+                        await AlertTasksIsLate(item, mes, isProject);
                     break;
                 case Data.Enum.PeriodType.Monthly:
                     var checkMonthly = CheckNotification(item.ID);
@@ -2011,7 +2011,7 @@ namespace Service.Implement
             {
                 case Data.Enum.PeriodType.Daily:
                     var date = task.DueDateDaily.ToParseStringDateTime().Date;
-                    var result = PeriodComparator(date);
+                   // var result = PeriodComparator(date);
                     message = "";
                     return true;
                 case Data.Enum.PeriodType.Weekly:
@@ -2020,7 +2020,7 @@ namespace Service.Implement
                     message = $"Today is on {currenDate}. You can only finish this task from {task.DueDateWeekly.ToParseStringDateTime().Subtract(TimeSpan.FromDays(3)).ToString("dd MMMM, yyyy")} to {task.DueDateWeekly.ToParseStringDateTime().ToString("dd MMMM, yyyy")}";
                     return resultW > 0 ? true : false;
                 case Data.Enum.PeriodType.Monthly:
-                    var monthly = task.DueDateMonthly.ToParseStringDateTime().Date.AddDays(10);
+                    var monthly = task.DueDateMonthly.ToParseStringDateTime().Date.Subtract(TimeSpan.FromDays(10));
                     var resultM = PeriodComparator(monthly);
                     message = $"Today is on {currenDate}. You can only finish this task from {task.DueDateMonthly.ToParseStringDateTime().Subtract(TimeSpan.FromDays(10)).ToString("dd MMMM, yyyy")} to {task.DueDateMonthly.ToParseStringDateTime().ToString("dd MMMM, yyyy")}";
                     return resultM > 0 ? true : false;
@@ -2228,45 +2228,7 @@ namespace Service.Implement
         }
         private string PeriodMonthly(Data.Models.Task task)
         {
-            ////var monthsHas31Days = new List<int> { 1, 3, 5, 7, 8, 10, 12 };
-            ////var monthsHas30Days = new List<int> { 4, 6, 9, 11 };
-            ////var monthsHas28or29Days = new List<int> { 2 };
-            //var lastdayofFeb = new List<int> { 28, 29 };
-            //var date = task.DueDateMonthly.ToParseStringDateTime();
-            //if (date.Month == 1 && date.Day == 30 || date.Month == 1 && date.Day == 29)
-            //{
-            //    var lastDayOfMonth = DateTime.DaysInMonth(date.Year, 2);
-            //    return new DateTime(date.Year, 2, lastDayOfMonth, date.Hour, date.Minute, date.Second).ToString("dd MMM, yyyy hh:mm:ss tt");
-            //}
-            //else if (date.Month == 3 && date.Day == 31)
-            //{
-            //    var lastDayOfMonth = DateTime.DaysInMonth(date.Year, 4);
-            //    return new DateTime(date.Year, 4, lastDayOfMonth, date.Hour, date.Minute, date.Second).ToString("dd MMM, yyyy hh:mm:ss tt");
-            //}
-            //else if (date.Month == 5 && date.Day == 31)
-            //{
-            //    var lastDayOfMonth = DateTime.DaysInMonth(date.Year, 6);
-            //    return new DateTime(date.Year, 6, lastDayOfMonth, date.Hour, date.Minute, date.Second).ToString("dd MMM, yyyy hh:mm:ss tt");
-            //}
-            //else if (date.Month == 8 && date.Day == 31)
-            //{
-            //    var lastDayOfMonth = DateTime.DaysInMonth(date.Year, 9);
-            //    return new DateTime(date.Year, 9, lastDayOfMonth, date.Hour, date.Minute, date.Second).ToString("dd MMM, yyyy hh:mm:ss tt");
-            //}
-            //else if (date.Month == 10 && date.Day == 31)
-            //{
-            //    var lastDayOfMonth = DateTime.DaysInMonth(date.Year, 10);
-            //    return new DateTime(date.Year, 10, lastDayOfMonth, date.Hour, date.Minute, date.Second).ToString("dd MMM, yyyy hh:mm:ss tt");
-            //}
-            //else if (date.Month == 12 && date.Day == 30)
-            //{
-            //    var lastDayOfMonth = DateTime.DaysInMonth(date.Year + 1, 1);
-            //    return new DateTime(date.Year + 1, 1, lastDayOfMonth, date.Hour, date.Minute, date.Second).ToString("dd MMM, yyyy hh:mm:ss tt");
-            //}
-            //else
-            //{
             return task.DueDateMonthly.ToParseStringDateTime().AddMonths(1).ToString("dd MMM, yyyy hh:mm:ss tt");
-            //}
         }
         private bool CheckDailyOntime(Data.Models.Task update)
         {

@@ -532,6 +532,12 @@ namespace WorkManagement.Hub
             await Clients.Group(group).SendAsync("ReceiveJoinGroup", user, await GetUsername(user));
 
         }
+        public async System.Threading.Tasks.Task JoinGroupNotification(string user)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, "Notification");
+            await Clients.Group("Notification").SendAsync("ReceiveJoinGroupNotification");
+
+        }
         public async System.Threading.Tasks.Task Typing(string group, string user)
         {
             await Clients.Group(group).SendAsync("ReceiveTyping", user, await GetUsername(user));

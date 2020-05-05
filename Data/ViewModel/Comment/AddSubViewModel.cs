@@ -12,5 +12,6 @@ namespace Data.ViewModel.Comment
         public int TaskID { get; set; }
         public string Content { get; set; }
         public string TaskCode { get; set; }
+        public Enum.ClientRouter ClientRouter { get; set; }
     }
 }

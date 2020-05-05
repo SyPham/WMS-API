@@ -22,6 +22,7 @@ namespace Data.ViewModel.Comment
         public byte[] ImageBase64 { get; set; }
         public DateTime CreatedTime { get; set; }
         public bool Seen { get; set; }
+        public List<string> Images { get; set; }
         public bool HasChildren
         {
             get { return children.Any(); }

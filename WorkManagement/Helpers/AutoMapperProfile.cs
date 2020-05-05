@@ -54,6 +54,10 @@ namespace WorkManagement.Helpers
 
             CreateMap<CommentViewModel, Comment>();
 
+            CreateMap<Comment, AddCommentViewModel>().ForMember(d => d.ClientRouter, s => s.Ignore());
+
+            CreateMap<AddCommentViewModel, Comment>();
+
             CreateMap<Project, ProjectViewModel>()
                 .ForMember(d => d.Members, s => s.MapFrom(p => p.TeamMembers.Select(_=> _.UserID).ToList()))
                 .ForMember(d => d.Manager, s => s.MapFrom(p => p.Managers.Select(_ => _.UserID).ToList()))

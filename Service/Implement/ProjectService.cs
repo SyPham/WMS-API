@@ -436,7 +436,7 @@ namespace Service.Implement
                         await _context.Managers.AddRangeAsync(managers);
                         var project = await _context.Projects.FindAsync(addManager.ProjectID);
                         var user = await _context.Users.FindAsync(addManager.UserID);
-                        string urlResult = $"/project-detail/{project.ID}";
+                        string urlResult = $"/project/detail/{project.ID}";
                         var message = $"The {user.Username.ToTitleCase()} account has assigned you as manager of {project.Name} project";
                         await _notificationService.Create(new CreateNotifyParams
                         {
