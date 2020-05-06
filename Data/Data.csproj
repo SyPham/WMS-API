@@ -27,6 +27,8 @@
     <Compile Remove="Migrations\20200506065931_AddForeignKeyForTables.Designer.cs" />
     <Compile Remove="Migrations\20200506070245_AddForeignKeyForTables.cs" />
     <Compile Remove="Migrations\20200506070245_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506070521_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506070521_AddForeignKeyForTables.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
