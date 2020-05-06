@@ -117,6 +117,7 @@ namespace Data.ViewModel.Task
         public string SpecificDate { get; set; }
         public string ModifyDateTime { get; set; }
         public DateTime DueDateTime { get; set; }
+        public List<Follow> Follows { get; set; }
         public bool BeAssigned { get; set; }
         public bool HasChildren
         {
