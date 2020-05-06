@@ -19,6 +19,9 @@ namespace Data.Models
         public byte[] ImageBase64 { get; set; }
         public bool isLeader { get; set; }
         public virtual Role Role { get; set; }
+        public virtual Follow Follow { get; set; }
+        public virtual Tag Tag { get; set; }
+        public virtual Deputy Deputy { get; set; }
 
     }
 }

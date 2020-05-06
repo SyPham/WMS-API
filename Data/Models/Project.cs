@@ -23,6 +23,7 @@ namespace Data.Models
         public virtual ICollection<Manager> Managers { get; set; }
         public virtual ICollection<TeamMember> TeamMembers { get; set; }
         public virtual ICollection<Tutorial> Tutorials { get; set; }
+        public virtual ICollection<Task> Tasks { get; set; }
 
     }
 }

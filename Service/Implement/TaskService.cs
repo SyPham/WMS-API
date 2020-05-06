@@ -491,17 +491,17 @@ namespace Service.Implement
                    })
                    .Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).AsQueryable();
 
-                var statusTutorial =await _context.Tutorials.AnyAsync(x => x.TaskID == item.ID);
-                var tutorialModel =await _context.Tutorials.FirstOrDefaultAsync(x => x.TaskID == item.ID);
+                var statusTutorial = await _context.Tutorials.AnyAsync(x => x.TaskID == item.ID);
+                var tutorialModel = await _context.Tutorials.FirstOrDefaultAsync(x => x.TaskID == item.ID);
                 //var tasksTree = await GetListTree(item.ParentID, item.ID);
                 var arrTasks = FindParentByChild(listTasks, item.ID);
 
                 TreeViewTask levelItem = new TreeViewTask
                 {
-                    Follow =await _context.Follows.AnyAsync(x => x.TaskID == item.ID && x.UserID == userid) ? "Yes" : "No",
+                    Follow = await _context.Follows.AnyAsync(x => x.TaskID == item.ID && x.UserID == userid) ? "Yes" : "No",
                     ID = item.ID,
                     PriorityID = item.Priority,
-                    ProjectName = item.ProjectID == 0 ? "" :(await _context.Projects.FindAsync(item.ProjectID)).Name,
+                    ProjectName = item.ProjectID == 0 ? "" : (await _context.Projects.FindAsync(item.ProjectID)).Name,
                     JobName = item.JobName.IsNotAvailable()
                 };
                 levelItem.From = item.DepartmentID > 0 ? levelItem.From = _context.OCs.FirstOrDefault(u => u.ID == item.DepartmentID).Name : levelItem.From = _context.Users.FirstOrDefault(u => u.ID == item.FromWhoID).Username;
@@ -517,19 +517,19 @@ namespace Service.Implement
                 levelItem.DueDateTime = MapDueDatTimeeWithPeriod(item);
                 levelItem.SpecificDueDate = MapSpecificDueDateWithPeriod(item);
                 levelItem.ModifyDateTime = item.ModifyDateTime;
-                levelItem.User = item.User;
+                // levelItem.User = item.User;
                 levelItem.TaskCode = item.Code;
                 levelItem.BeAssigned = beAssigneds.Select(x => x.ID).Contains(userid);
                 levelItem.Level = item.Level;
-                levelItem.ProjectID = item.ProjectID;
+                levelItem.ProjectID = item.ProjectID ?? 0;
                 levelItem.ParentID = item.ParentID;
                 levelItem.state = item.Status == false ? "Undone" : "Done";
                 levelItem.Priority = CastPriority(item.Priority);
                 levelItem.PICs = beAssigneds.Select(x => x.ID).ToList();
                 levelItem.BeAssigneds = beAssigneds.ToList();
                 levelItem.Deputies = deputiesList.Select(_ => _.ID).ToList();
-                levelItem.FromWhere =await _context.OCs.Where(x => x.ID == item.OCID).Select(x => new FromWhere { ID = x.ID, Name = x.Name }).FirstOrDefaultAsync() ?? new FromWhere();
-                levelItem.FromWho =await _context.Users.Where(x => x.ID == item.FromWhoID).Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).FirstOrDefaultAsync() ?? new BeAssigned();
+                levelItem.FromWhere = await _context.OCs.Where(x => x.ID == item.OCID).Select(x => new FromWhere { ID = x.ID, Name = x.Name }).FirstOrDefaultAsync() ?? new FromWhere();
+                levelItem.FromWho = await _context.Users.Where(x => x.ID == item.FromWhoID).Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).FirstOrDefaultAsync() ?? new BeAssigned();
                 levelItem.JobTypeID = item.JobTypeID;
                 levelItem.periodType = item.periodType;
                 levelItem.FromWhoID = item.FromWhoID;
@@ -539,6 +539,7 @@ namespace Service.Implement
                 levelItem.VideoLink = statusTutorial ? tutorialModel.URL : "";
                 levelItem.DueDate = MapDueDateWithPeriod(item);
                 tasks.Add(levelItem);
+
             }
             return tasks.OrderByDescending(x => x.ID).ToHashSet();
         }
@@ -953,8 +954,8 @@ namespace Service.Implement
                 {
                     ID = item.ID,
                     PIC = string.Join(" , ", _context.Tags.Where(x => x.TaskID == item.ID).Include(x => x.User).Select(x => x.User.Username).ToArray()),
-                    ProjectName = item.ProjectID == 0 ? "" : _context.Projects.Find(item.ProjectID).Name,
-                    ProjectID = item.ProjectID,
+                    ProjectName = item.ProjectID == null ? "" : _context.Projects.Find(item.ProjectID).Name,
+                    ProjectID = item.ProjectID ?? 0,
                     BeAssigneds = beAssigneds,
                     Level = item.Level,
 
@@ -1432,6 +1433,10 @@ namespace Service.Implement
                     item = CheckDuedate(item, task);
                     item.Level = 1;
                     item.JobTypeID = jobTypeID;
+                    if(item.ProjectID == 0)
+                        item.ProjectID = null ;
+                    if (item.OCID == 0)
+                        item.OCID = null;
                     await _context.Tasks.AddAsync(item);
                     await _context.SaveChangesAsync();
                     await CloneCode(item);
@@ -2382,7 +2387,7 @@ namespace Service.Implement
 
             var pics = await _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
             var deputies = await _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
-            var projectTasksList =await GetProjectTasksByUserID(userid);
+            var projectTasksList = await GetProjectTasksByUserID(userid);
             var allTasksList = pics.Union(deputies).Union(projectTasksList).Distinct();
             var listTasks = (await _context.Tasks
                    .Where(x => allTasksList.Contains(x.ID) || x.FromWhoID == userid).Include(x => x.User).ToListAsync()).ToHashSet();
@@ -2452,7 +2457,7 @@ namespace Service.Implement
             }
 
         }
-      
+
         public async Task<List<HierarchyNode<TreeViewTask>>> TodolistSortBy(Data.Enum.Status status, int userid)
         {
             try
@@ -2652,14 +2657,14 @@ namespace Service.Implement
         }
         public async Task<List<HierarchyNode<TreeViewTask>>> History(int userid, string start, string end)
         {
-            var pics =await _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
-            var deputies =await _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
+            var pics = await _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
+            var deputies = await _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
 
-            var managers =await _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToListAsync();
-            var members =await _context.TeamMembers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToListAsync();
+            var managers = await _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToListAsync();
+            var members = await _context.TeamMembers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToListAsync();
 
             var UserProjectList = managers.Union(members).ToList();
-            var projectTasksList = await _context.Tasks.Where(x => UserProjectList.Contains(x.ProjectID)).Select(x => x.ID).ToListAsync();
+            var projectTasksList = await _context.Tasks.Where(x => UserProjectList.Contains(x.ProjectID ?? 0)).Select(x => x.ID).ToListAsync();
 
             var allTasksList = pics.Union(deputies).Union(projectTasksList).Distinct().ToList();
             var listTasks = await _context.Histories

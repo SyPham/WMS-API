@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200506084935_AddForeignKeyForTables")]
+    partial class AddForeignKeyForTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -477,7 +479,7 @@ namespace Data.Migrations
                     b.Property<string>("ModifyDateTime")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("OCID")
+                    b.Property<int>("OCID")
                         .HasColumnType("int");
 
                     b.Property<int>("ParentID")
@@ -487,7 +489,7 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(2)")
                         .HasMaxLength(2);
 
-                    b.Property<int?>("ProjectID")
+                    b.Property<int>("ProjectID")
                         .HasColumnType("int");
 
                     b.Property<string>("SpecificDate")
@@ -762,12 +764,14 @@ namespace Data.Migrations
                     b.HasOne("Data.Models.OC", "OC")
                         .WithMany("Tasks")
                         .HasForeignKey("OCID")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Data.Models.Project", "Project")
                         .WithMany("Tasks")
                         .HasForeignKey("ProjectID")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Data.Models.TeamMember", b =>

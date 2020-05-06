@@ -29,6 +29,28 @@
     <Compile Remove="Migrations\20200506070245_AddForeignKeyForTables.Designer.cs" />
     <Compile Remove="Migrations\20200506070521_AddForeignKeyForTables.cs" />
     <Compile Remove="Migrations\20200506070521_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506073103_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506073103_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506080333_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506080333_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506081023_UpdateAddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506081023_UpdateAddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506081330_UpdateAddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506081330_UpdateAddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506081617_UpdateAddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506081617_UpdateAddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506081857_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506081857_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506081959_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506081959_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506082630_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506082630_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506082843_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506082843_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506083403_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506083403_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506084505_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506084505_AddForeignKeyForTables.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

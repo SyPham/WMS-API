@@ -19,11 +19,11 @@ namespace Data.Models
         public int ParentID { get; set; }
         public int Level { get; set; }
         public int DepartmentID { get; set; }
-        public int ProjectID { get; set; }
+        public int? ProjectID { get; set; }
         [ForeignKey("User")]
         public int CreatedBy { get; set; }
         public virtual User User { get; set; }
-        public int OCID { get; set; }
+        public int? OCID { get; set; }
         public int FromWhoID { get; set; }
         [MaxLength(2)]
         public string Priority { get; set; } = "M";
@@ -38,8 +38,9 @@ namespace Data.Models
         public Enum.PeriodType periodType { get; set; }
         public Enum.JobType JobTypeID { get; set; }
         public virtual ICollection<Tag> Tags { get; set; }
-        public virtual ICollection<Project> Project { get; set; }
-        public virtual Follow Follow { get; set; }
+        public virtual ICollection<Deputy> Deputies { get; set; }
+        public virtual ICollection<Follow> Follows { get; set; }
+        public virtual Project Project { get; set; }
         public virtual Tutorial Tutorial { get; set; }
         public virtual OC OC { get; set; }
 

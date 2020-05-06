@@ -1,4 +1,5 @@
 ﻿using Data.Interface;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,8 +12,9 @@ namespace Data.Models
         public string Name { get; set; }
         public int Level { get; set; }
         public int ParentID { get; set; }
-        public virtual List<Manager> Managers { get; set; }
-        public virtual List<TeamMember> TeamMembers { get; set; }
+        public virtual ICollection<Manager> Managers { get; set; }
+        public virtual ICollection<TeamMember> TeamMembers { get; set; }
+        public virtual ICollection<Task> Tasks { get; set; }
 
     }
 }

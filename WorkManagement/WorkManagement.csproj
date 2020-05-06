@@ -43,7 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Database\" />
     <Folder Include="publish\" />
     <Folder Include="wwwroot\images\comments\" />
     <Folder Include="wwwroot\images\chats\" />
