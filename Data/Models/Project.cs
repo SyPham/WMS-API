@@ -20,8 +20,9 @@ namespace Data.Models
         public virtual Room RoomTable { get; set; }
         public string CreatedByName { get; set; }
         public DateTime CreatedDate { get; set; }
-        public virtual List<Manager> Managers { get; set; }
-        public virtual List<TeamMember> TeamMembers { get; set; }
+        public virtual ICollection<Manager> Managers { get; set; }
+        public virtual ICollection<TeamMember> TeamMembers { get; set; }
+        public virtual ICollection<Tutorial> Tutorials { get; set; }
 
     }
 }

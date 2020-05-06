@@ -11,7 +11,7 @@ namespace Data.ViewModel.Task
     {
         public TreeViewTask()
         {
-            this.children = new List<TreeViewTask>();
+            this.children = new HashSet<TreeViewTask>();
         }
         public TreeViewTask(
             int ID,
@@ -74,7 +74,7 @@ namespace Data.ViewModel.Task
             this.Histories = Histories;
             this.User = User;
             this.Tutorial = Tutorial;
-            this.children = new List<TreeViewTask>();
+            this.children = new HashSet<TreeViewTask>();
         }
         public int ID { get; set; }
         public string Follow { get; set; }
@@ -123,7 +123,7 @@ namespace Data.ViewModel.Task
             get { return children.Any(); }
         }
 
-        public List<TreeViewTask> children { get; set; }
+        public HashSet<TreeViewTask> children { get; set; }
         public TreeViewTask AddChildOrg(
             int ID,
             int ParentID,
@@ -186,9 +186,9 @@ namespace Data.ViewModel.Task
             }
             return null;
         }
-        public static List<TreeViewTask> FillRecursive(List<TreeViewTask> flatTasks, int parentId)
+        public static HashSet<TreeViewTask> FillRecursive(HashSet<TreeViewTask> flatTasks, int parentId)
         {
-            List<TreeViewTask> recursiveObjects = new List<TreeViewTask>();
+            HashSet<TreeViewTask> recursiveObjects = new HashSet<TreeViewTask>();
             foreach (var c in flatTasks.Where(x => x.ParentID.Equals(parentId)))
             {
                 recursiveObjects.Add(new TreeViewTask

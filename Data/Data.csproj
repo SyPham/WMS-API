@@ -21,6 +21,12 @@
     <Compile Remove="Migrations\20200218021652_version2.0.2.Designer.cs" />
     <Compile Remove="Migrations\20200422025435_update6.0.0.cs" />
     <Compile Remove="Migrations\20200422025435_update6.0.0.Designer.cs" />
+    <Compile Remove="Migrations\20200506065342_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506065342_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506065931_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506065931_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200506070245_AddForeignKeyForTables.cs" />
+    <Compile Remove="Migrations\20200506070245_AddForeignKeyForTables.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

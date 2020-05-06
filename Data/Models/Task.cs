@@ -37,6 +37,11 @@ namespace Data.Models
         public DateTime CreatedDate { get; set; }
         public Enum.PeriodType periodType { get; set; }
         public Enum.JobType JobTypeID { get; set; }
+        public virtual ICollection<Tag> Tags { get; set; }
+        public virtual ICollection<Project> Project { get; set; }
+        public virtual Follow Follow { get; set; }
+        public virtual Tutorial Tutorial { get; set; }
+        public virtual OC OC { get; set; }
 
     }
 }

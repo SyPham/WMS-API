@@ -65,16 +65,14 @@ namespace WorkManagement.Controllers
                     for (int i = 0; i < Request.Form.Files.Count; i++)
                     {
                         var currentFile = Request.Form.Files[i];
-                        using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\images\\comments\\" + currentFile.FileName))
+                        using FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\images\\comments\\" + currentFile.FileName);
+                        await currentFile.CopyToAsync(fileStream);
+                        fileStream.Flush();
+                        list.Add(new UploadImage
                         {
-                            await currentFile.CopyToAsync(fileStream);
-                            fileStream.Flush();
-                            list.Add(new UploadImage
-                            {
-                                CommentID = chat.ToInt(),
-                                Image = currentFile.FileName
-                            });
-                        }
+                            CommentID = chat.ToInt(),
+                            Image = currentFile.FileName
+                        });
                     }
                 }
                 var model = await _commentService.UploadImage(list);

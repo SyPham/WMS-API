@@ -30,28 +30,6 @@ namespace Service.Implement
         private readonly string formatDaily = "{0:ddd, d MMM, yyyy}";
         private readonly string formatSpecificDate = "{0:d MMM, yyyy hh:mm:ss tt}";
         private readonly string formatCreatedDate = "{0:d MMM, yyyy hh:mm:ss tt}";
-        private readonly string[] _monthArray = {
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      };
-        private readonly string[] _everydayArray = {
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
-        };
         #endregion
 
         #region Constructor
@@ -69,13 +47,6 @@ namespace Service.Implement
         #endregion
 
         #region Helpers
-        private bool TimeComparator(DateTime comparedate)
-        {
-            DateTime systemDate = DateTime.Now;
-            int res = DateTime.Compare(systemDate, comparedate);
-
-            return res < 0 ? true : false;
-        }
         /// <summary>
         /// <0 − If CurrentDate is earlier than comparedate
         /// =0 − If CurrentDate is the same as comparedate
@@ -83,12 +54,12 @@ namespace Service.Implement
         /// </summary>
         /// <param name="comparedate"></param>
         /// <returns></returns>
-        private bool DateTimeComparator(DateTime comparedate)
-        {
-            DateTime systemDate = DateTime.Now;
-            int res = DateTime.Compare(systemDate, comparedate);
-            return res <= 0 ? true : false;
-        }
+        //private bool DateTimeComparator(DateTime comparedate)
+        //{
+        //    DateTime systemDate = DateTime.Now;
+        //    int res = DateTime.Compare(systemDate, comparedate);
+        //    return res <= 0 ? true : false;
+        //}
         /// <summary>
         /// <0 − If CurrentDate is earlier than comparedate
         /// =0 − If CurrentDate is the same as comparedate
@@ -96,12 +67,12 @@ namespace Service.Implement
         /// </summary>
         /// <param name="comparedate"></param>
         /// <returns></returns>
-        private bool DateComparator(DateTime comparedate)
-        {
-            DateTime systemDate = DateTime.Now;
-            int res = DateTime.Compare(systemDate.Date, comparedate.Date);
-            return res <= 0 ? true : false;
-        }
+        //private bool DateComparator(DateTime comparedate)
+        //{
+        //    DateTime systemDate = DateTime.Now;
+        //    int res = DateTime.Compare(systemDate.Date, comparedate.Date);
+        //    return res <= 0 ? true : false;
+        //}
         public string CastPriority(string value)
         {
             value = value.ToSafetyString().ToUpper() ?? "";
@@ -113,7 +84,7 @@ namespace Service.Implement
                 return "Low";
             return value;
         }
-        public void HieararchyWalk(List<TreeViewTask> hierarchy)
+        public void HieararchyWalk(HashSet<TreeViewTask> hierarchy)
         {
             if (hierarchy != null)
             {
@@ -124,7 +95,7 @@ namespace Service.Implement
                 }
             }
         }
-        public List<TreeViewTask> GetChildren(List<TreeViewTask> tasks, int parentid)
+        public HashSet<TreeViewTask> GetChildren(HashSet<TreeViewTask> tasks, int parentid)
         {
             return tasks
                     .Where(c => c.ParentID == parentid)
@@ -165,9 +136,9 @@ namespace Service.Implement
                         children = GetChildren(tasks, c.ID)
                     })
                     .OrderByDescending(x => x.ID)
-                    .ToList();
+                    .ToHashSet();
         }
-        public List<TreeViewTask> GetChildrenForMap(List<TreeViewTask> tasks, int parentid)
+        public HashSet<TreeViewTask> GetChildrenForMap(HashSet<TreeViewTask> tasks, int parentid)
         {
             return tasks
                     .Where(c => c.ParentID == parentid && c.BeAssigned)
@@ -208,7 +179,7 @@ namespace Service.Implement
                         children = GetChildren(tasks, c.ID)
                     })
                     .OrderByDescending(x => x.ID)
-                    .ToList();
+                    .ToHashSet();
         }
         public IEnumerable<TreeViewOC> GetAllDescendants(IEnumerable<TreeViewOC> rootNodes)
         {
@@ -377,12 +348,6 @@ namespace Service.Implement
             }
             return message;
         }
-        private bool BeAlert(int taskId, string alertType)
-        {
-            var currentDate = DateTime.Now.Date;
-            var result = _context.Notifications.Any(x => x.TaskID == taskId && x.CreatedTime.Date == currentDate && x.Function.Equals(alertType));
-            return result;
-        }
         #endregion
 
         #region Mapper
@@ -452,13 +417,13 @@ namespace Service.Implement
             }
             return result.ToParseStringDateTime();
         }
-        private List<TreeViewTask> MapperTreeViewTask(List<TreeViewTask> tasks)
+        private HashSet<TreeViewTask> MapperTreeViewTask(HashSet<TreeViewTask> tasks)
         {
-            var hierarchyTemp = new List<TreeViewTask>();
-            var roots = tasks.Where(x => x.ParentID == 0).ToList();
-            var childs = tasks.Where(x => x.ParentID != 0).ToList();
+            var hierarchyTemp = new HashSet<TreeViewTask>();
+            var roots = tasks.Where(x => x.ParentID == 0).ToHashSet();
+            var childs = tasks.Where(x => x.ParentID != 0).ToHashSet();
 
-            var BeAdded = new List<TreeViewTask>();
+            var BeAdded = new HashSet<TreeViewTask>();
             foreach (var c in roots)
             {
                 var item = new TreeViewTask
@@ -501,27 +466,21 @@ namespace Service.Implement
                 BeAdded.Add(item);
             }
 
-            var flatBedAdded = BeAdded.Flatten().ToList();
-            var except = childs.Where(x => !flatBedAdded.Select(c => c.ID).Contains(x.ID)).Select(x => x.ID).ToList();
-            var lastChilds = childs.Where(x => except.Contains(x.ID)).ToList();
-            var result = hierarchyTemp.Union(lastChilds).ToList();
+            var flatBedAdded = BeAdded.Flatten().ToHashSet();
+            var except = childs.Where(x => !flatBedAdded.Select(c => c.ID).Contains(x.ID)).Select(x => x.ID).ToHashSet();
+            var lastChilds = childs.Where(x => except.Contains(x.ID)).ToHashSet();
+            var result = hierarchyTemp.Union(lastChilds).ToHashSet();
             return result;
         }
-        private List<TreeViewTask> GetListTreeViewTask(List<Data.Models.Task> listTasks, int userid)
+        private async Task<HashSet<TreeViewTask>> GetListTreeViewTaskAsync(HashSet<Data.Models.Task> listTasks, int userid)
         {
-            var tasks = new List<TreeViewTask>();
-            var ocModel = _context.OCs;
-            var userModel = _context.Users;
-            var subModel = _context.Follows;
-            var tagModel = _context.Tags;
-            var deputyModel = _context.Deputies;
-
+            //khúc này xử lý hả dung r cho nay ma map ra viewmodel
+            var tasks = new HashSet<TreeViewTask>();
             foreach (var item in listTasks)
             {
-                var beAssigneds = tagModel.Where(x => x.TaskID == item.ID)
-                                   .Include(x => x.User)
-                                   .Select(x => new BeAssigned { ID = x.User.ID, Username = x.User.Username }).ToList();
-                var deputiesList = deputyModel.Where(x => x.TaskID == item.ID)
+                var beAssigneds = _context.Tags.Where(x => x.TaskID == item.ID)
+                                   .Select(x => new BeAssigned { ID = x.User.ID, Username = x.User.Username }).AsQueryable();
+                var deputiesList = _context.Deputies.Where(x => x.TaskID == item.ID)
                    .Join(_context.Users,
                    de => de.UserID,
                    user => user.ID,
@@ -530,26 +489,25 @@ namespace Service.Implement
                        user.ID,
                        user.Username
                    })
-                   .Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).ToList();
-                var statusTutorial = _context.Tutorials.Any(x => x.TaskID == item.ID);
-                var tutorialModel = _context.Tutorials.FirstOrDefault(x => x.TaskID == item.ID);
+                   .Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).AsQueryable();
+
+                var statusTutorial =await _context.Tutorials.AnyAsync(x => x.TaskID == item.ID);
+                var tutorialModel =await _context.Tutorials.FirstOrDefaultAsync(x => x.TaskID == item.ID);
                 //var tasksTree = await GetListTree(item.ParentID, item.ID);
                 var arrTasks = FindParentByChild(listTasks, item.ID);
 
-                var levelItem = new TreeViewTask();
-                //Primarykey
-                levelItem.Follow = subModel.Any(x => x.TaskID == item.ID && x.UserID == userid) ? "Yes" : "No";
-
-                levelItem.ID = item.ID;
-                levelItem.PriorityID = item.Priority;
-                levelItem.ProjectName = item.ProjectID == 0 ? "" : _context.Projects.Find(item.ProjectID).Name;
-                levelItem.JobName = item.JobName.IsNotAvailable();
-                levelItem.From = item.DepartmentID > 0 ? levelItem.From = ocModel.Find(item.DepartmentID).Name : levelItem.From = userModel.Find(item.FromWhoID).Username;
-                levelItem.PIC = tagModel.Where(x => x.TaskID == item.ID).Include(x => x.User).Select(x => x.User.Username).ToArray().ToJoin().IsNotAvailable();
-                levelItem.DeputiesList = deputiesList;
+                TreeViewTask levelItem = new TreeViewTask
+                {
+                    Follow =await _context.Follows.AnyAsync(x => x.TaskID == item.ID && x.UserID == userid) ? "Yes" : "No",
+                    ID = item.ID,
+                    PriorityID = item.Priority,
+                    ProjectName = item.ProjectID == 0 ? "" :(await _context.Projects.FindAsync(item.ProjectID)).Name,
+                    JobName = item.JobName.IsNotAvailable()
+                };
+                levelItem.From = item.DepartmentID > 0 ? levelItem.From = _context.OCs.FirstOrDefault(u => u.ID == item.DepartmentID).Name : levelItem.From = _context.Users.FirstOrDefault(u => u.ID == item.FromWhoID).Username;
+                levelItem.PIC = _context.Tags.Where(x => x.TaskID == item.ID).Select(x => x.User.Username).ToArray().ToJoin().IsNotAvailable();
+                levelItem.DeputiesList = deputiesList.ToList();
                 levelItem.DeputyName = deputiesList.Select(x => x.Username).ToArray().ToJoin(" , ").IsNotAvailable();
-
-                //DateTime
                 levelItem.CreatedDate = item.CreatedDate.ToStringFormat(formatCreatedDate).IsNotAvailable();
                 levelItem.DueDateDaily = item.DueDateDaily.ToStringFormatISO(formatDaily).IsNotAvailable();
                 levelItem.DueDateWeekly = item.DueDateWeekly.IsNotAvailable();
@@ -566,17 +524,14 @@ namespace Service.Implement
                 levelItem.ProjectID = item.ProjectID;
                 levelItem.ParentID = item.ParentID;
                 levelItem.state = item.Status == false ? "Undone" : "Done";
-
                 levelItem.Priority = CastPriority(item.Priority);
                 levelItem.PICs = beAssigneds.Select(x => x.ID).ToList();
-
-                levelItem.BeAssigneds = beAssigneds;
+                levelItem.BeAssigneds = beAssigneds.ToList();
                 levelItem.Deputies = deputiesList.Select(_ => _.ID).ToList();
-                levelItem.FromWhere = ocModel.Where(x => x.ID == item.OCID).Select(x => new FromWhere { ID = x.ID, Name = x.Name }).FirstOrDefault() ?? new FromWhere();
-                levelItem.FromWho = userModel.Where(x => x.ID == item.FromWhoID).Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).FirstOrDefault() ?? new BeAssigned();
+                levelItem.FromWhere =await _context.OCs.Where(x => x.ID == item.OCID).Select(x => new FromWhere { ID = x.ID, Name = x.Name }).FirstOrDefaultAsync() ?? new FromWhere();
+                levelItem.FromWho =await _context.Users.Where(x => x.ID == item.FromWhoID).Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).FirstOrDefaultAsync() ?? new BeAssigned();
                 levelItem.JobTypeID = item.JobTypeID;
                 levelItem.periodType = item.periodType;
-
                 levelItem.FromWhoID = item.FromWhoID;
                 levelItem.CreatedBy = item.CreatedBy;
                 levelItem.VideoStatus = statusTutorial;
@@ -585,16 +540,16 @@ namespace Service.Implement
                 levelItem.DueDate = MapDueDateWithPeriod(item);
                 tasks.Add(levelItem);
             }
-            return tasks.OrderByDescending(x => x.ID).ToList();
+            return tasks.OrderByDescending(x => x.ID).ToHashSet();
         }
         public async Task<List<ProjectViewModel>> GetListProject()
         {
             return await _projectService.GetListProject();
         }
 
-        public IEnumerable<TreeViewTask> GetListTreeByParent(List<TreeViewTask> tasks, int parentID, int id)
+        public IEnumerable<TreeViewTask> GetListTreeByParent(HashSet<TreeViewTask> tasks, int parentID, int id)
         {
-            List<TreeViewTask> hierarchy = new List<TreeViewTask>();
+            HashSet<TreeViewTask> hierarchy = new HashSet<TreeViewTask>();
 
             hierarchy = tasks.Where(c => c.ID == id && c.ParentID == parentID)
                             .Select(c => new TreeViewTask
@@ -633,10 +588,7 @@ namespace Service.Implement
                                 periodType = c.periodType,
                                 children = GetChildren(tasks, c.ID)
                             })
-                            .ToList();
-
-
-            HieararchyWalk(hierarchy);
+                            .ToHashSet();
 
             return hierarchy;
         }
@@ -646,97 +598,9 @@ namespace Service.Implement
                .Where(x => (x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false))
                .Include(x => x.User)
                .OrderBy(x => x.Level).ToListAsync();
-            var tasks = GetListTreeViewTask(listTasks, userid);
+            var tasks = await GetListTreeViewTaskAsync(listTasks.ToHashSet(), userid);
 
-            List<TreeViewTask> hierarchy = new List<TreeViewTask>();
-
-            hierarchy = tasks.Where(c => c.ID == id && c.ParentID == parentID)
-                            .Select(c => new TreeViewTask
-                            {
-                                ID = c.ID,
-                                DueDate = c.DueDate,
-                                JobName = c.JobName,
-                                Level = c.Level,
-                                ProjectID = c.ProjectID,
-                                CreatedBy = c.CreatedBy,
-                                CreatedDate = c.CreatedDate,
-                                From = c.From,
-                                ProjectName = c.ProjectName,
-                                state = c.state,
-                                PriorityID = c.PriorityID,
-                                Priority = c.Priority,
-                                Follow = c.Follow,
-                                PIC = c.PIC,
-                                Histories = c.Histories,
-                                PICs = c.PICs,
-                                JobTypeID = c.JobTypeID,
-                                FromWho = c.FromWho,
-                                FromWhere = c.FromWhere,
-                                BeAssigneds = c.BeAssigneds,
-                                Deputies = c.Deputies,
-                                VideoLink = c.VideoLink,
-                                VideoStatus = c.VideoStatus,
-                                DeputiesList = c.DeputiesList,
-                                DueDateDaily = c.DueDateDaily,
-                                DueDateWeekly = c.DueDateWeekly,
-                                DueDateMonthly = c.DueDateMonthly,
-                                SpecificDate = c.SpecificDate,
-                                DeputyName = c.DeputyName,
-                                Tutorial = c.Tutorial,
-                                ModifyDateTime = c.ModifyDateTime,
-                                periodType = c.periodType,
-                                children = GetChildren(tasks, c.ID)
-                            })
-                            .ToList();
-
-
-            HieararchyWalk(hierarchy);
-
-            return hierarchy;
-        }
-        private async Task<IEnumerable<TreeViewTask>> GetListTreeForUndo(int parentID, int id)
-        {
-            var listTasks = await _context.Tasks
-               .Where(x => x.Status == true && x.FinishedMainTask == true)
-               .Include(x => x.User)
-               .OrderBy(x => x.Level).ToListAsync();
-
-            var tasks = new List<TreeViewTask>();
-            foreach (var item in listTasks)
-            {
-                var beAssigneds = _context.Tags.Where(x => x.TaskID == item.ID)
-                     .Include(x => x.User)
-                     .Select(x => new BeAssigned { ID = x.User.ID, Username = x.User.Username }).ToList();
-
-                var levelItem = new TreeViewTask();
-                levelItem.ID = item.ID;
-                levelItem.PIC = string.Join(" , ", _context.Tags.Where(x => x.TaskID == item.ID).Include(x => x.User).Select(x => x.User.Username).ToArray());
-                levelItem.ProjectName = item.ProjectID == 0 ? "" : _context.Projects.Find(item.ProjectID).Name;
-                levelItem.ProjectID = item.ProjectID;
-                levelItem.BeAssigneds = beAssigneds;
-                levelItem.Level = item.Level;
-
-                levelItem.ParentID = item.ParentID;
-                levelItem.Priority = CastPriority(item.Priority);
-                levelItem.PriorityID = item.Priority;
-                levelItem.CreatedDate = String.Format("{0:d MMM, yyyy}", item.CreatedDate);
-                levelItem.User = item.User;
-                levelItem.FromWhere = _context.OCs.Where(x => x.ID == item.OCID).Select(x => new FromWhere { ID = x.ID, Name = x.Name }).FirstOrDefault();
-
-                levelItem.FromWho = _context.Users.Where(x => x.ID == item.FromWhoID).Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).FirstOrDefault();
-                levelItem.JobName = item.JobName.IsNotAvailable();
-                levelItem.state = item.Status == false ? "Undone" : "Done";
-
-                levelItem.From = item.OCID > 0 ? _context.OCs.Find(item.OCID).Name : _context.Users.Find(item.FromWhoID).Username.IsNotAvailable();
-                levelItem.DueDateDaily = item.DueDateDaily.ToParseIso8601().IsNewDateTime() ? "" : String.Format("{0:D}", item.DueDateDaily.ToParseIso8601());
-                levelItem.DueDateWeekly = item.DueDateWeekly;
-                levelItem.DueDateMonthly = item.DueDateMonthly.FindShortDatesOfMonth();
-                levelItem.SpecificDate = item.SpecificDate.ToParseIso8601().IsNewDateTime() ? "" : String.Format("{0:s}", item.SpecificDate.ToParseIso8601());
-
-                tasks.Add(levelItem);
-            }
-
-            List<TreeViewTask> hierarchy = new List<TreeViewTask>();
+            HashSet<TreeViewTask> hierarchy = new HashSet<TreeViewTask>();
 
             hierarchy = tasks.Where(c => c.ID == id && c.ParentID == parentID)
                             .Select(c => new TreeViewTask
@@ -775,13 +639,10 @@ namespace Service.Implement
                                 periodType = c.periodType,
                                 children = GetChildren(tasks, c.ID)
                             })
-                            .ToList();
-
-
-            HieararchyWalk(hierarchy);
-
+                            .ToHashSet();
             return hierarchy;
         }
+
         #endregion
 
         #region LoadData helper
@@ -836,8 +697,6 @@ namespace Service.Implement
         private async System.Threading.Tasks.Task PeriodType(TreeViewTask item, bool isProject)
         {
             string mes = Message(item.periodType, item);
-            string belate = Data.Enum.AlertType.BeLate.ToSafetyString();
-            var task = await _context.Tasks.FindAsync(item.ID);
             switch (item.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
@@ -864,7 +723,7 @@ namespace Service.Implement
                     break;
             }
         }
-        private async System.Threading.Tasks.Task ProjectTaskIsLate(List<TreeViewTask> tasks)
+        private async System.Threading.Tasks.Task ProjectTaskIsLate(HashSet<TreeViewTask> tasks)
         {
 
             foreach (var item in tasks)
@@ -872,14 +731,14 @@ namespace Service.Implement
                 await PeriodType(item, true);
             }
         }
-        private async System.Threading.Tasks.Task RoutineTaskIsLate(List<TreeViewTask> tasks)
+        private async System.Threading.Tasks.Task RoutineTaskIsLate(HashSet<TreeViewTask> tasks)
         {
             foreach (var item in tasks)
             {
                 await PeriodType(item, false);
             }
         }
-        private async System.Threading.Tasks.Task AbnormalTaskIsLate(List<TreeViewTask> tasks)
+        private async System.Threading.Tasks.Task AbnormalTaskIsLate(HashSet<TreeViewTask> tasks)
         {
 
             foreach (var item in tasks)
@@ -914,57 +773,22 @@ namespace Service.Implement
             }
             return result;
         }
-        private bool CheckNotification(Data.Models.Task task)
-        {
-            return _context.Notifications.Any(x => x.TaskID == task.ID && x.Function.Equals(Data.Enum.AlertType.BeLate.ToSafetyString()));
-        }
+
         private bool CheckNotification(int id)
         {
             return _context.Notifications.Any(x => x.TaskID == id && x.Function.Equals(Data.Enum.AlertType.BeLate.ToSafetyString()));
         }
-        //private async System.Threading.Tasks.Task DailyTask(List<Data.Models.Task> tasks)
-        //{
-        //    var daily = tasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Daily)).ToList();
-        //    var unCompletedTaskList = new List<Data.Models.Task>();
-        //    foreach (var item in daily)
-        //    {
-        //        if (!CheckCompletedTask(item) && !CheckNotification(item))
-        //        {
-        //            unCompletedTaskList.Add(item);
-        //        }
-        //    }
-        //    foreach (var item in unCompletedTaskList)
-        //    {
-        //        // Tim root cua task hien tai
-        //        var root = ToFindParentByChild(daily, item.ID);
-        //        // Tim tat ca cac con cua task root vua tim dc
-        //        var tasksList = await AsTreeView(root.ParentID, root.ID);
-        //        //Tim tat ca con chau
-        //        var taskDescendants = GetAllTaskDescendants(tasksList).Select(x => x.ID).ToArray();
-        //        var seftAndDescendants = await _context.Tasks.Where(x => taskDescendants.Contains(x.ID)).ToListAsync();
-        //        if (seftAndDescendants.Count == 1)
-        //        {
-        //            // Clone task nay luon
-        //            await CloneSingleTask(item);
-        //        }
-        //        if (seftAndDescendants.Count > 1)
-        //        {
-        //            // clone theo cha con luon
-        //            await CloneMultiTask(seftAndDescendants);
-        //        }
-        //    }
-        //}
+
         public async System.Threading.Tasks.Task TaskListIsLate(int userid)
         {
             var pics = await _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
             var deputies = await _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
             //Lay tat ca list task chua hoan thanh va task co con chua hoan thnah
             // Tim tat ca task dc giao ma chua hoan thanh trong ngay hien tai
-            var listTasks = await _context.Tasks
-                            .Where(x => pics.Union(deputies).Contains(x.ID) && x.Status == false)
-                            .Include(x => x.User)
-                            .OrderBy(x => x.Level).ToListAsync();
-            var unCompletedTaskList = new List<Data.Models.Task>();
+            var taskModel = await _context.Tasks.Include(x => x.User).ToListAsync();
+            var listTasks = taskModel.Where(x => pics.Union(deputies).Contains(x.ID) && x.Status == false)
+                            .OrderBy(x => x.Level).ToHashSet();
+            var unCompletedTaskList = new HashSet<Data.Models.Task>();
             var currentDate = DateTime.Now.Date;
             //Kiem tra late task
             foreach (var item in listTasks)
@@ -994,7 +818,7 @@ namespace Service.Implement
             foreach (var item in unCompletedTaskList)
             {
                 // Tim root cua task hien tai
-                var root = ToFindParentByChild(listTasks, item.ID);
+                var root = ToFindParentByChild(taskModel.ToHashSet(), item.ID);
                 // Tim tat ca cac con cua task root vua tim dc
                 var tasksList = await AsTreeView(root.ParentID, root.ID);
                 //Tim tat ca con chau
@@ -1012,12 +836,13 @@ namespace Service.Implement
                 }
             }
             //Alert
-            var tasks = GetListTreeViewTask(unCompletedTaskList, userid).Where(x => x.PICs.Count > 0).ToList();
+            var tasks = await GetListTreeViewTaskAsync(unCompletedTaskList, userid);
+            tasks = tasks.Where(x => x.PICs.Count > 0).ToHashSet();
             try
             {
-                var projects = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Project).ToList();
-                var routine = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Routine).ToList();
-                var abnormal = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Abnormal).ToList();
+                var projects = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Project).ToHashSet();
+                var routine = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Routine).ToHashSet();
+                var abnormal = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Abnormal).ToHashSet();
                 await ProjectTaskIsLate(projects);
                 await RoutineTaskIsLate(routine);
                 await AbnormalTaskIsLate(abnormal);
@@ -1110,48 +935,50 @@ namespace Service.Implement
                 ocs
             };
         }
-        public async Task<List<TreeViewTask>> GetListTree()
+        public async Task<HashSet<TreeViewTask>> GetListTree()
         {
             var listTasks = await _context.Tasks
                 .Where(x => x.Status == false)
                 .Include(x => x.User)
                 .OrderBy(x => x.Level).ToListAsync();
 
-            var tasks = new List<TreeViewTask>();
+            var tasks = new HashSet<TreeViewTask>();
             foreach (var item in listTasks)
             {
                 var beAssigneds = _context.Tags.Where(x => x.TaskID == item.ID)
                      .Include(x => x.User)
                      .Select(x => new BeAssigned { ID = x.User.ID, Username = x.User.Username }).ToList();
 
-                var levelItem = new TreeViewTask();
-                levelItem.ID = item.ID;
-                levelItem.PIC = string.Join(" , ", _context.Tags.Where(x => x.TaskID == item.ID).Include(x => x.User).Select(x => x.User.Username).ToArray());
-                levelItem.ProjectName = item.ProjectID == 0 ? "" : _context.Projects.Find(item.ProjectID).Name;
-                levelItem.ProjectID = item.ProjectID;
-                levelItem.BeAssigneds = beAssigneds;
-                levelItem.Level = item.Level;
+                var levelItem = new TreeViewTask
+                {
+                    ID = item.ID,
+                    PIC = string.Join(" , ", _context.Tags.Where(x => x.TaskID == item.ID).Include(x => x.User).Select(x => x.User.Username).ToArray()),
+                    ProjectName = item.ProjectID == 0 ? "" : _context.Projects.Find(item.ProjectID).Name,
+                    ProjectID = item.ProjectID,
+                    BeAssigneds = beAssigneds,
+                    Level = item.Level,
 
-                levelItem.ParentID = item.ParentID;
-                levelItem.Priority = CastPriority(item.Priority);
-                levelItem.PriorityID = item.Priority;
-                levelItem.CreatedDate = String.Format("{0:d MMM, yyyy}", item.CreatedDate);
-                levelItem.User = item.User;
-                levelItem.FromWhere = _context.OCs.Where(x => x.ID == item.OCID).Select(x => new FromWhere { ID = x.ID, Name = x.Name }).FirstOrDefault();
+                    ParentID = item.ParentID,
+                    Priority = CastPriority(item.Priority),
+                    PriorityID = item.Priority,
+                    CreatedDate = String.Format("{0:d MMM, yyyy}", item.CreatedDate),
+                    User = item.User,
+                    FromWhere = _context.OCs.Where(x => x.ID == item.OCID).Select(x => new FromWhere { ID = x.ID, Name = x.Name }).FirstOrDefault(),
 
-                levelItem.FromWho = _context.Users.Where(x => x.ID == item.FromWhoID).Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).FirstOrDefault();
-                levelItem.JobName = item.JobName.IsNotAvailable();
-                levelItem.state = item.Status == false ? "Undone" : "Done";
-                levelItem.From = item.OCID > 0 ? _context.OCs.Find(item.OCID).Name : _context.Users.Find(item.FromWhoID).Username.IsNotAvailable();
-                levelItem.DueDateDaily = item.DueDateDaily.ToParseIso8601().IsNewDateTime() ? "" : String.Format("{0:D}", item.DueDateDaily.ToParseIso8601());
-                levelItem.DueDateWeekly = item.DueDateWeekly;
-                levelItem.DueDateMonthly = item.DueDateMonthly.FindShortDatesOfMonth();
-                levelItem.SpecificDate = item.SpecificDate.ToParseIso8601().IsNewDateTime() ? "" : String.Format("{0:s}", item.SpecificDate.ToParseIso8601());
+                    FromWho = _context.Users.Where(x => x.ID == item.FromWhoID).Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).FirstOrDefault(),
+                    JobName = item.JobName.IsNotAvailable(),
+                    state = item.Status == false ? "Undone" : "Done",
+                    From = item.OCID > 0 ? _context.OCs.Find(item.OCID).Name : _context.Users.Find(item.FromWhoID).Username.IsNotAvailable(),
+                    DueDateDaily = item.DueDateDaily.ToParseIso8601().IsNewDateTime() ? "" : String.Format("{0:D}", item.DueDateDaily.ToParseIso8601()),
+                    DueDateWeekly = item.DueDateWeekly,
+                    DueDateMonthly = item.DueDateMonthly.FindShortDatesOfMonth(),
+                    SpecificDate = item.SpecificDate.ToParseIso8601().IsNewDateTime() ? "" : String.Format("{0:s}", item.SpecificDate.ToParseIso8601())
+                };
 
                 tasks.Add(levelItem);
             }
 
-            List<TreeViewTask> hierarchy = new List<TreeViewTask>();
+            HashSet<TreeViewTask> hierarchy = new HashSet<TreeViewTask>();
 
             hierarchy = tasks.Where(c => c.ParentID == 0)
                             .Select(c => new TreeViewTask
@@ -1190,59 +1017,9 @@ namespace Service.Implement
                                 periodType = c.periodType,
                                 children = GetChildren(tasks, c.ID)
                             })
-                            .ToList();
-
-
-            HieararchyWalk(hierarchy);
-
+                            .ToHashSet();
             return hierarchy;
         }
-        private IEnumerable<TreeViewTask> FindListTreeByParentID(List<TreeViewTask> tasks, int parentID, int id)
-        {
-
-            List<TreeViewTask> hierarchy = new List<TreeViewTask>();
-
-            hierarchy = tasks.Where(c => c.ID == id && c.ParentID == parentID)
-                            .Select(c => new TreeViewTask
-                            {
-                                ID = c.ID,
-                                DueDate = c.DueDate,
-                                JobName = c.JobName,
-                                Level = c.Level,
-                                ProjectID = c.ProjectID,
-                                CreatedBy = c.CreatedBy,
-                                CreatedDate = c.CreatedDate,
-                                From = c.From,
-                                ProjectName = c.ProjectName,
-                                state = c.state,
-                                PriorityID = c.PriorityID,
-                                Priority = c.Priority,
-                                Follow = c.Follow,
-                                PIC = c.PIC,
-                                Histories = c.Histories,
-                                PICs = c.PICs,
-                                JobTypeID = c.JobTypeID,
-                                FromWho = c.FromWho,
-                                FromWhere = c.FromWhere,
-                                BeAssigneds = c.BeAssigneds,
-                                Deputies = c.Deputies,
-                                VideoLink = c.VideoLink,
-                                VideoStatus = c.VideoStatus,
-                                DeputiesList = c.DeputiesList,
-                                DueDateDaily = c.DueDateDaily,
-                                DueDateWeekly = c.DueDateWeekly,
-                                DueDateMonthly = c.DueDateMonthly,
-                                SpecificDate = c.SpecificDate,
-                                DeputyName = c.DeputyName,
-                                Tutorial = c.Tutorial,
-                                periodType = c.periodType,
-                                ModifyDateTime = c.ModifyDateTime,
-                                children = GetChildren(tasks, c.ID)
-                            })
-                            .ToList();
-            return hierarchy;
-        }
-
         public async Task<object> GetDeputies()
         {
             return await _context.Users.Where(x => x.Username != "admin").Select(x => new { x.Username, x.ID }).ToListAsync();
@@ -1407,7 +1184,7 @@ namespace Service.Implement
             }
             return task;
         }
-        private Data.Enum.JobType checkJobType(CreateTaskViewModel task)
+        private Data.Enum.JobType CheckJobType(CreateTaskViewModel task)
         {
             switch (task.JobTypeID)
             {
@@ -1644,7 +1421,7 @@ namespace Service.Implement
             {
                 task.DueDate = task.DueDate.ToStringFormatDateTime();
                 var listUsers = new List<int>();
-                var jobTypeID = checkJobType(task);
+                var jobTypeID = CheckJobType(task);
                 if (!await _context.Tasks.AnyAsync(x => x.ID == task.ID))
                 {
                     if (jobTypeID == Data.Enum.JobType.Unknown)
@@ -1755,7 +1532,7 @@ namespace Service.Implement
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
 
@@ -1773,26 +1550,6 @@ namespace Service.Implement
         }
         #endregion
 
-        private async Task<Data.Models.Task> UpdatePeriod(Data.Models.Task task)
-        {
-            var update = await _context.Tasks.FindAsync(task.ID);
-            switch (task.periodType)
-            {
-                case Data.Enum.PeriodType.Daily:
-                    update.DueDateDaily = PeriodDaily(task).ToStringFormatDateTime();
-                    break;
-                case Data.Enum.PeriodType.Weekly:
-                    update.DueDateWeekly = PeriodWeekly(task).ToStringFormatDateTime();
-                    break;
-                case Data.Enum.PeriodType.Monthly:
-                    update.DueDateMonthly = PeriodMonthly(task).ToStringFormatDateTime();
-                    break;
-                default:
-                    break;
-            }
-            await _context.SaveChangesAsync();
-            return update;
-        }
         private async System.Threading.Tasks.Task ClonePIC(int oldTaskid, int newTaskID)
         {
             var pic = _context.Tags.Where(x => x.TaskID == oldTaskid).ToList();
@@ -1869,7 +1626,8 @@ namespace Service.Implement
                 SpecificDate = task.SpecificDate,
                 Code = task.Code,
                 periodType = task.periodType,
-                CreatedBy = task.CreatedBy
+                CreatedBy = task.CreatedBy,
+                Level = task.Level
             };
             switch (task.periodType)
             {
@@ -2010,19 +1768,19 @@ namespace Service.Implement
             switch (task.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
-                    var date = task.DueDateDaily.ToParseStringDateTime().Date;
-                   // var result = PeriodComparator(date);
+                    // var date = task.DueDateDaily.ToParseStringDateTime().Date;
+                    // var result = PeriodComparator(date);
                     message = "";
                     return true;
                 case Data.Enum.PeriodType.Weekly:
                     var weekly = task.DueDateWeekly.ToParseStringDateTime().Date.Subtract(TimeSpan.FromDays(3));
                     var resultW = PeriodComparator(weekly);
-                    message = $"Today is on {currenDate}. You can only finish this task from {task.DueDateWeekly.ToParseStringDateTime().Subtract(TimeSpan.FromDays(3)).ToString("dd MMMM, yyyy")} to {task.DueDateWeekly.ToParseStringDateTime().ToString("dd MMMM, yyyy")}";
+                    message = $"Today is on {currenDate}. You can only finish this task from {task.DueDateWeekly.ToParseStringDateTime().Subtract(TimeSpan.FromDays(3)):dd MMMM, yyyy} to {task.DueDateWeekly.ToParseStringDateTime():dd MMMM, yyyy}";
                     return resultW > 0 ? true : false;
                 case Data.Enum.PeriodType.Monthly:
                     var monthly = task.DueDateMonthly.ToParseStringDateTime().Date.Subtract(TimeSpan.FromDays(10));
                     var resultM = PeriodComparator(monthly);
-                    message = $"Today is on {currenDate}. You can only finish this task from {task.DueDateMonthly.ToParseStringDateTime().Subtract(TimeSpan.FromDays(10)).ToString("dd MMMM, yyyy")} to {task.DueDateMonthly.ToParseStringDateTime().ToString("dd MMMM, yyyy")}";
+                    message = $"Today is on {currenDate}. You can only finish this task from {task.DueDateMonthly.ToParseStringDateTime().Subtract(TimeSpan.FromDays(10)):dd MMMM, yyyy} to {task.DueDateMonthly.ToParseStringDateTime():dd MMMM, yyyy}";
                     return resultM > 0 ? true : false;
                 case Data.Enum.PeriodType.SpecificDate:
                     message = "";
@@ -2033,7 +1791,7 @@ namespace Service.Implement
             }
         }
         #region Helper For Done
-        private Data.Models.Task ToFindParentByChild(IEnumerable<Data.Models.Task> rootNodes, int taskID)
+        private Data.Models.Task ToFindParentByChild(HashSet<Data.Models.Task> rootNodes, int taskID)
         {
             var parentItem = rootNodes.FirstOrDefault(x => x.ID.Equals(taskID));
             if (parentItem == null)
@@ -2050,20 +1808,22 @@ namespace Service.Implement
                .Where(x => (x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false))
                .Include(x => x.User)
                .OrderBy(x => x.Level).ToListAsync();
-            var tasks = new List<TreeViewTask>();
+            var tasks = new HashSet<TreeViewTask>();
             foreach (var item in listTasks)
             {
                 var beAssigneds = _context.Tags.Where(x => x.TaskID == item.ID)
                      .Include(x => x.User)
                      .Select(x => new BeAssigned { ID = x.User.ID, Username = x.User.Username }).ToList();
-                var levelItem = new TreeViewTask();
-                levelItem.ID = item.ID;
-                levelItem.Level = item.Level;
-                levelItem.ParentID = item.ParentID;
+                TreeViewTask levelItem = new TreeViewTask
+                {
+                    ID = item.ID,
+                    Level = item.Level,
+                    ParentID = item.ParentID
+                };
                 tasks.Add(levelItem);
             }
 
-            List<TreeViewTask> hierarchy = new List<TreeViewTask>();
+            HashSet<TreeViewTask> hierarchy = new HashSet<TreeViewTask>();
 
             hierarchy = tasks.Where(c => c.ID == id && c.ParentID == parentID)
                             .Select(c => new TreeViewTask
@@ -2102,7 +1862,7 @@ namespace Service.Implement
                                 periodType = c.periodType,
                                 children = GetChildren(tasks, c.ID)
                             })
-                            .ToList();
+                            .ToHashSet();
             return hierarchy;
         }
         public IEnumerable<TreeViewTask> GetAllTaskDescendants(IEnumerable<TreeViewTask> rootNodes)
@@ -2262,7 +2022,8 @@ namespace Service.Implement
                 {
                     return Tuple.Create(false, false, "This task was completed!");
                 }
-                var rootTask = ToFindParentByChild(_context.Tasks, item.ID);
+                var tasksForRootTask = await _context.Tasks.ToListAsync();
+                var rootTask = ToFindParentByChild(tasksForRootTask.ToHashSet(), item.ID);
                 var tasks = await AsTreeView(rootTask.ParentID, rootTask.ID);
                 //Tim tat ca con chau
                 var taskDescendants = GetAllTaskDescendants(tasks).Select(x => x.ID).ToArray();
@@ -2413,17 +2174,19 @@ namespace Service.Implement
             var listTasks = await _context.Tasks
                .Include(x => x.User)
                .OrderBy(x => x.Level).ToListAsync();
-            var tasks = new List<TreeViewTask>();
+            var tasks = new HashSet<TreeViewTask>();
             foreach (var item in listTasks)
             {
-                var levelItem = new TreeViewTask();
-                levelItem.ID = item.ID;
-                levelItem.Level = item.Level;
-                levelItem.ParentID = item.ParentID;
+                var levelItem = new TreeViewTask
+                {
+                    ID = item.ID,
+                    Level = item.Level,
+                    ParentID = item.ParentID
+                };
                 tasks.Add(levelItem);
             }
 
-            List<TreeViewTask> hierarchy = new List<TreeViewTask>();
+            HashSet<TreeViewTask> hierarchy = new HashSet<TreeViewTask>();
 
             hierarchy = tasks.Where(c => c.ID == id && c.ParentID == parentID)
                             .Select(c => new TreeViewTask
@@ -2434,7 +2197,7 @@ namespace Service.Implement
                                 state = c.state,
                                 children = GetChildren(tasks, c.ID)
                             })
-                            .ToList();
+                            .ToHashSet();
             return hierarchy;
         }
         public async Task<object> Undo(int id)
@@ -2443,8 +2206,11 @@ namespace Service.Implement
                 return false;
             try
             {
+                var listTasks = await _context.Tasks
+                 .Include(x => x.User)
+                 .OrderBy(x => x.Level).ToListAsync();
                 var item = await _context.Tasks.FindAsync(id);
-                var rootTask = ToFindParentByChild(_context.Tasks, item.ID);
+                var rootTask = ToFindParentByChild(listTasks.ToHashSet(), item.ID);
                 var tasks = await AsTreeView(rootTask.ParentID, rootTask.ID);
                 //Tim tat ca con chau
                 var taskDescendants = GetAllTaskDescendants(tasks).Select(x => x.ID).ToList();
@@ -2488,41 +2254,41 @@ namespace Service.Implement
             }
             return false;
         }
-        private List<Data.Models.Task> Fillter(List<Data.Models.Task> listTasks, string sort, string priority, int userid, string startDate, string endDate, string weekdays, string monthly, string quarterly)
+        private HashSet<Data.Models.Task> Fillter(HashSet<Data.Models.Task> listTasks, string sort, string priority, int userid, string startDate, string endDate, string weekdays, string monthly, string quarterly)
         {
             if (!startDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
             {
                 var timespan = new TimeSpan(0, 0, 0);
                 var start = DateTime.ParseExact(startDate, "MM-dd-yyyy", CultureInfo.InvariantCulture).Date;
                 var end = DateTime.ParseExact(endDate, "MM-dd-yyyy", CultureInfo.InvariantCulture).Date;
-                listTasks = listTasks.Where(x => x.CreatedDate.Date >= start.Date && x.CreatedDate.Date <= end.Date).ToList();
+                listTasks = listTasks.Where(x => x.CreatedDate.Date >= start.Date && x.CreatedDate.Date <= end.Date).ToHashSet();
             }
 
             //Loc theo weekdays
             if (!weekdays.IsNullOrEmpty())
             {
-                listTasks = listTasks.Where(x => x.DueDateWeekly.ToSafetyString().ToLower().Equals(weekdays.ToLower())).ToList();
+                listTasks = listTasks.Where(x => x.DueDateWeekly.ToSafetyString().ToLower().Equals(weekdays.ToLower())).ToHashSet();
             }
             //loc theo thang
             if (!monthly.IsNullOrEmpty())
             {
-                listTasks = listTasks.Where(x => x.DueDateMonthly.ToSafetyString().ToLower().Equals(monthly.ToLower())).ToList();
+                listTasks = listTasks.Where(x => x.DueDateMonthly.ToSafetyString().ToLower().Equals(monthly.ToLower())).ToHashSet();
             }
 
             if (!sort.IsNullOrEmpty())
             {
                 sort = sort.ToLower();
                 if (sort == Data.Enum.JobType.Project.ToSafetyString().ToLower())
-                    listTasks = listTasks.Where(x => x.JobTypeID.Equals(Data.Enum.JobType.Project)).OrderByDescending(x => x.ProjectID).ToList();
+                    listTasks = listTasks.Where(x => x.JobTypeID.Equals(Data.Enum.JobType.Project)).OrderByDescending(x => x.ProjectID).ToHashSet();
                 if (sort == Data.Enum.JobType.Routine.ToSafetyString().ToLower())
-                    listTasks = listTasks.Where(x => x.JobTypeID.Equals(Data.Enum.JobType.Routine)).OrderByDescending(x => x.CreatedDate).ToList();
+                    listTasks = listTasks.Where(x => x.JobTypeID.Equals(Data.Enum.JobType.Routine)).OrderByDescending(x => x.CreatedDate).ToHashSet();
                 if (sort == Data.Enum.JobType.Abnormal.ToSafetyString().ToLower())
-                    listTasks = listTasks.Where(x => x.JobTypeID.Equals(Data.Enum.JobType.Abnormal)).OrderByDescending(x => x.CreatedDate).ToList();
+                    listTasks = listTasks.Where(x => x.JobTypeID.Equals(Data.Enum.JobType.Abnormal)).OrderByDescending(x => x.CreatedDate).ToHashSet();
             }
             if (!priority.IsNullOrEmpty())
             {
                 priority = priority.ToUpper();
-                listTasks = listTasks.Where(x => x.Priority.Equals(priority)).ToList();
+                listTasks = listTasks.Where(x => x.Priority.Equals(priority)).ToHashSet();
             }
             return listTasks;
         }
@@ -2584,39 +2350,60 @@ namespace Service.Implement
             }
             return listTasks;
         }
-        public async Task<List<HierarchyNode<TreeViewTask>>> Todolist(string sort = "", string priority = "", int userid = 0, string startDate = "", string endDate = "", string weekdays = "", string monthly = "", string quarterly = "")
+        private async Task<List<int>> GetProjectTasksByUserID(int userid)
+        {
+            var managers = await _context.Managers.Where(x => x.UserID == userid)
+                    .Join(
+                    _context.Tasks,
+                    m => m.ProjectID,
+                    t => t.ProjectID,
+                    (m, t) => new
+                    {
+                        m,
+                        t
+                    }
+                    ).Select(x => x.t.ID).ToListAsync();
+            var members = await _context.TeamMembers.Where(x => x.UserID == userid)
+                .Join(
+                _context.Tasks,
+                m => m.ProjectID,
+                t => t.ProjectID,
+                (m, t) => new
+                {
+                    m,
+                    t
+                }
+                ).Select(x => x.t.ID).ToListAsync();
+            var projectTasksList = managers.Union(members).ToList();
+            return projectTasksList;
+        }
+        public async Task<HashSet<HierarchyNode<TreeViewTask>>> Todolist(string sort = "", string priority = "", int userid = 0, string startDate = "", string endDate = "", string weekdays = "", string monthly = "", string quarterly = "")
         {
 
-            var pics = _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
-            var deputies = _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
-
-            var managers = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
-            var members = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
-
-            var UserProjectList = managers.Union(members).ToList();
-            var projectTasksList = await _context.Tasks.Where(x => UserProjectList.Contains(x.ProjectID)).Select(x => x.ID).ToListAsync();
-
-            var allTasksList = pics.Union(deputies).Union(projectTasksList).Distinct().ToList();
-            var listTasks = await _context.Tasks.Where(x => allTasksList.Contains(x.ID) || x.FromWhoID == userid)
-            .Include(x => x.User).ToListAsync();
-
-            var daily = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0).ToList();
-            var weekly = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Weekly)).ToList();
-            var mon = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Monthly)).ToList();
-            var specificDate = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.SpecificDate)).ToList();
-            var allList = daily.Union(weekly).Union(mon).Union(specificDate).ToList();
-            var listTasksFillter = Fillter(allList, sort, priority, userid, startDate, endDate, weekdays, monthly, quarterly);
+            var pics = await _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
+            var deputies = await _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
+            var projectTasksList =await GetProjectTasksByUserID(userid);
+            var allTasksList = pics.Union(deputies).Union(projectTasksList).Distinct();
+            var listTasks = (await _context.Tasks
+                   .Where(x => allTasksList.Contains(x.ID) || x.FromWhoID == userid).Include(x => x.User).ToListAsync()).ToHashSet();
+            listTasks = listTasks.Where(x =>
+             x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0
+             || x.periodType.Equals(Data.Enum.PeriodType.Weekly)
+             || x.periodType.Equals(Data.Enum.PeriodType.Monthly)
+             || x.periodType.Equals(Data.Enum.PeriodType.SpecificDate)
+             ).ToHashSet();
+            var listTasksFillter = Fillter(listTasks.ToHashSet(), sort, priority, userid, startDate, endDate, weekdays, monthly, quarterly);
             //Flatten task
-            var tasks = GetListTreeViewTask(listTasksFillter, userid);
+            var tasks = await GetListTreeViewTaskAsync(listTasksFillter, userid);
             var tree = tasks.Where(x => x.PICs.Count > 0)
              .AsHierarchy(x => x.ID, x => x.ParentID)
              .Where(x => x.Entity.Level == 1 && x.Entity.state == "Undone")
-             .ToList();
+             .ToHashSet();
 
-            var flatten = tree.Flatten(x => x.ChildNodes).ToList();
+            var flatten = tree.Flatten(x => x.ChildNodes).ToHashSet();
             var itemWithOutParent = tasks.Where(x => !flatten.Select(x => x.Entity.ID).Contains(x.ID));
-            var map = _mapper.Map<List<HierarchyNode<TreeViewTask>>>(itemWithOutParent).ToList();
-            tree = tree.Concat(map).Where(x => x.Entity.state == "Undone").ToList();
+            var map = _mapper.Map<HashSet<HierarchyNode<TreeViewTask>>>(itemWithOutParent);
+            tree = tree.Concat(map).Where(x => x.Entity.state == "Undone").ToHashSet();
             return tree;
             throw new NotImplementedException("Server error!!!");
         }
@@ -2625,35 +2412,29 @@ namespace Service.Implement
 
             try
             {
-                var pics = _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
-                var deputies = _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
-
-                var managers = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
-                var members = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
-
-                var UserProjectList = managers.Union(members).ToList();
-                var projectTasksList = await _context.Tasks.Where(x => UserProjectList.Contains(x.ProjectID)).Select(x => x.ID).ToListAsync();
-
+                var pics = await _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
+                var deputies = await _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
+                var projectTasksList = await GetProjectTasksByUserID(userid);
                 var allTasksList = pics.Union(deputies).Union(projectTasksList).Distinct().ToList();
-                var listTasks = await _context.Tasks.Where(x => allTasksList.Contains(x.ID) || x.FromWhoID == userid)
-                //.Where(x => ((x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false)) && x.JobTypeID != Data.Enum.JobType.Project || (x.JobTypeID == Data.Enum.JobType.Project && x.Status == false && x.FinishedMainTask == false || x.JobTypeID == Data.Enum.JobType.Project && x.Status == true && x.FinishedMainTask == false))
-                .Include(x => x.User).ToListAsync();
+                var listTasks = await _context.Tasks
+                    .Where(x => allTasksList.Contains(x.ID) || x.FromWhoID == userid).Include(x => x.User).ToListAsync();
+                listTasks = listTasks.Where(x =>
+                 x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0
+                 || x.periodType.Equals(Data.Enum.PeriodType.Weekly)
+                 || x.periodType.Equals(Data.Enum.PeriodType.Monthly)
+                 || x.periodType.Equals(Data.Enum.PeriodType.SpecificDate)
+                 ).ToList();
 
-                var daily = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0).ToList();
-                var weekly = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Weekly)).ToList();
-                var mon = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Monthly)).ToList();
-                var specificDate = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.SpecificDate)).ToList();
-                var allList = daily.Union(weekly).Union(mon).Union(specificDate).ToList();
                 if (!beAssigned.IsNullOrEmpty() && beAssigned == "BeAssigned")
                 {
-                    allList = listTasks.Where(x => pics.Contains(x.ID)).ToList();
+                    listTasks = listTasks.Where(x => pics.Contains(x.ID)).ToList();
                 }
                 if (!assigned.IsNullOrEmpty() && assigned == "Assigned")
                 {
-                    allList = listTasks.Where(x => x.FromWhoID.Equals(userid)).ToList();
+                    listTasks = listTasks.Where(x => x.FromWhoID.Equals(userid)).ToList();
                 }
                 //Flatten task
-                var tasks = GetListTreeViewTask(allList, userid);
+                var tasks = await GetListTreeViewTaskAsync(listTasks.ToHashSet(), userid);
                 var tree = tasks.Where(x => x.PICs.Count > 0)
                  .AsHierarchy(x => x.ID, x => x.ParentID)
                  .Where(x => x.Entity.Level == 1 && x.Entity.state == "Undone")
@@ -2667,38 +2448,29 @@ namespace Service.Implement
             }
             catch (Exception ex)
             {
-
                 return new List<HierarchyNode<TreeViewTask>>();
             }
 
         }
+      
         public async Task<List<HierarchyNode<TreeViewTask>>> TodolistSortBy(Data.Enum.Status status, int userid)
         {
-
             try
             {
-                var pics = _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
-                var deputies = _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
-
-                var managers = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
-                var members = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
-
-                var UserProjectList = managers.Union(members).ToList();
-                var projectTasksList = await _context.Tasks.Where(x => UserProjectList.Contains(x.ProjectID)).Select(x => x.ID).ToListAsync();
-
+                var pics = await _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
+                var deputies = await _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
+                var projectTasksList = await GetProjectTasksByUserID(userid);
                 var allTasksList = pics.Union(deputies).Union(projectTasksList).Distinct().ToList();
-                var listTasks = await _context.Tasks.Where(x => allTasksList.Contains(x.ID) || x.FromWhoID == userid)
-                .Include(x => x.User).ToListAsync();
-                var allListTest = listTasks.Select(x => x.ID).ToList();
-
-                var daily = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0).ToList();
-                var weekly = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Weekly)).ToList();
-                var mon = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Monthly)).ToList();
-                var specificDate = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.SpecificDate)).ToList();
-                var allList = daily.Union(weekly).Union(mon).Union(specificDate).ToList();
-
+                var listTasks = await _context.Tasks
+                     .Where(x => allTasksList.Contains(x.ID) || x.FromWhoID == userid).Include(x => x.User).ToListAsync();
+                listTasks = listTasks.Where(x =>
+                 x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0
+                 || x.periodType.Equals(Data.Enum.PeriodType.Weekly)
+                 || x.periodType.Equals(Data.Enum.PeriodType.Monthly)
+                 || x.periodType.Equals(Data.Enum.PeriodType.SpecificDate)
+                 ).ToList();
                 //Flatten task
-                var tasks = GetListTreeViewTask(allList, userid);
+                var tasks = await GetListTreeViewTaskAsync(listTasks.ToHashSet(), userid);
                 var tree = tasks.Where(x => x.PICs.Count > 0)
                  .AsHierarchy(x => x.ID, x => x.ParentID)
                  .ToList();
@@ -2734,33 +2506,28 @@ namespace Service.Implement
             var user = await _context.Users.FindAsync(userid);
             if (ocid == 0)
                 return new List<HierarchyNode<TreeViewTask>>();
-            var pics = _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
-            var deputies = _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
+            var pics = await _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
+            var deputies = await _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
 
-            var managers = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
-            var members = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
-
-            var UserProjectList = managers.Union(members).ToList();
-            var projectTasksList = await _context.Tasks.Where(x => UserProjectList.Contains(x.ProjectID)).Select(x => x.ID).ToListAsync();
-
-            var allTasksList = pics.Union(deputies).Union(projectTasksList).Distinct().ToList();
+            var allTasksList = pics.Union(deputies).Distinct().ToList();
 
             var listTasks = await _context.Tasks
-                .Where(x => allTasksList.Contains(x.ID) || x.FromWhoID == userid || x.CreatedBy == userid)
-                .Where(x => x.OCID.Equals(ocid) && x.JobTypeID.Equals(jobtype))
-                .Include(x => x.User)
+                .Where(x => x.OCID.Equals(ocid) && x.JobTypeID.Equals(jobtype)).Include(x => x.User)
                 .OrderBy(x => x.Level).ToListAsync();
+            listTasks = listTasks.Where(x => allTasksList.Contains(x.ID) || x.FromWhoID == userid || x.CreatedBy == userid)
+                .ToList();
+            listTasks = listTasks.Where(x =>
+                x.Status == false && x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0
+                || x.periodType.Equals(Data.Enum.PeriodType.Weekly)
+                || x.periodType.Equals(Data.Enum.PeriodType.Monthly)
+                )
+                .ToList();
 
             //sort
             listTasks = SortRoutine(listTasks, sort, priority);
 
-            var daily = listTasks.Where(x => x.Status == false && x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0).ToList();
-            var weekly = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Weekly)).ToList();
-            var mon = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Monthly)).ToList();
-            var specificDate = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.SpecificDate)).ToList();
-            var allList = daily.Union(weekly).Union(mon).Union(specificDate).ToList();
             //Duoi nay la load theo tree view con nao thi cha do
-            var tasks = GetListTreeViewTask(allList, userid);
+            var tasks = await GetListTreeViewTaskAsync(listTasks.ToHashSet(), userid);
             var tree = tasks
                 .AsEnumerable()
                 .AsHierarchy(x => x.ID, x => x.ParentID)
@@ -2779,31 +2546,24 @@ namespace Service.Implement
             var jobtype = Data.Enum.JobType.Abnormal;
             if (ocid == 0)
                 return new List<HierarchyNode<TreeViewTask>>();
-            var pics = _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
-            var deputies = _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
+            var pics = await _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
+            var deputies = await _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
 
-            var managers = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
-            var members = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
-
-            var UserProjectList = managers.Union(members).ToList();
-            var projectTasksList = await _context.Tasks.Where(x => UserProjectList.Contains(x.ProjectID)).Select(x => x.ID).ToListAsync();
-
-            var allTasksList = pics.Union(deputies).Union(projectTasksList).Distinct().ToList();
+            var allTasksList = pics.Union(deputies).Distinct().ToList();
             //Lay tat ca task theo jobtype la abnormal va oc
             var listTasks = await _context.Tasks
-                .Where(x => allTasksList.Contains(x.ID) || x.FromWhoID == userid || x.CreatedBy == userid)
                 .Where(x => x.OCID.Equals(ocid) && x.JobTypeID.Equals(jobtype))
                 .Include(x => x.User)
-                .OrderBy(x => x.Level).ToListAsync();
+                .OrderByDescending(x => x.ID)
+                .ToListAsync();
+            listTasks = listTasks.Where(x => allTasksList.Contains(x.ID) || x.FromWhoID == userid || x.CreatedBy == userid)
+                .ToList();
+            listTasks = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.SpecificDate))
+                .ToList();
 
-            var daily = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0).ToList();
-            var weekly = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Weekly)).ToList();
-            var mon = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Monthly)).ToList();
-            var specificDate = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.SpecificDate)).ToList();
-            var allList = daily.Union(weekly).Union(mon).Union(specificDate).ToList();
-            listTasks = FilterAbnormal(allList, ocid, priority, userid, startDate, endDate, weekdays);
+            listTasks = FilterAbnormal(listTasks, ocid, priority, userid, startDate, endDate, weekdays);
 
-            var tasks = GetListTreeViewTask(listTasks, userid).ToList();
+            var tasks = await GetListTreeViewTaskAsync(listTasks.ToHashSet(), userid);
             var tree = tasks
                .AsEnumerable()
                .AsHierarchy(x => x.ID, x => x.ParentID)
@@ -2819,19 +2579,16 @@ namespace Service.Implement
         public async Task<List<HierarchyNode<TreeViewTask>>> ProjectDetail(string sort = "", string priority = "", int userid = 0, int projectid = 0)
         {
             var jobtype = Data.Enum.JobType.Project;
-
             var listTasks = await _context.Tasks
-            .Where(x => x.JobTypeID.Equals(jobtype) && x.ProjectID.Equals(projectid))
-            .Include(x => x.User)
-            .ToListAsync();
-            var daily = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0).ToList();
-            var weekly = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Weekly)).ToList();
-            var mon = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.Monthly)).ToList();
-            var specificDate = listTasks.Where(x => x.periodType.Equals(Data.Enum.PeriodType.SpecificDate)).ToList();
-            var allList = daily.Union(weekly).Union(mon).Union(specificDate).ToList();
-
-            listTasks = FilterTaskDetail(allList, priority);
-            var tasks = GetListTreeViewTask(listTasks, userid);
+                   .Where(x => x.JobTypeID.Equals(jobtype) && x.ProjectID == projectid).Include(x => x.User).ToListAsync();
+            listTasks = listTasks.Where(x =>
+            x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0
+            || x.periodType.Equals(Data.Enum.PeriodType.Weekly)
+            || x.periodType.Equals(Data.Enum.PeriodType.Monthly)
+            || x.periodType.Equals(Data.Enum.PeriodType.SpecificDate)
+            ).ToList();
+            listTasks = FilterTaskDetail(listTasks, priority);
+            var tasks = await GetListTreeViewTaskAsync(listTasks.ToHashSet(), userid);
             var tree = tasks
           .AsHierarchy(x => x.ID, x => x.ParentID)
           .Where(x => x.Entity.Level == 1 && x.Entity.state == "Undone")
@@ -2881,7 +2638,7 @@ namespace Service.Implement
                }).ToListAsync();
 
             listTasks = SortFollow(listTasks, sort, priority);
-            var tasks = GetListTreeViewTask(listTasks, userid).ToList();
+            var tasks = await GetListTreeViewTaskAsync(listTasks.ToHashSet(), userid);
             var tree = tasks
                .AsEnumerable()
                .AsHierarchy(x => x.ID, x => x.ParentID)
@@ -2895,11 +2652,11 @@ namespace Service.Implement
         }
         public async Task<List<HierarchyNode<TreeViewTask>>> History(int userid, string start, string end)
         {
-            var pics = _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
-            var deputies = _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToList();
+            var pics =await _context.Tags.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
+            var deputies =await _context.Deputies.Where(x => x.UserID == userid).Select(x => x.TaskID).ToListAsync();
 
-            var managers = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
-            var members = _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToList();
+            var managers =await _context.Managers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToListAsync();
+            var members =await _context.TeamMembers.Where(x => x.UserID == userid).Select(x => x.ProjectID).ToListAsync();
 
             var UserProjectList = managers.Union(members).ToList();
             var projectTasksList = await _context.Tasks.Where(x => UserProjectList.Contains(x.ProjectID)).Select(x => x.ID).ToListAsync();
@@ -2945,7 +2702,7 @@ namespace Service.Implement
                 var endDate = end.ToParseStringDateTime().Date;
                 listTasks = listTasks.Where(x => x.CreatedDate.Date >= startDate.Date || x.CreatedDate.Date <= endDate.Date).ToList();
             }
-            var tasks = GetListTreeViewTask(listTasks, userid).ToList();
+            var tasks = await GetListTreeViewTaskAsync(listTasks.ToHashSet(), userid);
             var tree = tasks
                .AsEnumerable()
                .AsHierarchy(x => x.ID, x => x.ParentID)
@@ -2957,7 +2714,7 @@ namespace Service.Implement
             return tree;
             throw new NotImplementedException();
         }
-        public async Task<List<TreeViewTask>> GetListTree(string beAssigned, string assigned, int userid)
+        public async Task<HashSet<TreeViewTask>> GetListTree(string beAssigned, string assigned, int userid)
         {
 
             try
@@ -3006,7 +2763,7 @@ namespace Service.Implement
                 {
                     listTasks = listTasks.Where(x => x.CreatedBy.Equals(userid)).ToList();
                 }
-                var tasks = GetListTreeViewTask(listTasks, userid);
+                var tasks = await GetListTreeViewTaskAsync(listTasks.ToHashSet(), userid);
 
                 if (tasks.Count == 1)
                 {
@@ -3015,12 +2772,12 @@ namespace Service.Implement
                 }
                 return MapperTreeViewTask(tasks).OrderByDescending(x => x.JobTypeID)
                     .OrderByDescending(x => x.ID)
-                    .ToList();
+                    .ToHashSet();
             }
             catch (Exception ex)
             {
 
-                return new List<TreeViewTask>();
+                return new HashSet<TreeViewTask>();
             }
 
         }
@@ -3059,7 +2816,7 @@ namespace Service.Implement
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
                 throw;

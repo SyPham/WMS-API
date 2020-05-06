@@ -23,5 +23,6 @@ namespace Data.Models
         public string Deadline { get; set; }
         public DateTime CreatedDate { get; set; }
         public string ModifyDateTime { get; set; }
+        public virtual Task Task { get; set; }
     }
 }

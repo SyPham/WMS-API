@@ -38,7 +38,7 @@ namespace WorkManagement.Controllers
         {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
-            await _taskService.TaskListIsLate(userID);
+            //await _taskService.TaskListIsLate(userID);
             return Ok();
         }
         [HttpGet("{page}/{pageSize}/{userid}")]
@@ -67,27 +67,8 @@ namespace WorkManagement.Controllers
         {
             string base64 = source.Substring(source.IndexOf(',') + 1);
             base64 = base64.Trim('\0');
-            byte[] chartData = Convert.FromBase64String(base64);
+            // byte[] chartData = Convert.FromBase64String(base64);
             
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Image(IFormFile formFile)
-        {
-            string token = Request.Headers["Authorization"];
-            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
-            byte[] image = null;
-            IFormFile file = Request.Form.Files["UploadedFile"];
-            if ((file != null) && (file.Length > 0) && !string.IsNullOrEmpty(file.FileName))
-            {
-                using (var stream = new MemoryStream())
-                {
-                    await file.CopyToAsync(stream);
-                    image = stream.ToArray();
-                };
-            }
-          
-            return Ok();
         }
     }
 }

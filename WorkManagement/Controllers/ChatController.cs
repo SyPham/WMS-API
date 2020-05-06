@@ -24,17 +24,14 @@ namespace WorkManagement.Controllers
         private readonly IHubContext<WorkingManagementHub> _hubContext;
         private readonly IChatService _chatService;
         private static IWebHostEnvironment _environment;
-        private readonly IConfiguration _configuaration;
         public ChatController(IChatService chatService,
             IHubContext<WorkingManagementHub> hubContext,
-            IWebHostEnvironment environment,
-            IConfiguration configuaration
+            IWebHostEnvironment environment
             )
         {
             _chatService = chatService;
             _hubContext = hubContext;
             _environment = environment;
-            _configuaration = configuaration;
         }
         [AllowAnonymous]
         [HttpGet("{room}")]
@@ -68,16 +65,14 @@ namespace WorkManagement.Controllers
                     for (int i = 0; i < Request.Form.Files.Count; i++)
                     {
                         var currentFile = Request.Form.Files[i];
-                        using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\images\\chats\\" + currentFile.FileName))
+                        using FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\images\\chats\\" + currentFile.FileName);
+                        await currentFile.CopyToAsync(fileStream);
+                        fileStream.Flush();
+                        list.Add(new UploadImage
                         {
-                          await currentFile.CopyToAsync(fileStream);
-                            fileStream.Flush();
-                            list.Add(new UploadImage
-                            {
-                                ChatID = chat.ToInt(),
-                                Image = currentFile.FileName
-                            });
-                        }
+                            ChatID = chat.ToInt(),
+                            Image = currentFile.FileName
+                        });
                     }
                 }
 

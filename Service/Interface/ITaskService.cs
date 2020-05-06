@@ -13,8 +13,8 @@ namespace Service.Interface
         System.Threading.Tasks.Task TaskListIsLate(int userid);
         Task<bool> CheckTask();
         Task<bool> CreateCheckTask();
-        Task<List<TreeViewTask>> GetListTree(string beAssigned = "", string assigned = "", int userid = 0);
-        Task<List<TreeViewTask>> GetListTree();
+        Task<HashSet<TreeViewTask>> GetListTree(string beAssigned = "", string assigned = "", int userid = 0);
+        Task<HashSet<TreeViewTask>> GetListTree();
         Task<Tuple<bool, string, object>> CreateTask(CreateTaskViewModel task);
         Task<object> CreateSubTask(CreateTaskViewModel task);
         Task<object> Delete(int id, int userid);
@@ -27,13 +27,13 @@ namespace Service.Interface
         Task<object> Undo(int id);
         Task<object> GetDeputies();
         string CastPriority(string value);
-        void HieararchyWalk(List<TreeViewTask> hierarchy);
-        List<TreeViewTask> GetChildren(List<TreeViewTask> tasks, int parentid);
+        void HieararchyWalk(HashSet<TreeViewTask> hierarchy);
+        HashSet<TreeViewTask> GetChildren(HashSet<TreeViewTask> tasks, int parentid);
         Task<IEnumerable<TreeViewTask>> GetListTree(int parentID, int id);
         IEnumerable<TreeViewTask> GetAllTaskDescendants(IEnumerable<TreeViewTask> rootNodes);
         Task<object> Unsubscribe(int id, int userid);
 
-        Task<List<HierarchyNode<TreeViewTask>>> Todolist(string sort = "", string priority = "", int userid = 0, string startDate = "", string endDate = "", string weekdays = "", string monthly = "", string quarterly = "");
+        Task<HashSet<HierarchyNode<TreeViewTask>>> Todolist(string sort = "", string priority = "", int userid = 0, string startDate = "", string endDate = "", string weekdays = "", string monthly = "", string quarterly = "");
         Task<List<HierarchyNode<TreeViewTask>>> TodolistSortBy(string beAssigned, string assigned, int userid);
         Task<List<HierarchyNode<TreeViewTask>>> Routine(string sort, string priority, int userid, int ocid);
         Task<List<HierarchyNode<TreeViewTask>>> Abnormal(int ocid, string priority, int userid, string startDate, string endDate, string weekdays);

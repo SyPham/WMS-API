@@ -151,6 +151,9 @@ namespace Data.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("TaskID")
+                        .IsUnique();
+
                     b.ToTable("Follows");
                 });
 
@@ -201,6 +204,8 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("TaskID");
 
                     b.ToTable("Histories");
                 });
@@ -373,7 +378,12 @@ namespace Data.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("TaskID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("TaskID");
 
                     b.ToTable("Projects");
                 });
@@ -504,6 +514,8 @@ namespace Data.Migrations
 
                     b.HasIndex("CreatedBy");
 
+                    b.HasIndex("OCID");
+
                     b.ToTable("Tasks");
                 });
 
@@ -556,6 +568,11 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("ProjectID");
+
+                    b.HasIndex("TaskID")
+                        .IsUnique();
 
                     b.ToTable("Tutorials");
                 });
@@ -646,6 +663,24 @@ namespace Data.Migrations
                     b.ToTable("UserJoinHubs");
                 });
 
+            modelBuilder.Entity("Data.Models.Follow", b =>
+                {
+                    b.HasOne("Data.Models.Task", null)
+                        .WithOne("Follow")
+                        .HasForeignKey("Data.Models.Follow", "TaskID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Models.History", b =>
+                {
+                    b.HasOne("Data.Models.Task", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Data.Models.Manager", b =>
                 {
                     b.HasOne("Data.Models.OC", null)
@@ -680,6 +715,13 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Data.Models.Project", b =>
+                {
+                    b.HasOne("Data.Models.Task", null)
+                        .WithMany("Project")
+                        .HasForeignKey("TaskID");
+                });
+
             modelBuilder.Entity("Data.Models.Room", b =>
                 {
                     b.HasOne("Data.Models.Project", null)
@@ -692,7 +734,7 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Models.Tag", b =>
                 {
                     b.HasOne("Data.Models.Task", "Task")
-                        .WithMany()
+                        .WithMany("Tags")
                         .HasForeignKey("TaskID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -709,6 +751,12 @@ namespace Data.Migrations
                     b.HasOne("Data.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Models.OC", "OC")
+                        .WithMany()
+                        .HasForeignKey("OCID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -728,6 +776,21 @@ namespace Data.Migrations
                     b.HasOne("Data.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Models.Tutorial", b =>
+                {
+                    b.HasOne("Data.Models.Project", "Project")
+                        .WithMany("Tutorials")
+                        .HasForeignKey("ProjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Models.Task", "Task")
+                        .WithOne("Tutorial")
+                        .HasForeignKey("Data.Models.Tutorial", "TaskID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
