@@ -90,7 +90,7 @@ namespace Service.Implement
             try
             {
                 _context.Tags.RemoveRange(tags);
-                _context.Tasks.RemoveRange(tasks); 
+                _context.Tasks.RemoveRange(tasks);
                 _context.Managers.RemoveRange(managers);
                 _context.TeamMembers.RemoveRange(members);
                 _context.Notifications.RemoveRange(notifications);

@@ -2444,7 +2444,7 @@ namespace Service.Implement
         {
             try
             {
-             
+
                 var listTasks = GetAllTasks().Where(x=>
                         x.Tags.Select(x=>x.UserID).Contains(userid)
                        || x.FromWhoID == userid
@@ -2452,19 +2452,21 @@ namespace Service.Implement
                        || x.Project.TeamMembers.Select(x => x.UserID).Contains(userid)
                        || x.Deputies.Select(x => x.UserID).Contains(userid)
                     ).Distinct();
-                Stopwatch watch = new Stopwatch();
-                watch.Start();
+                //Stopwatch watch = new Stopwatch();
+                //watch.Start();
                 var listTasksFillter =await Fillter(listTasks, sort, priority, userid, startDate, endDate, weekdays, monthly, quarterly).ToListAsync();
-                var all = GetListTreeViewTask(listTasksFillter, userid);
+                //var all = GetListTreeViewTask(listTasksFillter, userid);
+                var all = _mapper.Map<List<TreeViewTask>>(listTasksFillter);
+
                 all.ForEach(item =>
                    {
                        item.Follow = item.Follows.Any(x => x.TaskID == item.ID && x.UserID == userid) ? "Yes" : "No";
 
                    });
-              
-                Console.WriteLine("Todolist-{0}", watch.Elapsed);
-                await _context.CheckTasks.AddAsync(new CheckTask { CreatedDate = DateTime.Now, Function = watch.Elapsed.TotalMilliseconds.ToString() });
-                await _context.SaveChangesAsync();
+
+                //Console.WriteLine("Todolist-{0}", watch.Elapsed);
+                //await _context.CheckTasks.AddAsync(new CheckTask { CreatedDate = DateTime.Now, Function = watch.Elapsed.TotalMilliseconds.ToString() });
+                //await _context.SaveChangesAsync();
                 var tree = all.Where(x =>
                  x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateDaily.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0
                 || x.PICs.Count > 0)
@@ -2476,7 +2478,7 @@ namespace Service.Implement
                 var itemWithOutParent = all.Where(x => !flatten.Select(x => x.Entity.ID).Contains(x.ID));
                 var map = _mapper.Map<HashSet<HierarchyNode<TreeViewTask>>>(itemWithOutParent);
                 tree = tree.Concat(map).Where(x => x.Entity.state == "Undone").ToHashSet();
-               
+
                 return tree;
             }
             catch (Exception ex)
@@ -2601,7 +2603,7 @@ namespace Service.Implement
                 return new List<HierarchyNode<TreeViewTask>>();
                 throw;
             }
-          
+
         }
         public async Task<List<HierarchyNode<TreeViewTask>>> Abnormal(int ocid, string priority, int userid, string startDate, string endDate, string weekdays)
         {
@@ -2680,7 +2682,12 @@ namespace Service.Implement
         public async Task<List<HierarchyNode<TreeViewTask>>> History(int userid, string start, string end)
         {
             var listTasks =  _context.Histories
-                .Join(_context.Tasks,
+                .Join(_context.Tasks
+                .Include(x=>x.OC)
+                .Include(x=>x.Tags).ThenInclude(x=>x.User)
+                .Include(x=>x.Project).ThenInclude(x=>x.TeamMembers)
+                .Include(x=>x.Project).ThenInclude(x=>x.Managers)
+                ,
                 his => his.TaskID,
                 task => task.ID,
                 (his, task) => new
@@ -2710,7 +2717,11 @@ namespace Service.Implement
                     DueDateWeekly = x.task.DueDateWeekly,
                     SpecificDate = x.task.SpecificDate,
                     ModifyDateTime = x.his.ModifyDateTime,
-                    Code = x.task.Code
+                    Code = x.task.Code,
+                    Deputies = x.task.Deputies,
+                    Tags = x.task.Tags,
+                    Project =x.task.Project,
+                    OC = x.task.OC
                 }).AsQueryable();
             if (!start.IsNullOrEmpty() && !end.IsNullOrEmpty())
             {
