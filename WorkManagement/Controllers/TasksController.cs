@@ -71,7 +71,7 @@ namespace WorkManagement.Controllers
         [HttpGet("{projectid}/{sort}")]
         [HttpGet("{projectid}/{priority}/{sort}")]
         [HttpGet("{projectid}")]
-        public async Task<IActionResult> ProjectDetail(int projectid = 0, string sort = "", string priority = "")
+        public async Task<IActionResult> ProjectDetail(int? projectid, string sort = "", string priority = "")
         {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();

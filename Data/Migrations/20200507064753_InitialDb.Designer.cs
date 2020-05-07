@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200507064753_InitialDb")]
+    partial class InitialDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,44 +122,32 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Models.Deputy", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<int>("TaskID")
                         .HasColumnType("int");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("TaskID", "UserID");
 
-                    b.HasIndex("TaskID");
-
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserID")
+                        .IsUnique();
 
                     b.ToTable("Deputies");
                 });
 
             modelBuilder.Entity("Data.Models.Follow", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<int>("TaskID")
                         .HasColumnType("int");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("TaskID", "UserID");
 
-                    b.HasIndex("TaskID");
-
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserID")
+                        .IsUnique();
 
                     b.ToTable("Follows");
                 });
@@ -232,22 +222,18 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Models.Manager", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProjectID")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
+                    b.HasKey("UserID", "ProjectID");
 
                     b.HasIndex("ProjectID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserID")
+                        .IsUnique();
 
                     b.ToTable("Managers");
                 });
@@ -431,22 +417,18 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Models.Tag", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<int>("TaskID")
                         .HasColumnType("int");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("TaskID", "UserID");
 
-                    b.HasIndex("TaskID");
+                    b.HasIndex("UserID")
+                        .IsUnique();
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("TaskID", "UserID");
 
                     b.ToTable("Tags");
                 });
@@ -532,22 +514,18 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Models.TeamMember", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProjectID")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
+                    b.HasKey("UserID", "ProjectID");
 
                     b.HasIndex("ProjectID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserID")
+                        .IsUnique();
 
                     b.ToTable("TeamMembers");
                 });
@@ -685,8 +663,8 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Data.Models.User", "User")
-                        .WithMany("Deputies")
-                        .HasForeignKey("UserID")
+                        .WithOne("Deputy")
+                        .HasForeignKey("Data.Models.Deputy", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -700,8 +678,8 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Data.Models.User", "User")
-                        .WithMany("Follows")
-                        .HasForeignKey("UserID")
+                        .WithOne("Follow")
+                        .HasForeignKey("Data.Models.Follow", "UserID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
@@ -724,8 +702,8 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Data.Models.User", "User")
-                        .WithMany("Managers")
-                        .HasForeignKey("UserID")
+                        .WithOne("Manager")
+                        .HasForeignKey("Data.Models.Manager", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -763,8 +741,8 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Data.Models.User", "User")
-                        .WithMany("Tags")
-                        .HasForeignKey("UserID")
+                        .WithOne("Tag")
+                        .HasForeignKey("Data.Models.Tag", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -797,8 +775,8 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Data.Models.User", "User")
-                        .WithMany("TeamMembers")
-                        .HasForeignKey("UserID")
+                        .WithOne("TeamMember")
+                        .HasForeignKey("Data.Models.TeamMember", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

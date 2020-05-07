@@ -9,12 +9,10 @@ namespace Data.Models
 {
    public class Deputy
     {
-        [Key, Column(Order = 0)]
+        public int ID { get; set; }
         public int UserID { get; set; }
-        [Key, Column(Order = 1)]
         public int TaskID { get; set; }
         public virtual User User { get; set; }
         public virtual Task Task { get; set; }
-
     }
 }

@@ -38,11 +38,6 @@ namespace Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Manager>().HasKey(ba => new { ba.UserID, ba.ProjectID });
-            builder.Entity<TeamMember>().HasKey(ba => new { ba.UserID, ba.ProjectID });
-            builder.Entity<Tag>().HasKey(ba => new { ba.TaskID, ba.UserID });
-            builder.Entity<Follow>().HasKey(ba => new { ba.TaskID, ba.UserID });
-            builder.Entity<Deputy>().HasKey(ba => new { ba.TaskID, ba.UserID });
             builder.Entity<OCUser>().HasKey(ba => new { ba.UserID, ba.OCID });
 
             builder.Entity<Task>() //Tag
@@ -61,33 +56,28 @@ namespace Data
              .HasOne(u => u.OC)
              .WithMany(c => c.Tasks)
              .OnDelete(DeleteBehavior.NoAction);
-
+            builder.Entity<Task>() //OC
+              .HasOne(u => u.User)
+              .WithMany(c => c.Tasks)
+              .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Task>() //Tutorial
              .HasOne(u => u.Tutorial)
              .WithOne(c => c.Task)
              .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Tutorial>() //Tutorial
-          .HasOne(u => u.Task)
-          .WithOne(c => c.Tutorial)
-          .OnDelete(DeleteBehavior.NoAction);
+              .HasOne(u => u.Task)
+              .WithOne(c => c.Tutorial)
+              .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Follow>() //Task
               .HasOne(u => u.Task)
               .WithMany(c => c.Follows)
               .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Follow>() //user
-            .HasOne(u => u.User)
-            .WithOne(c => c.Follow)
-            .OnDelete(DeleteBehavior.NoAction);
+                .HasOne(u => u.User)
+                .WithMany(c => c.Follows)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Project>() //Managers
-             .HasMany(u => u.Managers)
-             .WithOne(c => c.Project)
-             .OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<Project>() //TeamMembers
-           .HasMany(u => u.TeamMembers)
-           .WithOne(c => c.Project)
-           .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

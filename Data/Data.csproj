@@ -51,6 +51,20 @@
     <Compile Remove="Migrations\20200506083403_AddForeignKeyForTables.Designer.cs" />
     <Compile Remove="Migrations\20200506084505_AddForeignKeyForTables.cs" />
     <Compile Remove="Migrations\20200506084505_AddForeignKeyForTables.Designer.cs" />
+    <Compile Remove="Migrations\20200507010825_AddForeignKeyForTables1.0.2.cs" />
+    <Compile Remove="Migrations\20200507010825_AddForeignKeyForTables1.0.2.Designer.cs" />
+    <Compile Remove="Migrations\20200507011042_AddForeignKeyForTables1.0.2.cs" />
+    <Compile Remove="Migrations\20200507011042_AddForeignKeyForTables1.0.2.Designer.cs" />
+    <Compile Remove="Migrations\20200507012351_AddForeignKeyForTables1.0.3.cs" />
+    <Compile Remove="Migrations\20200507012351_AddForeignKeyForTables1.0.3.Designer.cs" />
+    <Compile Remove="Migrations\20200507013256_AddForeignKeyForTables1.0.4.cs" />
+    <Compile Remove="Migrations\20200507013256_AddForeignKeyForTables1.0.4.Designer.cs" />
+    <Compile Remove="Migrations\20200507013336_AddForeignKeyForTables1.0.4.cs" />
+    <Compile Remove="Migrations\20200507013336_AddForeignKeyForTables1.0.4.Designer.cs" />
+    <Compile Remove="Migrations\20200507020218_InitialDb.cs" />
+    <Compile Remove="Migrations\20200507020218_InitialDb.Designer.cs" />
+    <Compile Remove="Migrations\20200507021237_InitialDb.cs" />
+    <Compile Remove="Migrations\20200507021237_InitialDb.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

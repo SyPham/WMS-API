@@ -31,6 +31,8 @@ namespace Service.Helpers
 
         public static DateTime ToParseStringDateTime(this string dateString)
         {
+            if(dateString.IsNullOrEmpty())
+                return DateTime.MinValue;
             DateTime dateTime;
             if (DateTime.TryParse(dateString, out dateTime))
                 return dateTime;
