@@ -21,6 +21,8 @@ namespace Data.Models
         public byte[] ImageBase64 { get; set; }
         public bool isLeader { get; set; }
         public virtual Role Role { get; set; }
+        public virtual ICollection<NotificationDetail> NotificationDetails { get; set; }
+        public virtual ICollection<Notification> Notifications { get; set; }
         public virtual ICollection<Follow> Follows { get; set; }
         public virtual ICollection<Tag> Tags { get; set; }
         public virtual ICollection<Deputy> Deputies { get; set; }

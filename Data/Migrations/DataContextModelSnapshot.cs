@@ -274,10 +274,12 @@ namespace Data.Migrations
                     b.Property<string>("URL")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Notifications");
                 });
@@ -299,6 +301,11 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("NotificationID")
+                        .IsUnique();
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("NotificationDetails");
                 });
@@ -571,10 +578,10 @@ namespace Data.Migrations
                     b.Property<string>("Path")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProjectID")
+                    b.Property<int?>("ProjectID")
                         .HasColumnType("int");
 
-                    b.Property<int>("TaskID")
+                    b.Property<int?>("TaskID")
                         .HasColumnType("int");
 
                     b.Property<string>("URL")
@@ -585,7 +592,8 @@ namespace Data.Migrations
                     b.HasIndex("ProjectID");
 
                     b.HasIndex("TaskID")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[TaskID] IS NOT NULL");
 
                     b.ToTable("Tutorials");
                 });
@@ -730,6 +738,28 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Data.Models.Notification", b =>
+                {
+                    b.HasOne("Data.Models.User", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserID");
+                });
+
+            modelBuilder.Entity("Data.Models.NotificationDetail", b =>
+                {
+                    b.HasOne("Data.Models.Notification", "Notification")
+                        .WithOne("NotificationDetails")
+                        .HasForeignKey("Data.Models.NotificationDetail", "NotificationID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Models.User", "User")
+                        .WithMany("NotificationDetails")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Data.Models.OCUser", b =>
                 {
                     b.HasOne("Data.Models.OC", "OC")
@@ -807,15 +837,12 @@ namespace Data.Migrations
                 {
                     b.HasOne("Data.Models.Project", "Project")
                         .WithMany("Tutorials")
-                        .HasForeignKey("ProjectID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectID");
 
                     b.HasOne("Data.Models.Task", "Task")
                         .WithOne("Tutorial")
                         .HasForeignKey("Data.Models.Tutorial", "TaskID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("Data.Models.User", b =>

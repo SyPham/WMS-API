@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using AutoMapper;
+using Data;
 using Data.Models;
 using Data.ViewModel.Notification;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +16,11 @@ namespace Service.Implement
     public class NotificationService : INotificationService
     {
         private readonly DataContext _context;
-        public NotificationService(DataContext context)
+        private readonly IMapper _mapper;
+        public NotificationService(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -28,11 +31,11 @@ namespace Service.Implement
                 var item = new Notification
                 {
                     TaskID = entity.TaskID,
-                    UserID = entity.UserID,
                     Message = entity.Message,
                     URL = entity.URL,
                     Function = entity.AlertType.ToString()
                 };
+                if (entity.UserID == 0) item.UserID = null;
                 await _context.Notifications.AddAsync(item);
                 await _context.SaveChangesAsync();
 
@@ -63,7 +66,7 @@ namespace Service.Implement
         {
             foreach (var item in entity)
             {
-               await Create(item);
+                await Create(item);
             }
         }
 
@@ -112,8 +115,36 @@ namespace Service.Implement
         {
             return await _context.Notifications.ToListAsync();
         }
+        public async Task<object> GetAllByUserID(int userid, int page, int pageSize)
+        {
+            var model = _context.NotificationDetails
+                .Where(x=>x.UserID == userid)
+                .Include(x => x.Notification).ThenInclude(x=>x.User)
+                .Include(x => x.User).AsQueryable();
+            var listAsync = await model.ToListAsync();
+           var list =  _mapper.Map<List<NotificationViewModel>>(model);
+            var total = 0;
+            var listID = new List<int>();
+           
+            foreach (var item in list)
+            {
+                if (item.Seen == false)
+                {
+                    total++;
+                    listID.Add(item.ID);
+                }
+            }
+            var paging = PagedList<NotificationViewModel>.Create(list, page, pageSize);
 
-        public async Task<object> GetAllByUserID(int userid,int page, int pageSize)
+            return new
+            {
+                model = paging,
+                total,
+                paging.TotalCount
+            };
+
+        }
+        public async Task<object> GetAllByUserIDa(int userid, int page, int pageSize)
         {
             var userModel = _context.Users;
             var model1 = await _context.NotificationDetails.Where(x => x.UserID == userid)
@@ -146,8 +177,9 @@ namespace Service.Implement
                     ImageBase64 = _.b.ImageBase64,
                     CreatedTime = _.a.notify.CreatedTime,
                 }).OrderByDescending(_ => _.CreatedTime).ToListAsync();
+
             var model2 = await _context.NotificationDetails.Where(x => x.UserID == userid)
-               .Join(_context.Notifications.Where(x=> x.UserID == 0 && x.Function.Equals(Data.Enum.AlertType.BeLate.ToSafetyString())),
+               .Join(_context.Notifications.Where(x => x.UserID == 0 && x.Function.Equals(Data.Enum.AlertType.BeLate.ToSafetyString())),
                 detail => detail.NotificationID,
                notify => notify.ID,
                (detail, notify) => new
@@ -176,7 +208,7 @@ namespace Service.Implement
                 }
             }
             var paging = PagedList<NotificationViewModel>.Create(model, page, pageSize);
-           
+
             return new
             {
                 model = paging,
@@ -247,7 +279,7 @@ namespace Service.Implement
         {
             return await _context.Notifications.FindAsync(id);
         }
-       
+
         public async Task<bool> Update(Notification entity)
         {
             var item = await _context.Notifications.FindAsync(entity.ID);

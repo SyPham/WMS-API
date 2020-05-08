@@ -915,9 +915,6 @@ F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\Service.dl
 F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\Data.pdb
 F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\Service.pdb
 F:\0.Document\angular9\WMS-API\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.csprojAssemblyReference.cache
-F:\0.Document\angular9\WMS-API\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.csproj.CoreCompileInputs.cache
-F:\0.Document\angular9\WMS-API\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.MvcApplicationPartsAssemblyInfo.cs
-F:\0.Document\angular9\WMS-API\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.MvcApplicationPartsAssemblyInfo.cache
 F:\0.Document\angular9\WMS-API\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.AssemblyInfoInputs.cache
 F:\0.Document\angular9\WMS-API\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.AssemblyInfo.cs
 F:\0.Document\angular9\WMS-API\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.RazorTargetAssemblyInfo.cache
@@ -934,3 +931,8 @@ F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\li
 F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\WorkManagement.deps.json
 F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\WorkManagement.runtimeconfig.json
 F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\publish\wwwroot\lib\@microsoft\signalr\package.json
+F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\Castle.Core.dll
+F:\0.Document\angular9\WMS-API\WorkManagement\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Proxies.dll
+F:\0.Document\angular9\WMS-API\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.csproj.CoreCompileInputs.cache
+F:\0.Document\angular9\WMS-API\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.MvcApplicationPartsAssemblyInfo.cs
+F:\0.Document\angular9\WMS-API\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.MvcApplicationPartsAssemblyInfo.cache

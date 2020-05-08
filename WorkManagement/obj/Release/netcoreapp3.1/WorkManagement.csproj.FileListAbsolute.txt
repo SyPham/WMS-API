@@ -561,3 +561,5 @@ F:\0.Document\angular9\WMS-API\WorkManagement\obj\Release\netcoreapp3.1\staticwe
 F:\0.Document\angular9\WMS-API\WorkManagement\obj\Release\netcoreapp3.1\WorkManagement.dll
 F:\0.Document\angular9\WMS-API\WorkManagement\obj\Release\netcoreapp3.1\WorkManagement.pdb
 F:\0.Document\angular9\WMS-API\WorkManagement\obj\Release\netcoreapp3.1\WorkManagement.genruntimeconfig.cache
+F:\0.Document\angular9\WMS-API\WorkManagement\bin\Release\netcoreapp3.1\Castle.Core.dll
+F:\0.Document\angular9\WMS-API\WorkManagement\bin\Release\netcoreapp3.1\Microsoft.EntityFrameworkCore.Proxies.dll

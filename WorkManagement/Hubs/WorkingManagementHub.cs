@@ -16,9 +16,11 @@ namespace WorkManagement.Hub
     public class WorkingManagementHub : Microsoft.AspNetCore.SignalR.Hub
     {
         private readonly Data.DataContext _context;
-        public WorkingManagementHub(Data.DataContext context)
+        private readonly ITaskService _taskService;
+        public WorkingManagementHub(Data.DataContext context, ITaskService taskService)
         {
             _context = context;
+            _taskService = taskService;
         }
         private async Task<string> GetUsername(string user)
         {
@@ -93,13 +95,10 @@ namespace WorkManagement.Hub
         }
         public async System.Threading.Tasks.Task CheckAlert(string user)
         {
-            //int userId = user.ToInt();
-            //var list = await ProjectTaskIsLate(userId);
-            //var id = Context.ConnectionId;//"LzX9uE94Ovlp6Yx8s6PvhA"
-
-            //if (list.Count > 0)
-            //    await Clients.User(id).SendAsync("ReceiveCheckAlert", user, list);
-            //else await Clients.User(id).SendAsync("NotCheckAlert", user, "From Server: There is no some alert!!!");
+            int userId = user.ToInt();
+            var id = Context.ConnectionId;//"LzX9uE94Ovlp6Yx8s6PvhA"
+           await _taskService.TaskListIsLate(userId);
+           await Clients.User(id).SendAsync("ReceiveCheckAlert", user);
         }
         public async System.Threading.Tasks.Task Online(string user, string message)
         {

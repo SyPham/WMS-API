@@ -10,6 +10,8 @@ namespace Data.Models
         public int UserID { get; set; }
         public int NotificationID { get; set; }
         public bool Seen { get; set; }
+        public virtual Notification Notification { get; set; }
+        public virtual User User { get; set; }
     }
     /*
      From system 

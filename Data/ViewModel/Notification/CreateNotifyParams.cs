@@ -11,7 +11,7 @@ namespace Data.ViewModel.Notification
         public AlertType AlertType { get; set; }
         public string Message { get; set; }
         public string URL { get; set; }
-        public int UserID { get; set; }
+        public int? UserID { get; set; }
         public int TaskID { get; set; }
     }
 }

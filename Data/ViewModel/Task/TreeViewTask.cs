@@ -1,6 +1,7 @@
 ﻿using Data.Extensions;
 using Data.Models;
 using Data.ViewModel.Project;
+using Data.ViewModel.Tutorial;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace Data.ViewModel.Task
         public string JobName { get; set; }
         public string PIC { get; set; }
         public bool VideoStatus { get; set; }
-        public Models.Tutorial Tutorial { get; set; } = new Models.Tutorial();
+        public TreeViewTutorial Tutorial { get; set; } = new TreeViewTutorial();
         public string VideoLink { get; set; }
         public int Level { get; set; }
         public int ParentID { get; set; }

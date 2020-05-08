@@ -11,27 +11,18 @@ namespace Service.Interface
     public interface ITaskService
     {
         System.Threading.Tasks.Task TaskListIsLate(int userid);
-        Task<bool> CheckTask();
-        Task<bool> CreateCheckTask();
-        Task<HashSet<TreeViewTask>> GetListTree(string beAssigned = "", string assigned = "", int userid = 0);
-        Task<HashSet<TreeViewTask>> GetListTree();
         Task<Tuple<bool, string, object>> CreateTask(CreateTaskViewModel task);
         Task<object> CreateSubTask(CreateTaskViewModel task);
-        Task<object> Delete(int id, int userid);
-        Task<object> From(int userid);
-        Task<Tuple<bool, bool, string>> Done(int id, int userid);
-        Task<object> GetListUser(int userid, int projectid);
-        Task<List<ProjectViewModel>> GetListProject();
         Task<object> UpdateTask(UpdateTaskViewModel task);
+        Task<object> Delete(int id, int userid);
+        Task<Tuple<bool, bool, string>> Done(int id, int userid);
+        Task<object> From(int userid);
+        Task<List<ProjectViewModel>> GetListProject();
         Task<object> Follow(int userid, int taskid);
         Task<object> Undo(int id);
-        Task<object> GetDeputies();
-        string CastPriority(string value);
-        void HieararchyWalk(HashSet<TreeViewTask> hierarchy);
-        HashSet<TreeViewTask> GetChildren(HashSet<TreeViewTask> tasks, int parentid);
-        Task<IEnumerable<TreeViewTask>> GetListTree(int parentID, int id);
-        IEnumerable<TreeViewTask> GetAllTaskDescendants(IEnumerable<TreeViewTask> rootNodes);
         Task<object> Unsubscribe(int id, int userid);
+        Task<object> GetDeputies();
+        Task<object> GetListUser(int userid, int projectid);
 
         Task<HashSet<HierarchyNode<TreeViewTask>>> Todolist(string sort = "", string priority = "", int userid = 0, string startDate = "", string endDate = "", string weekdays = "", string monthly = "", string quarterly = "");
         Task<List<HierarchyNode<TreeViewTask>>> TodolistSortBy(string beAssigned, string assigned, int userid);

@@ -1,6 +1,6 @@
 ﻿USE [WMS]
 GO
-/****** Object:  Table [dbo].[__EFMigrationsHistory]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[__EFMigrationsHistory]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -14,7 +14,7 @@ CREATE TABLE [dbo].[__EFMigrationsHistory](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Chats]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Chats]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -32,7 +32,7 @@ CREATE TABLE [dbo].[Chats](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CheckTasks]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[CheckTasks]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -47,7 +47,7 @@ CREATE TABLE [dbo].[CheckTasks](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CommentDetails]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[CommentDetails]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -63,7 +63,7 @@ CREATE TABLE [dbo].[CommentDetails](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Comments]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Comments]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -83,7 +83,7 @@ CREATE TABLE [dbo].[Comments](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Deputies]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Deputies]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -98,7 +98,7 @@ CREATE TABLE [dbo].[Deputies](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Follows]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Follows]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -113,7 +113,7 @@ CREATE TABLE [dbo].[Follows](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[FromWhos]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[FromWhos]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -128,7 +128,7 @@ CREATE TABLE [dbo].[FromWhos](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Histories]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Histories]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -148,7 +148,7 @@ CREATE TABLE [dbo].[Histories](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[JobTypes]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[JobTypes]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -162,7 +162,7 @@ CREATE TABLE [dbo].[JobTypes](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Managers]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Managers]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -177,7 +177,7 @@ CREATE TABLE [dbo].[Managers](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[NotificationDetails]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[NotificationDetails]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -193,7 +193,7 @@ CREATE TABLE [dbo].[NotificationDetails](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Notifications]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Notifications]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -212,7 +212,7 @@ CREATE TABLE [dbo].[Notifications](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[OCs]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[OCs]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -228,7 +228,7 @@ CREATE TABLE [dbo].[OCs](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[OCUsers]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[OCUsers]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -244,7 +244,7 @@ CREATE TABLE [dbo].[OCUsers](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Participants]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Participants]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -259,7 +259,7 @@ CREATE TABLE [dbo].[Participants](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Projects]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Projects]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -278,7 +278,7 @@ CREATE TABLE [dbo].[Projects](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Roles]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Roles]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -292,7 +292,7 @@ CREATE TABLE [dbo].[Roles](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Rooms]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Rooms]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -308,7 +308,7 @@ CREATE TABLE [dbo].[Rooms](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Tags]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Tags]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -323,7 +323,7 @@ CREATE TABLE [dbo].[Tags](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Tasks]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Tasks]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -356,7 +356,7 @@ CREATE TABLE [dbo].[Tasks](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TeamMembers]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[TeamMembers]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -371,7 +371,7 @@ CREATE TABLE [dbo].[TeamMembers](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Tutorials]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Tutorials]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -391,7 +391,7 @@ CREATE TABLE [dbo].[Tutorials](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UploadImages]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[UploadImages]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -407,7 +407,7 @@ CREATE TABLE [dbo].[UploadImages](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserJoinHubs]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[UserJoinHubs]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -423,7 +423,7 @@ CREATE TABLE [dbo].[UserJoinHubs](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Users]    Script Date: 5/7/2020 4:33:07 PM ******/
+/****** Object:  Table [dbo].[Users]    Script Date: 5/8/2020 4:34:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -596,6 +596,10 @@ INSERT [dbo].[Histories] ([ID], [TaskCode], [TaskID], [UserID], [Status], [Deadl
 GO
 INSERT [dbo].[Histories] ([ID], [TaskCode], [TaskID], [UserID], [Status], [Deadline], [CreatedDate], [ModifyDateTime]) VALUES (190, N'3542-Daily-Routine', 3542, 0, 0, N'6 May, 2020 09:00:00 AM', CAST(N'2020-05-06T11:49:02.2938296' AS DateTime2), N'6 May, 2020 11:49:02 AM')
 GO
+INSERT [dbo].[Histories] ([ID], [TaskCode], [TaskID], [UserID], [Status], [Deadline], [CreatedDate], [ModifyDateTime]) VALUES (191, N'3542-Daily-Routine', 3658, 0, 0, N'7 May, 2020 09:00:00 AM', CAST(N'2020-05-08T11:32:03.1552213' AS DateTime2), N'8 May, 2020 11:32:03 AM')
+GO
+INSERT [dbo].[Histories] ([ID], [TaskCode], [TaskID], [UserID], [Status], [Deadline], [CreatedDate], [ModifyDateTime]) VALUES (192, N'3438-Daily-Routine', 3657, 0, 0, N'7 May, 2020 07:38:42 AM', CAST(N'2020-05-08T11:37:16.5476576' AS DateTime2), N'8 May, 2020 11:37:16 AM')
+GO
 SET IDENTITY_INSERT [dbo].[Histories] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Managers] ON 
@@ -621,6 +625,24 @@ GO
 INSERT [dbo].[Managers] ([UserID], [ProjectID], [ID]) VALUES (3, 56, 10)
 GO
 SET IDENTITY_INSERT [dbo].[Managers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[NotificationDetails] ON 
+GO
+INSERT [dbo].[NotificationDetails] ([ID], [UserID], [NotificationID], [Seen]) VALUES (1, 2, 1, 0)
+GO
+INSERT [dbo].[NotificationDetails] ([ID], [UserID], [NotificationID], [Seen]) VALUES (2, 41, 1, 0)
+GO
+INSERT [dbo].[NotificationDetails] ([ID], [UserID], [NotificationID], [Seen]) VALUES (3, 2, 2, 0)
+GO
+SET IDENTITY_INSERT [dbo].[NotificationDetails] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Notifications] ON 
+GO
+INSERT [dbo].[Notifications] ([ID], [UserID], [TaskID], [Message], [Function], [URL], [CreatedTime]) VALUES (1, 40, 3658, N'Stone.Huang has already finished the task name '' 每日早會(工作計畫、指派、回報) ''', N'Done', N'/history/每日早會(工作計畫、指派、回報)', CAST(N'2020-05-08T11:32:03.1017440' AS DateTime2))
+GO
+INSERT [dbo].[Notifications] ([ID], [UserID], [TaskID], [Message], [Function], [URL], [CreatedTime]) VALUES (2, 40, 3657, N'Stone.Huang has already finished the task name '' 經營日報表(每日12點前寄出) ''', N'Done', N'/history/經營日報表(每日12點前寄出)', CAST(N'2020-05-08T11:37:16.5397703' AS DateTime2))
+GO
+SET IDENTITY_INSERT [dbo].[Notifications] OFF
 GO
 SET IDENTITY_INSERT [dbo].[OCs] ON 
 GO
@@ -784,37 +806,11 @@ INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3417, 26)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3420, 27)
 GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3421, 28)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3429, 29)
-GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3431, 30)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3440, 31)
 GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3456, 32)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3461, 33)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3482, 34)
-GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3515, 35)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3648, 36)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3649, 37)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3650, 38)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3651, 39)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3652, 40)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3653, 41)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3654, 42)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (3, 3655, 43)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (4, 3345, 44)
 GO
@@ -834,8 +830,6 @@ INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (4, 3515, 51)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3344, 52)
 GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3356, 53)
-GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3418, 54)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3422, 55)
@@ -845,8 +839,6 @@ GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3426, 57)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3427, 58)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3428, 59)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3430, 60)
 GO
@@ -859,12 +851,6 @@ GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3445, 64)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3448, 65)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3457, 66)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3460, 67)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3481, 68)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3484, 69)
 GO
@@ -880,31 +866,9 @@ INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3491, 74)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3492, 75)
 GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3501, 76)
-GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3514, 77)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3515, 78)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3516, 79)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3520, 80)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3521, 81)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3525, 82)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3526, 83)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3527, 84)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3528, 85)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3529, 86)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3549, 87)
-GO
-INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (7, 3656, 88)
 GO
 INSERT [dbo].[Tags] ([UserID], [TaskID], [ID]) VALUES (40, 3438, 89)
 GO
@@ -1062,8 +1026,6 @@ INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentI
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3345, N'3345-Weekly-Routine', N'OKR update to Team leader', 3342, 2, 0, NULL, 2, 21, 3, N'H', N'', N'25 Apr, 2020 12:00:00 AM', N'', N'', N'24 Apr, 2020 04:10:40 PM', 1, 1, CAST(N'2020-04-10T15:00:56.1821813' AS DateTime2), 2, 2)
 GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3356, N'3356-Weekly-Routine', N'Demo Angular --------------------------------------', 0, 1, 0, NULL, 2, 21, 3, N'H', N'', N'7 May, 2020 04:30:00 PM', N'', N'', NULL, 0, 0, CAST(N'2020-04-22T12:01:42.0408201' AS DateTime2), 2, 2)
-GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3400, N'3400-Weekly-Routine', N'Demo weekly', 0, 1, 0, NULL, 3, 21, 3, N'M', N'', N'27 Apr, 2020 12:00:00 AM', N'', N'', N'24 Apr, 2020 04:11:35 PM', 0, 1, CAST(N'2020-04-24T15:07:42.4555691' AS DateTime2), 2, 2)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3402, N'3402-Daily-Routine', N'Daily Test', 0, 1, 0, NULL, 3, 21, 3, N'H', N'24 Apr, 2020 03:24:04 PM', N'', N'', N'', N'24 Apr, 2020 04:11:30 PM', 0, 1, CAST(N'2020-04-24T15:24:15.7661511' AS DateTime2), 1, 2)
@@ -1076,8 +1038,6 @@ INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentI
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3420, N'3402-Daily-Routine', N'Daily Test', 0, 1, 0, NULL, 3, 21, 3, N'H', N'25 Apr, 2020 03:24:04 PM', N'', N'', N'', N'25 Apr, 2020 11:04:28 AM', 0, 1, CAST(N'2020-04-24T15:24:15.7661511' AS DateTime2), 1, 2)
 GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3421, N'3400-Weekly-Routine', N'Demo weekly', 0, 1, 0, NULL, 3, 21, 3, N'M', N'', N'04 May, 2020 12:00:00 AM', N'', N'', N'', 0, 0, CAST(N'2020-04-24T15:07:42.4555691' AS DateTime2), 2, 2)
-GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3422, N'3422-Daily-Project', N'Analyzing Data', 0, 1, 0, 1, 2, NULL, 3, N'H', N'', N'', N'', N'30 Apr, 2020 04:30:00 PM', N'04 May, 2020 10:41:27 AM', 1, 1, CAST(N'2020-04-25T07:49:50.0249683' AS DateTime2), 6, 1)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3423, N'3423-Daily-Project', N'Design UI', 0, 1, 0, 1, 2, NULL, 3, N'H', N'', N'', N'', N'30 Apr, 2020 12:00:00 AM', N'05 May, 2020 10:39:59 AM', 1, 1, CAST(N'2020-04-25T07:50:19.6614474' AS DateTime2), 6, 1)
@@ -1087,10 +1047,6 @@ GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3426, N'3426-Monthly-Project', N'Meeting', 0, 1, 0, 1, 3, NULL, 3, N'M', N'', N'', N'30 Apr, 2020 08:00:00 AM', N'', NULL, 0, 0, CAST(N'2020-04-25T09:06:39.1847268' AS DateTime2), 3, 1)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3427, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'25 Apr, 2020 10:45:40 AM', N'', N'', N'', N'25 Apr, 2020 10:46:18 AM', 0, 1, CAST(N'2020-04-25T10:45:55.9150548' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3428, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'26 Apr, 2020 10:45:40 AM', N'', N'', N'', N'', 0, 0, CAST(N'2020-04-25T10:45:55.9150548' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3429, N'3402-Daily-Routine', N'Daily Test', 0, 1, 0, NULL, 3, 21, 3, N'H', N'26 Apr, 2020 03:24:04 PM', N'', N'', N'', N'', 0, 0, CAST(N'2020-04-24T15:24:15.7661511' AS DateTime2), 1, 2)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3430, N'3424-Daily-Project', N'Report', 0, 1, 0, 1, 3, NULL, 3, N'H', N'26 Apr, 2020 08:48:35 AM', N'', N'', N'', N'04 May, 2020 10:35:31 AM', 0, 1, CAST(N'2020-04-25T08:48:48.0373148' AS DateTime2), 1, 1)
 GO
@@ -1124,14 +1080,6 @@ INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentI
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3448, N'3424-Daily-Project', N'Report', 0, 1, 0, 1, 3, NULL, 3, N'H', N'28 Apr, 2020 08:48:35 AM', N'', N'', N'', N'04 May, 2020 10:35:26 AM', 0, 1, CAST(N'2020-04-27T16:13:35.6970918' AS DateTime2), 1, 1)
 GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3456, N'3402-Daily-Routine', N'Daily Test', 0, 1, 0, NULL, 3, 21, 3, N'H', N'27 Apr, 2020 03:24:04 PM', N'', N'', N'', N'', 0, 0, CAST(N'2020-04-28T07:28:46.1464355' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3457, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'27 Apr, 2020 10:45:40 AM', N'', N'', N'', N'', 0, 0, CAST(N'2020-04-28T07:28:46.1565425' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3460, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'28 Apr, 2020 10:45:40 AM', N'', N'', N'', N'', 0, 0, CAST(N'2020-04-28T07:55:23.3464475' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3461, N'3402-Daily-Routine', N'Daily Test', 0, 1, 0, NULL, 3, 21, 3, N'H', N'28 Apr, 2020 03:24:04 PM', N'', N'', N'', N'', 0, 0, CAST(N'2020-04-28T07:55:23.3566175' AS DateTime2), 1, 2)
-GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3462, N'3439-Daily-Routine', N'事務組早會', 0, 1, 0, NULL, 2, 22, 2, N'M', N'29 Apr, 2020 04:00:00 PM', N'', N'', N'', N'29 Apr, 2020 08:51:10 AM', 0, 1, CAST(N'2020-04-28T07:55:23.3677743' AS DateTime2), 1, 2)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3463, N'3438-Daily-Routine', N'經營日報表(每日12點前寄出)', 0, 1, 0, NULL, 2, 22, 2, N'M', N'30 Apr, 2020 07:38:42 AM', N'', N'', N'', N'04 May, 2020 10:36:06 AM', 0, 1, CAST(N'2020-04-28T07:55:23.3795923' AS DateTime2), 1, 2)
@@ -1143,10 +1091,6 @@ GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3479, N'3439-Daily-Routine', N'事務組早會', 0, 1, 0, NULL, 2, 22, 2, N'M', N'30 Apr, 2020 04:00:00 PM', N'', N'', N'', N'04 May, 2020 10:36:13 AM', 0, 1, CAST(N'2020-04-29T08:48:28.3304853' AS DateTime2), 1, 2)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3480, N'3439-Daily-Routine', N'事務組早會', 0, 1, 0, NULL, 2, 22, 2, N'M', N'30 Apr, 2020 04:00:00 PM', N'', N'', N'', N'04 May, 2020 10:42:01 AM', 0, 1, CAST(N'2020-04-29T08:51:10.3435945' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3481, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'29 Apr, 2020 10:45:40 AM', N'', N'', N'', N'', 0, 0, CAST(N'2020-04-29T12:05:42.7460993' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3482, N'3402-Daily-Routine', N'Daily Test', 0, 1, 0, NULL, 3, 21, 3, N'H', N'29 Apr, 2020 03:24:04 PM', N'', N'', N'', N'', 0, 0, CAST(N'2020-04-29T16:22:32.7752972' AS DateTime2), 1, 2)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3483, N'3441-Weekly-Routine', N'越語課(週二晚上)', 0, 1, 0, NULL, 2, 22, 2, N'L', N'', N'05 May, 2020 06:00:00 PM', N'', N'', N'06 May, 2020 07:56:30 AM', 0, 1, CAST(N'2020-05-04T10:35:19.9817750' AS DateTime2), 2, 2)
 GO
@@ -1184,8 +1128,6 @@ INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentI
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3500, N'3438-Daily-Routine', N'經營日報表(每日12點前寄出)', 0, 1, 0, NULL, 2, 22, 2, N'M', N'04 May, 2020 07:38:42 AM', N'', N'', N'', N'04 May, 2020 11:12:44 AM', 0, 1, CAST(N'2020-05-04T10:42:27.9263145' AS DateTime2), 1, 2)
 GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3501, N'3424-Daily-Project', N'Report', 0, 1, 0, 1, 3, NULL, 3, N'H', N'05 May, 2020 08:48:35 AM', N'', N'', N'', N'', 0, 0, CAST(N'2020-05-04T10:45:25.0369168' AS DateTime2), 1, 1)
-GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3502, N'3502-Monthly-Project', N'中心主管會議資料準備', 0, 1, 0, 54, 2, NULL, 2, N'H', N'', N'', N'12 May, 2020 12:00:00 AM', N'', NULL, 0, 0, CAST(N'2020-05-04T10:48:47.0896225' AS DateTime2), 3, 1)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3503, N'3503-Monthly-Project', N'月份KPI更新', 0, 1, 0, 54, 2, NULL, 2, N'H', N'', N'', N'08 May, 2020 12:00:00 AM', N'', NULL, 0, 0, CAST(N'2020-05-04T10:49:44.6229306' AS DateTime2), 3, 1)
@@ -1214,33 +1156,17 @@ INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentI
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3515, N'3440-Weekly-Routine', N'DEMO meeting per week', 0, 1, 0, NULL, 2, 21, 2, N'M', N'', N'09 May, 2020 03:00:00 AM', N'', N'', NULL, 0, 0, CAST(N'2020-05-04T12:07:15.5188999' AS DateTime2), 2, 2)
 GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3516, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'30 Apr, 2020 10:45:40 AM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-04T12:07:15.5860240' AS DateTime2), 1, 2)
-GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3517, N'3509-Weekly-Routine', N'主管早會會議記錄Review', 0, 1, 0, NULL, 2, 22, 2, N'M', N'', N'11 May, 2020 10:00:00 AM', N'', N'', NULL, 0, 0, CAST(N'2020-05-04T12:09:11.8272860' AS DateTime2), 2, 2)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3518, N'3510-Weekly-Routine', N'主管早會會議紀錄', 0, 1, 0, NULL, 2, 22, 2, N'M', N'', N'11 May, 2020 12:00:00 AM', N'', N'', NULL, 0, 0, CAST(N'2020-05-04T12:09:11.8566541' AS DateTime2), 2, 2)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3519, N'3506-Weekly-Project', N'周稽核報告', 0, 1, 0, 54, 2, NULL, 2, N'M', N'', N'11 May, 2020 06:00:00 PM', N'', N'', NULL, 0, 0, CAST(N'2020-05-04T12:11:38.4091474' AS DateTime2), 2, 1)
 GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3520, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'01 May, 2020 10:45:40 AM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-04T13:08:51.1822154' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3521, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'02 May, 2020 10:45:40 AM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-04T13:09:03.7173302' AS DateTime2), 1, 2)
-GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3522, N'3504-Monthly-Project', N'月份稽核報告', 0, 1, 0, 54, 2, NULL, 2, N'H', N'', N'', N'05 Jun, 2020 12:00:00 AM', N'', NULL, 0, 0, CAST(N'2020-05-05T10:36:50.1138944' AS DateTime2), 3, 1)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3523, N'3438-Daily-Routine', N'經營日報表(每日12點前寄出)', 0, 1, 0, NULL, 2, 22, 2, N'M', N'06 May, 2020 07:38:42 AM', N'', N'', N'', N'06 May, 2020 11:48:46 AM', 0, 1, CAST(N'2020-05-05T11:03:19.1689841' AS DateTime2), 1, 2)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3524, N'3439-Daily-Routine', N'事務組早會', 0, 1, 0, NULL, 2, 22, 2, N'M', N'06 May, 2020 04:00:00 PM', N'', N'', N'', N'05 May, 2020 11:21:31 AM', 0, 1, CAST(N'2020-05-05T11:04:12.4168203' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3525, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'03 May, 2020 10:45:40 AM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-05T16:37:17.7714832' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3526, N'3424-Daily-Project', N'Report', 0, 1, 0, 1, 3, NULL, 3, N'H', N'06 May, 2020 08:48:35 AM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-05T16:37:18.0013034' AS DateTime2), 1, 1)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3527, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'04 May, 2020 10:45:40 AM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-05T16:37:47.7857177' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3528, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'05 May, 2020 10:45:40 AM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-05T16:38:18.4121641' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3529, N'3427-Daily-Routine', N'Demo daily 4-25-2020', 0, 1, 0, NULL, 3, 21, 3, N'M', N'06 May, 2020 10:45:40 AM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-05T16:38:47.8332635' AS DateTime2), 1, 2)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3530, N'3441-Weekly-Routine', N'越語課(週二晚上)', 0, 1, 0, NULL, 2, 22, 41, N'L', N'', N'12 May, 2020 06:00:00 PM', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T07:30:50.2537030' AS DateTime2), 2, 2)
 GO
@@ -1280,33 +1206,13 @@ INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentI
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3548, N'3548-Monthly-Routine', N'中心主管會議資料彙整完成', 0, 1, 0, NULL, 2, 22, 2, N'H', N'', N'', N'12 May, 2020 12:00:00 PM', N'', NULL, 0, 0, CAST(N'2020-05-05T16:28:40.2679128' AS DateTime2), 3, 2)
 GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3549, N'3542-Daily-Routine', N'Demo daily', 0, 1, 0, NULL, 3, 21, 3, N'M', N'06 May, 2020 04:30:00 PM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-05T16:30:20.3860591' AS DateTime2), 1, 2)
-GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3550, N'3550-SpecificDate-Project', N'調膠房一分鐘介紹影片', 0, 1, 0, 54, 2, NULL, 43, N'H', N'', N'', N'', N'06 May, 2020 12:00:00 PM', NULL, 0, 0, CAST(N'2020-05-05T16:32:12.4882151' AS DateTime2), 6, 1)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3551, N'3545-Monthly-Routine', N'異常費用與消耗用品月報', 0, 1, 0, NULL, 2, 22, 2, N'H', N'', N'', N'05 Jun, 2020 05:30:00 PM', N'', NULL, 0, 0, CAST(N'2020-05-06T07:32:58.8032372' AS DateTime2), 3, 2)
 GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3648, N'3400-Weekly-Routine', N'Demo weekly', 0, 1, 0, NULL, 3, 21, 3, N'M', N'', N'11 May, 2020 12:00:00 AM', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T08:23:08.8246585' AS DateTime2), 2, 2)
+INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3657, N'3438-Daily-Routine', N'經營日報表(每日12點前寄出)', 0, 0, 0, NULL, 2, 22, 2, N'M', N'07 May, 2020 07:38:42 AM', N'', N'', N'', N'08 May, 2020 11:37:16 AM', 0, 1, CAST(N'2020-05-06T11:48:46.2632639' AS DateTime2), 1, 2)
 GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3649, N'3402-Daily-Routine', N'Daily Test', 0, 1, 0, NULL, 3, 21, 3, N'H', N'30 Apr, 2020 03:24:04 PM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T08:23:10.1973123' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3650, N'3402-Daily-Routine', N'Daily Test', 0, 1, 0, NULL, 3, 21, 3, N'H', N'01 May, 2020 03:24:04 PM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T08:23:38.8343941' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3651, N'3402-Daily-Routine', N'Daily Test', 0, 1, 0, NULL, 3, 21, 3, N'H', N'02 May, 2020 03:24:04 PM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T08:24:09.1898595' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3652, N'3402-Daily-Routine', N'Daily Test', 0, 1, 0, NULL, 3, 21, 3, N'H', N'03 May, 2020 03:24:04 PM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T08:24:39.3614156' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3653, N'3402-Daily-Routine', N'Daily Test', 0, 1, 0, NULL, 3, 21, 3, N'H', N'04 May, 2020 03:24:04 PM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T08:25:09.6298327' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3654, N'3402-Daily-Routine', N'Daily Test', 0, 0, 0, NULL, 3, 21, 3, N'H', N'05 May, 2020 03:24:04 PM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T08:25:41.2760044' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3655, N'3402-Daily-Routine', N'Daily Test', 0, 0, 0, NULL, 3, 21, 3, N'H', N'06 May, 2020 03:24:04 PM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T08:26:08.9026081' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3656, N'3424-Daily-Project', N'Report', 0, 1, 0, 1, 3, NULL, 3, N'H', N'07 May, 2020 08:48:35 AM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T08:48:37.8796431' AS DateTime2), 1, 1)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3657, N'3438-Daily-Routine', N'經營日報表(每日12點前寄出)', 0, 0, 0, NULL, 2, 22, 2, N'M', N'07 May, 2020 07:38:42 AM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T11:48:46.2632639' AS DateTime2), 1, 2)
-GO
-INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3658, N'3542-Daily-Routine', N'每日早會(工作計畫、指派、回報)', 0, 0, 0, NULL, 2, 22, 2, N'H', N'07 May, 2020 09:00:00 AM', N'05 May, 2020 09:00:00 AM', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T11:49:02.2989212' AS DateTime2), 1, 2)
+INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3658, N'3542-Daily-Routine', N'每日早會(工作計畫、指派、回報)', 0, 0, 0, NULL, 2, 22, 2, N'H', N'07 May, 2020 09:00:00 AM', N'05 May, 2020 09:00:00 AM', N'', N'', N'08 May, 2020 11:32:03 AM', 0, 1, CAST(N'2020-05-06T11:49:02.2989212' AS DateTime2), 1, 2)
 GO
 INSERT [dbo].[Tasks] ([ID], [Code], [JobName], [ParentID], [Level], [DepartmentID], [ProjectID], [CreatedBy], [OCID], [FromWhoID], [Priority], [DueDateDaily], [DueDateWeekly], [DueDateMonthly], [SpecificDate], [ModifyDateTime], [FinishedMainTask], [Status], [CreatedDate], [periodType], [JobTypeID]) VALUES (3659, N'3533-Daily-Routine', N'發經營日報表郵件', 0, 0, 0, NULL, 2, 22, 2, N'H', N'07 May, 2020 12:00:00 PM', N'', N'', N'', NULL, 0, 0, CAST(N'2020-05-06T12:01:03.0639277' AS DateTime2), 1, 2)
 GO

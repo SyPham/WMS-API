@@ -44,7 +44,10 @@ namespace WorkManagement
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var conn = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<DataContext>(x => x.UseSqlServer(conn));
+            services.AddDbContext<DataContext>(x => 
+            x.UseLazyLoadingProxies()
+            .UseSqlServer(conn)
+            );
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

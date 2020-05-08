@@ -65,6 +65,12 @@
     <Compile Remove="Migrations\20200507020218_InitialDb.Designer.cs" />
     <Compile Remove="Migrations\20200507021237_InitialDb.cs" />
     <Compile Remove="Migrations\20200507021237_InitialDb.Designer.cs" />
+    <Compile Remove="Migrations\20200508090423_version1.0.5.cs" />
+    <Compile Remove="Migrations\20200508090423_version1.0.5.Designer.cs" />
+    <Compile Remove="Migrations\20200508090759_version1.0.5.cs" />
+    <Compile Remove="Migrations\20200508090759_version1.0.5.Designer.cs" />
+    <Compile Remove="Migrations\20200508091224_version1.0.5.cs" />
+    <Compile Remove="Migrations\20200508091224_version1.0.5.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -16,8 +16,8 @@ namespace Data.ViewModel.Notification
         public string URL { get; set; }
         public byte[] ImageBase64 { get; set; }
         public string Sender { get; set; }
-        public int CreatedBy { get; set; }
+        public int? CreatedBy { get; set; }
       
-        public IEnumerable<NotificationDetail> NotificationDetails { get; set; }
+        // public IEnumerable<NotificationDetail> NotificationDetails { get; set; }
     }
 }

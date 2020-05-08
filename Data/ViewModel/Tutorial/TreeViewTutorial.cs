@@ -18,7 +18,8 @@ namespace Data.ViewModel.Tutorial
         public string Path { get; set; }
         public int Level { get; set; }
         public int ParentID { get; set; }
-
+        public int? ProjectID { get; set; }
+        public int? TaskID { get; set; }
         public bool HasChildren
         {
             get { return children.Any(); }

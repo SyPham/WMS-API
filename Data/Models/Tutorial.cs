@@ -14,9 +14,9 @@ namespace Data.Models
      
         public string URL { get; set; }
         public string Path { get; set; }
-        public int ProjectID { get; set; }
+        public int? ProjectID { get; set; }
+        public int? TaskID { get; set; }
         public virtual Project Project { get; set; }
-        public int TaskID { get; set; }
         public virtual Task Task { get; set; }
     }
 }

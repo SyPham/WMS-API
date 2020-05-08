@@ -123,23 +123,23 @@ namespace WorkManagement.Controllers
                     {
                         Directory.CreateDirectory(_environment.WebRootPath + "\\video\\");
                     }
-                    using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\video\\" + file.FileName))
-                    {
-                        file.CopyTo(fileStream);
-                        fileStream.Flush();
+                    using FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\video\\" + file.FileName);
+                    file.CopyTo(fileStream);
+                    fileStream.Flush();
 
-                        var item = new Tutorial();
-                        item.Level = 1;
-                        item.Name = name.ToSafetyString();
-                        item.ParentID = parentid.ToInt();
-                        item.URL = $"{Request.Scheme}://{Request.Host.Value}/video/{file.FileName}";
-                        item.Path = path.ToSafetyString();
-                        if (projectid.ToInt() > 0)
-                            item.ProjectID = projectid.ToInt();
-                        if (taskid.ToInt() > 0)
-                            item.TaskID = taskid.ToInt();
-                        await _tutorialService.Create(item);
-                    }
+                    var item = new Tutorial
+                    {
+                        Level = 1,
+                        Name = name.ToSafetyString(),
+                        ParentID = parentid.ToInt(),
+                        URL = $"{Request.Scheme}://{Request.Host.Value}/video/{file.FileName}",
+                        Path = path.ToSafetyString()
+                    };
+                    if (projectid.ToInt() > 0)
+                        item.ProjectID = projectid.ToInt();
+                    if (taskid.ToInt() > 0)
+                        item.TaskID = taskid.ToInt();
+                    await _tutorialService.Create(item);
                 }
                 else
                 {
@@ -155,8 +155,6 @@ namespace WorkManagement.Controllers
                         item.TaskID = taskid.ToInt();
                     await _tutorialService.Create(item);
                 }
-                //_context.Add(entity);
-                //await _context.SaveChangesAsync();
                 return Ok(tutorial);
 
             }

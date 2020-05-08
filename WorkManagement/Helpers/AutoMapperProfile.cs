@@ -159,19 +159,30 @@ namespace WorkManagement.Helpers
 
             CreateMap<Data.Models.Task, TreeViewTask>()
                 .ForMember(d => d.Project, s => s.MapFrom(p => p.Project == null ? new Project() : p.Project))
+                .ForMember(d => d.Tutorial, s => s.MapFrom(p => p.Tutorial == null ? new TreeViewTutorial() : 
+                new TreeViewTutorial 
+                {
+                    ID = p.Tutorial.ID,
+                    Name = p.Tutorial.Name,
+                    ParentID = p.Tutorial.ParentID,
+                    Path =p.Tutorial.Path,
+                    URL = p.Tutorial.URL,
+                    Level= p.Tutorial.Level,
+                    ProjectID = p.Tutorial.ProjectID,
+                    TaskID = p.Tutorial.TaskID
+                }))
                 .ForMember(d => d.PriorityID, s => s.MapFrom(p => p.Priority))
                 .ForMember(d => d.From, s => s.MapFrom(p => p.User.Username))
                 .ForMember(d => d.User, s => s.MapFrom(p => p.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
                 .ForMember(d => d.FromWho, s => s.MapFrom(p =>p.User == null? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
                 .ForMember(d => d.FromWhere, s => s.MapFrom(p => p.OC == null ? new FromWhere() : new FromWhere {ID = p.OC.ID, Name = p.OC.Name }))
-                .ForMember(d => d.VideoLink, s => s.MapFrom(p => p.Tutorial == null ? "" : p.Tutorial.URL))
-                .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Tutorial == null ? false : true))
                 .ForMember(d => d.state, s => s.MapFrom(p => p.Status == false ? "Undone" : "Done"))
                 .ForMember(d => d.Follows, s => s.MapFrom(p => p.Follows))
+                .ForMember(d => d.CreatedDate, s => s.MapFrom(p => p.CreatedDate.ToString("dd MMM, yyyy hh:mm:ss tt")))
                 .ForMember(d => d.TaskCode, s => s.MapFrom(p => p.Code))
                 .ForMember(d => d.ProjectName, s => s.MapFrom(p => p.Project == null ? "" : p.Project.Name))
                 .ForMember(d => d.VideoLink, s => s.MapFrom(p => p.Tutorial == null ? "" : p.Tutorial.URL))
-                .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Tutorial == null? false: true))
+                .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Tutorial == null ? false : true))
                 .ForMember(d => d.Priority, s => s.MapFrom(p => CastPriority(p.Priority)))
                 .ForMember(d => d.DueDateTime, s => s.MapFrom(p => MapDueDatTimeeWithPeriod(p)))
                 .ForMember(d => d.DueDate, s => s.MapFrom(p => MapDueDateWithPeriod(p)))
@@ -191,7 +202,7 @@ namespace WorkManagement.Helpers
                 .ForMember(d => d.SpecificDate, s => s.MapFrom(p => p.Task.SpecificDate))
                 .ForMember(d => d.periodType, s => s.MapFrom(p => p.Task.periodType))
                 .ForMember(d => d.ModifyDateTime, s => s.MapFrom(p => p.Task.ModifyDateTime))
-                .ForMember(d => d.CreatedDate, s => s.MapFrom(p => p.Task.CreatedDate))
+                .ForMember(d => d.CreatedDate, s => s.MapFrom(p => p.Task.CreatedDate.ToString("dd MMM, yyyy hh:mm:ss tt")))
                 .ForMember(d => d.CreatedBy, s => s.MapFrom(p => p.Task.CreatedBy))
                 .ForMember(d => d.FromWhoID, s => s.MapFrom(p => p.Task.FromWhoID))
                 .ForMember(d => d.PriorityID, s => s.MapFrom(p => p.Task.Priority))
@@ -199,8 +210,6 @@ namespace WorkManagement.Helpers
                 .ForMember(d => d.User, s => s.MapFrom(p => p.Task.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
                 .ForMember(d => d.FromWho, s => s.MapFrom(p => p.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
                 .ForMember(d => d.FromWhere, s => s.MapFrom(p => p.Task.OC == null ? new FromWhere() : new FromWhere { ID = p.Task.OC.ID, Name = p.Task.OC.Name }))
-                .ForMember(d => d.VideoLink, s => s.MapFrom(p => p.Task.Tutorial == null ? "" : p.Task.Tutorial.URL))
-                .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Task.Tutorial == null ? false : true))
                 .ForMember(d => d.state, s => s.MapFrom(p => p.Task.Status == false ? "Undone" : "Done"))
                 .ForMember(d => d.Follows, s => s.MapFrom(p => p.Task.Follows))
                 .ForMember(d => d.TaskCode, s => s.MapFrom(p => p.Task.Code))
@@ -217,6 +226,26 @@ namespace WorkManagement.Helpers
                 .ForMember(d => d.PIC, s => s.MapFrom(p => string.Join(",", p.Task.Tags.Select(x => x.User.Username))))
                 .ForMember(d => d.BeAssigneds, s => s.MapFrom(p => p.Task.Tags.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username })))
                 .ForMember(d => d.PICs, s => s.MapFrom(p => p.Task.Tags.Select(x => x.UserID)));
+
+            /*  ID = _.a.detail.ID,
+                    Message = _.a.notify.Message,
+                    Function = _.a.notify.Function,
+                    CreatedBy = _.a.notify.UserID,
+                    BeAssigned = _.a.detail.UserID,
+                    Seen = _.a.detail.Seen,
+                    URL = _.a.notify.URL,
+                    Sender = _.b.Username,
+                    ImageBase64 = _.b.ImageBase64,
+                    CreatedTime = _.a.notify.CreatedTime,*/
+            CreateMap<NotificationDetail, NotificationViewModel>()
+                .ForMember(d => d.Message, s => s.MapFrom(p => p.Notification.Message))
+                .ForMember(d => d.Function, s => s.MapFrom(p => p.Notification.Function))
+                .ForMember(d => d.CreatedBy, s => s.MapFrom(p => p.Notification.UserID))
+                .ForMember(d => d.BeAssigned, s => s.MapFrom(p => p.UserID))
+                .ForMember(d => d.Seen, s => s.MapFrom(p => p.Seen))
+                .ForMember(d => d.Sender, s => s.MapFrom(p => p.Notification.User != null ? p.Notification.User.ID : 0))
+                .ForMember(d => d.ImageBase64, s => s.MapFrom(p => p.Notification.User != null ? p.Notification.User.ImageBase64 : new byte[] { }))
+                .ForMember(d => d.CreatedTime, s => s.MapFrom(p => p.Notification.CreatedTime));
             CreateMap<User, UserViewModel>();
 
             CreateMap<UserViewModel, User>();
@@ -268,3 +297,4 @@ namespace WorkManagement.Helpers
         }
     }
 }
+ 
