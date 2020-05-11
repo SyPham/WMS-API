@@ -38,7 +38,10 @@ namespace Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<OCUser>().HasKey(ba => new { ba.UserID, ba.OCID });
-
+            builder.Entity<User>() //Tag
+            .HasMany(u => u.Projects)
+            .WithOne(c => c.User)
+            .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Task>() //Tag
                 .HasMany(u => u.Tags)
                 .WithOne(c => c.Task)

@@ -242,9 +242,10 @@ namespace WorkManagement.Helpers
                 .ForMember(d => d.Function, s => s.MapFrom(p => p.Notification.Function))
                 .ForMember(d => d.CreatedBy, s => s.MapFrom(p => p.Notification.UserID))
                 .ForMember(d => d.BeAssigned, s => s.MapFrom(p => p.UserID))
+                .ForMember(d => d.URL, s => s.MapFrom(p => p.Notification.URL))
                 .ForMember(d => d.Seen, s => s.MapFrom(p => p.Seen))
-                .ForMember(d => d.Sender, s => s.MapFrom(p => p.Notification.User != null ? p.Notification.User.ID : 0))
-                .ForMember(d => d.ImageBase64, s => s.MapFrom(p => p.Notification.User != null ? p.Notification.User.ImageBase64 : new byte[] { }))
+                .ForMember(d => d.Sender, s => s.MapFrom(p => p.Notification.User != null ? p.Notification.User.Username : "From System"))
+                .ForMember(d => d.ImageBase64, s => s.MapFrom(p => p.Notification.NotificationDetails.User != null ? p.Notification.NotificationDetails.User.ImageBase64 : new byte[] { }))
                 .ForMember(d => d.CreatedTime, s => s.MapFrom(p => p.Notification.CreatedTime));
             CreateMap<User, UserViewModel>();
 

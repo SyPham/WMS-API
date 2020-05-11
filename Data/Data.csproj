@@ -71,6 +71,10 @@
     <Compile Remove="Migrations\20200508090759_version1.0.5.Designer.cs" />
     <Compile Remove="Migrations\20200508091224_version1.0.5.cs" />
     <Compile Remove="Migrations\20200508091224_version1.0.5.Designer.cs" />
+    <Compile Remove="Migrations\20200511031846_version1.0.7.cs" />
+    <Compile Remove="Migrations\20200511031846_version1.0.7.Designer.cs" />
+    <Compile Remove="Migrations\20200511032328_version1.0.7.cs" />
+    <Compile Remove="Migrations\20200511032328_version1.0.7.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

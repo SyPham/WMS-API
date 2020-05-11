@@ -55,11 +55,13 @@ namespace WorkManagement.Controllers
         public async Task<IActionResult> Login([FromBody]UserForLoginDto userForLoginDto)
         {
             var user = await _authService.FindByNameAsync(userForLoginDto.Username);
+            if (user == null)
+                return NotFound();
 
             var result = await _authService
                 .Login(userForLoginDto.Username, userForLoginDto.Password);
             if (result == null)
-                return Unauthorized();
+                return NotFound();
 
             var userprofile = new UserProfileDto()
             {

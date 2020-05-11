@@ -28,7 +28,7 @@ namespace Data.Models
         public virtual ICollection<Deputy> Deputies { get; set; }
         public virtual ICollection<TeamMember> TeamMembers { get; set; }
         public virtual ICollection<Manager> Managers { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
         public virtual ICollection<Task> Tasks { get; set; }
-
     }
 }

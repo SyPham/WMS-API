@@ -103,10 +103,11 @@ namespace WorkManagement.Controllers
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             createTask.CreatedBy = userID;
+            createTask.FromWhoID = userID;
             createTask.UserID = userID;
             var model = await _taskService.CreateTask(createTask);
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, model.Item3);
-            await _hubContext.Clients.All.SendAsync("ReceiveAlertMessage", model.Item2, model.Item3);
+           // await _hubContext.Clients.All.SendAsync("ReceiveAlertMessage", model.Item2, model.Item3);
             return Ok(model.Item1);
         }
         [HttpPost]

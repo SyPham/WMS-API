@@ -42,7 +42,6 @@ namespace Service.Implement
             {
                 return false;
             }
-
             _context.Roles.Remove(entity);
             try
             {

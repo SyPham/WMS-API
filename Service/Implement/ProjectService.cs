@@ -356,7 +356,15 @@ namespace Service.Implement
 
         public async Task<PagedList<ProjectViewModel>> GetAllPaging(int userid, int page, int pageSize, string keyword)
         {
+            var source2 = await _context.Projects
+              .Include(x => x.User)
+              .Include(x => x.TeamMembers)
+              .ThenInclude(x => x.User)
+              .Include(x => x.Managers)
+              .ThenInclude(x => x.User)
+              .OrderByDescending(x => x.ID).ToListAsync();
             var source = await _context.Projects
+                .Include(x => x.User)
                 .Include(x => x.TeamMembers)
                 .ThenInclude(x => x.User)
                 .Include(x => x.Managers)
@@ -369,7 +377,7 @@ namespace Service.Implement
                 {
                     ID = x.ID,
                     Name = x.Name,
-                    CreatedByName = x.CreatedByName,
+                    CreatedByName = x.User.Username,
                     CreatedBy = x.CreatedBy,
                     CreatedDate = x.CreatedDate.ToString("dd MMM, yyyy"),
                     Room = x.Room,

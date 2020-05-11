@@ -35,7 +35,7 @@ namespace Service.Implement
                     URL = entity.URL,
                     Function = entity.AlertType.ToString()
                 };
-                if (entity.UserID == 0) item.UserID = null;
+                item.UserID = entity.UserID.GetValueOrDefault();
                 await _context.Notifications.AddAsync(item);
                 await _context.SaveChangesAsync();
 
@@ -120,6 +120,7 @@ namespace Service.Implement
             var model = _context.NotificationDetails
                 .Where(x=>x.UserID == userid)
                 .Include(x => x.Notification).ThenInclude(x=>x.User)
+                .Include(x => x.Notification).ThenInclude(x => x.NotificationDetails).ThenInclude(x=>x.User)
                 .Include(x => x.User).AsQueryable();
             var listAsync = await model.ToListAsync();
            var list =  _mapper.Map<List<NotificationViewModel>>(model);
@@ -138,7 +139,7 @@ namespace Service.Implement
 
             return new
             {
-                model = paging,
+                model = paging.OrderByDescending(x => x.ID).ToList(),
                 total,
                 paging.TotalCount
             };

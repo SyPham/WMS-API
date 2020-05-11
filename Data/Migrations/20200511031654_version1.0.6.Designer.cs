@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200511031654_version1.0.6")]
+    partial class version106
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -392,9 +394,12 @@ namespace Data.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("UserID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("UserID");
 
                     b.ToTable("Projects");
                 });
@@ -780,10 +785,8 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Models.Project", b =>
                 {
                     b.HasOne("Data.Models.User", "User")
-                        .WithMany("Projects")
-                        .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserID");
                 });
 
             modelBuilder.Entity("Data.Models.Room", b =>

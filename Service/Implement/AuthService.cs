@@ -1,6 +1,7 @@
 ﻿using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Service.Helpers;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,9 @@ namespace Service.Implement
         }
         public async Task<User> Login(string username, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            if (username.IsNullOrEmpty())
+                return null;
+            var user =await FindByNameAsync(username);
 
             if (user == null)
                 return null;
@@ -46,7 +49,7 @@ namespace Service.Implement
         }
         public async Task<User> FindByNameAsync(string username)
         {
-            var item = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            var item = await _context.Users.FirstOrDefaultAsync(x => x.Username.ToLower().Equals(username.ToLower()));
             if (item != null)
                 return item;
 
