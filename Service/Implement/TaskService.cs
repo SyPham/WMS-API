@@ -1801,20 +1801,20 @@ namespace Service.Implement
             }
             return listTasks;
         }
-        private IQueryable<Follow> SortFollow(IQueryable<Data.Models.Follow> listTasks, string sort, string priority)
+        private IQueryable<Data.Models.Task> SortFollow(IQueryable<Data.Models.Task> listTasks, string sort, string priority)
         {
 
             if (!sort.IsNullOrEmpty())
             {
                 if (sort == "project")
-                    listTasks = listTasks.Where(x => x.Task.ProjectID > 0).AsQueryable();
+                    listTasks = listTasks.Where(x => x.ProjectID > 0).AsQueryable();
                 if (sort == "routine")
-                    listTasks = listTasks.Where(x => x.Task.ProjectID == 0).AsQueryable();
+                    listTasks = listTasks.Where(x => x.ProjectID == 0).AsQueryable();
             }
             if (!priority.IsNullOrEmpty())
             {
                 priority = priority.ToUpper();
-                listTasks = listTasks.Where(x => x.Task.Priority.Equals(priority)).AsQueryable();
+                listTasks = listTasks.Where(x => x.Priority.Equals(priority)).AsQueryable();
             }
             return listTasks;
         }
@@ -2054,24 +2054,33 @@ namespace Service.Implement
         }
         public async Task<List<HierarchyNode<TreeViewTask>>> Follow(string sort = "", string priority = "", int userid = 0)
         {
-            var listTasks = _context.Follows.Include(x => x.Task).AsQueryable();
-
-            var sortTasksList = await SortFollow(listTasks, sort, priority).ToListAsync();
-            var all = _mapper.Map<List<TreeViewTask>>(sortTasksList).ToList();
-            all.ForEach(item =>
+            try
             {
-                item.Follow = item.Follows.Any(x => x.TaskID == item.ID && x.UserID == userid) ? "Yes" : "No";
+                var listTasks = GetAllTasks().Where(x=>x.Follows.Select(x=>x.UserID).Contains(userid));
 
-            });
-            var tree = all
-               .AsEnumerable()
-               .AsHierarchy(x => x.ID, x => x.ParentID)
-               .ToList();
-            var flatten = tree.Flatten(x => x.ChildNodes).ToList();
-            var itemWithOutParent = sortTasksList.Where(x => !flatten.Select(a => a.Entity.ID).Contains(x.Task.ID));
-            var map = _mapper.Map<List<HierarchyNode<TreeViewTask>>>(itemWithOutParent);
-            tree = tree.Concat(map).ToList();
-            return tree;
+                var sortTasksList = await SortFollow(listTasks, sort, priority).ToListAsync();
+                var all = _mapper.Map<List<TreeViewTask>>(sortTasksList).ToList();
+                all.ForEach(item =>
+                {
+                    item.Follow = item.Follows.Any(x => x.TaskID == item.ID && x.UserID == userid) ? "Yes" : "No";
+
+                });
+                var tree = all
+                   .AsEnumerable()
+                   .AsHierarchy(x => x.ID, x => x.ParentID)
+                   .ToList();
+                var flatten = tree.Flatten(x => x.ChildNodes).ToList();
+                var itemWithOutParent = sortTasksList.Where(x => !flatten.Select(a => a.Entity.ID).Contains(x.ID));
+                var map = _mapper.Map<List<HierarchyNode<TreeViewTask>>>(itemWithOutParent);
+                tree = tree.Concat(map).ToList();
+                return tree;
+            }
+            catch (Exception ex)
+            {
+
+                return new List<HierarchyNode<TreeViewTask>>();
+            }
+           
         }
         public async Task<List<HierarchyNode<TreeViewTask>>> History(int userid, string start, string end)
         {

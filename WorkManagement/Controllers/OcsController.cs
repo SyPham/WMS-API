@@ -30,6 +30,12 @@ namespace WorkManagement.Controllers
             return Ok(await _ocService.GetListTree());
         }
 
+        [HttpGet]
+        public async Task<ActionResult> Test()
+        {
+            return Ok(await _ocService.Test());
+        }
+
         // GET: api/Projects/5
         [HttpPost]
         public async Task<ActionResult> AddOrUpdate(OC oC)

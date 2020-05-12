@@ -20,5 +20,6 @@ namespace Service.Interface
         Task<object> ListOCIDofUser(int ocid);
         Task<object> CreateOC(CreateOCViewModel task);
         Task<object> CreateSubOC(CreateOCViewModel task);
+        Task<object> Test();
     }
 }

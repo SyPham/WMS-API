@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Data;
 using Data.Models;
+using Data.ViewModel;
 using Data.ViewModel.OC;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -55,9 +57,6 @@ namespace Service.Implement
                                 children = GetChildren(levels, c.key)
                             })
                             .ToList();
-
-
-            HieararchyWalk(hierarchy);
 
             return hierarchy;
         }
@@ -325,6 +324,23 @@ namespace Service.Implement
                 }
             }
             this.disposed = true;
+        }
+
+        public async Task<object> Test()
+        {
+            var source = await _context.OCs.Select(x =>
+                new 
+                {
+                    Key = x.ParentID,
+                    Message  = x
+                }).ToListAsync();
+            var query = source.Select(e => e.Key).Distinct()
+            .Select(key => new Test
+            {
+                Key = key,
+                Name = source.Where(x => x.Key == key).Select(x=>x.Message.Name).ToList()
+            });
+            return query;
         }
     }
 }

@@ -68,11 +68,14 @@ namespace WorkManagement
                };
            });
             services.AddSignalR();
-            services.AddControllers().AddNewtonsoftJson(options =>
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
             {
                 // Use the default property (Pascal) casing
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-            });
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+
+            }) ;
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WM API", Version = "v1" });
