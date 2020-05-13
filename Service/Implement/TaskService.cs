@@ -1833,7 +1833,7 @@ namespace Service.Implement
 
             try
             {
-                var listTasks = GetAllTasks().Where(x =>
+                var listTasks = GetAllTasks().Where(x => x.Status == false).Where(x =>
                        x.Tags.Select(x => x.UserID).Contains(userid)
                       || x.FromWhoID == userid
                       || x.CreatedBy == userid
@@ -1859,7 +1859,7 @@ namespace Service.Implement
                 var flatten = tree.Flatten(x => x.ChildNodes).ToHashSet();
                 var itemWithOutParent = all.Where(x => !flatten.Select(x => x.Entity.ID).Contains(x.ID));
                 var map = _mapper.Map<HashSet<HierarchyNode<TreeViewTask>>>(itemWithOutParent).Where(x => x.Entity.periodType.Equals(Data.Enum.PeriodType.Daily) && x.Entity.DueDate.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0).ToList();
-                tree = tree.Concat(map).Where(x => x.Entity.state == "Undone").ToList();
+                tree = tree.Concat(map).ToList();
 
                 return tree;
             }
@@ -1873,7 +1873,7 @@ namespace Service.Implement
         {
             try
             {
-                var listTasks = GetAllTasks().Where(x =>
+                var listTasks = GetAllTasks().Where(x => x.Status == false).Where(x =>
                       x.Tags.Select(x => x.UserID).Contains(userid)
                      || x.FromWhoID == userid
                      || x.CreatedBy == userid
@@ -1902,7 +1902,7 @@ namespace Service.Implement
                 var flatten = tree.Flatten(x => x.ChildNodes).ToHashSet();
                 var itemWithOutParent = all.Where(x => !flatten.Select(x => x.Entity.ID).Contains(x.ID));
                 var map = _mapper.Map<HashSet<HierarchyNode<TreeViewTask>>>(itemWithOutParent).Where(x => x.Entity.periodType.Equals(Data.Enum.PeriodType.Daily) && x.Entity.DueDate.ToParseStringDateTime().Date.CompareTo(DateTime.Now.Date) <= 0).ToList();
-                tree = tree.Concat(map).Where(x => x.Entity.state == "Undone").ToList();
+                tree = tree.Concat(map).ToList();
 
                 return tree;
             }
@@ -1918,7 +1918,7 @@ namespace Service.Implement
             try
             {
                 // Lay tat ca task chi dinh hoac dc chi dinh
-                var listTasks = GetAllTasks().Where(x =>
+                var listTasks = GetAllTasks().Where(x =>x.Status == false).Where(x =>
                                                           x.Tags.Select(x => x.UserID).Contains(userid)
                                                        || x.Deputies.Select(x => x.UserID).Contains(userid)
                                                        || x.FromWhoID == userid
@@ -1948,7 +1948,7 @@ namespace Service.Implement
                 // convert qua tree lay nhung task co pic va neu la daily thi lay nhung task tu ngay hien tai tro ve sau
                 var map = _mapper.Map<HashSet<HierarchyNode<TreeViewTask>>>(itemWithOutParent)
                             .ToList();
-                tree = tree.Concat(map).Where(x => x.Entity.state == "Undone").ToHashSet();
+                tree = tree.Concat(map).ToHashSet();
 
                 return tree;
             }
@@ -1968,7 +1968,7 @@ namespace Service.Implement
                 var jobtype = Data.Enum.JobType.Routine;
                 if (ocid == 0)
                     return new List<HierarchyNode<TreeViewTask>>();
-                var listTasks = GetAllTasks()
+                var listTasks = GetAllTasks().Where(x => x.Status == false)
                                             .Where(x => x.JobTypeID.Equals(jobtype) && x.OCID == ocid)
                                             .Where(x =>
                                                x.Tags.Select(x=>x.UserID).Contains(userid)
@@ -1988,7 +1988,7 @@ namespace Service.Implement
                 var flatten = tree.Flatten(x => x.ChildNodes).ToList();
                 var itemWithOutParent = all.Where(x => !flatten.Select(x => x.Entity.ID).Contains(x.ID));
                 var map = _mapper.Map<List<HierarchyNode<TreeViewTask>>>(itemWithOutParent);
-                tree = tree.Concat(map).Where(x=>x.Entity.state == "Undone").ToList();
+                tree = tree.Concat(map).ToList();
                 return tree;
             }
             catch (Exception ex)
@@ -2082,14 +2082,25 @@ namespace Service.Implement
             }
            
         }
-        public async Task<List<HierarchyNode<TreeViewTask>>> History(int userid, string start, string end)
+  
+        public async Task<List<HierarchyNode<TreeViewTaskForHistory>>> History(int userid, string start, string end)
         {
+            try
+            {
+
+           
             var listTasks = _context.Histories
                 .Join(_context.Tasks
                 .Include(x => x.OC)
                 .Include(x => x.Tutorial)
                 .Include(x => x.Tags).ThenInclude(x => x.User)
                  .Include(x => x.Deputies).ThenInclude(x => x.User)
+                 .Where(x =>
+                     x.Tags.Select(x=>x.UserID).Contains(userid)
+                  || x.Deputies.Select(x => x.UserID).Contains(userid)
+                  || x.FromWhoID.Equals(userid)
+                  || x.CreatedBy.Equals(userid)
+                  ).Distinct()
                 ,
                 his => his.TaskID,
                 task => task.ID,
@@ -2135,20 +2146,23 @@ namespace Service.Implement
                 listTasks = listTasks.Where(x => x.CreatedDate.Date >= startDate.Date || x.CreatedDate.Date <= endDate.Date).AsQueryable();
             }
             var fillterTasks = await listTasks.ToListAsync();
-            var all = _mapper.Map<List<TreeViewTask>>(fillterTasks);
-            all = all.Where(x =>
-                     x.PICs.Contains(userid)
-                  || x.Deputies.Contains(userid)
-                  ).Distinct().ToList();
+            var all = _mapper.Map<List<TreeViewTaskForHistory>>(fillterTasks);
+            all = all.ToList();
             var tree = all.Where(x => x.PICs.Count > 0)
-               .AsEnumerable()
                .AsHierarchy(x => x.ID, x => x.ParentID)
                .ToList();
             var flatten = tree.Flatten(x => x.ChildNodes).ToList();
             var itemWithOutParent = all.Where(x => !flatten.Select(a => a.Entity.ID).Contains(x.ID));
-            var map = _mapper.Map<List<HierarchyNode<TreeViewTask>>>(itemWithOutParent);
+            var map = _mapper.Map<List<HierarchyNode<TreeViewTaskForHistory>>>(itemWithOutParent);
             tree = tree.Concat(map).ToList();
             return tree;
+            }
+            catch (Exception ex)
+            {
+                return null;
+
+                throw;
+            }
         }
 
         #endregion

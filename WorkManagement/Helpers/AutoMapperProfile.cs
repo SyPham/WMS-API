@@ -85,7 +85,30 @@ namespace WorkManagement.Helpers
             }
             return result != string.Empty ? result.ToParseStringDateTime().ToString("d MMM, yyyy hh:mm:ss tt") : string.Empty;
         }
-        public string CastPriority(string value)
+        private string CheckStatus(Data.Models.Task task)
+        {
+            string result = "#N/A";
+            var currentDate = DateTime.Now;
+            switch (task.periodType)
+            {
+                case Data.Enum.PeriodType.Daily:
+                    result = currentDate.CompareTo(task.DueDateDaily.ToParseStringDateTime()) > 0 ? "Delay": "On going";
+                    break;
+                case Data.Enum.PeriodType.Weekly:
+                    result = currentDate.CompareTo(task.DueDateWeekly.ToParseStringDateTime()) > 0 ? "Delay" : "On going";
+                    break;
+                case Data.Enum.PeriodType.Monthly:
+                    result = currentDate.CompareTo(task.DueDateMonthly.ToParseStringDateTime()) > 0 ? "Delay" : "On going";
+                    break;
+                case Data.Enum.PeriodType.SpecificDate:
+                    result = currentDate.CompareTo(task.SpecificDate.ToParseStringDateTime()) > 0 ? "Delay" : "On going";
+                    break;
+                default:
+                    break;
+            }
+            return result;
+        }
+            public string CastPriority(string value)
         {
             value = value.ToSafetyString().ToUpper() ?? "";
             if (value == "H")
@@ -95,6 +118,29 @@ namespace WorkManagement.Helpers
             if (value == "L")
                 return "Low";
             return value;
+        }
+        private string CheckStatusForHistory(Data.Models.Task task)
+        {
+            string result = "#N/A";
+            var currentDate = DateTime.Now;
+            switch (task.periodType)
+            {
+                case Data.Enum.PeriodType.Daily:
+                    result = currentDate.CompareTo(task.DueDateDaily.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    break;
+                case Data.Enum.PeriodType.Weekly:
+                    result = currentDate.CompareTo(task.DueDateWeekly.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    break;
+                case Data.Enum.PeriodType.Monthly:
+                    result = currentDate.CompareTo(task.DueDateMonthly.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    break;
+                case Data.Enum.PeriodType.SpecificDate:
+                    result = currentDate.CompareTo(task.SpecificDate.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    break;
+                default:
+                    break;
+            }
+            return result;
         }
         private string CheckDuedate(CreateTaskViewModel createTaskView)
         {
@@ -176,25 +222,59 @@ namespace WorkManagement.Helpers
                 .ForMember(d => d.User, s => s.MapFrom(p => p.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
                 .ForMember(d => d.FromWho, s => s.MapFrom(p =>p.User == null? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
                 .ForMember(d => d.FromWhere, s => s.MapFrom(p => p.OC == null ? new FromWhere() : new FromWhere {ID = p.OC.ID, Name = p.OC.Name }))
-                .ForMember(d => d.state, s => s.MapFrom(p => p.Status == false ? "Undone" : "Done"))
+                .ForMember(d => d.state, s => s.MapFrom(p => CheckStatus(p)))
                 .ForMember(d => d.Follows, s => s.MapFrom(p => p.Follows))
                 .ForMember(d => d.CreatedDate, s => s.MapFrom(p => p.CreatedDate.ToString("dd MMM, yyyy hh:mm:ss tt")))
                 .ForMember(d => d.TaskCode, s => s.MapFrom(p => p.Code))
-                .ForMember(d => d.ProjectName, s => s.MapFrom(p => p.Project == null ? "" : p.Project.Name))
-                .ForMember(d => d.VideoLink, s => s.MapFrom(p => p.Tutorial == null ? "" : p.Tutorial.URL))
+                .ForMember(d => d.ProjectName, s => s.MapFrom(p => p.Project == null ? p.JobTypeID.ToString() : p.Project.Name))
+                .ForMember(d => d.VideoLink, s => s.MapFrom(p => p.Tutorial == null ? "#N/A" : p.Tutorial.URL))
                 .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Tutorial == null ? false : true))
                 .ForMember(d => d.Priority, s => s.MapFrom(p => CastPriority(p.Priority)))
                 .ForMember(d => d.DueDateTime, s => s.MapFrom(p => MapDueDatTimeeWithPeriod(p)))
                 .ForMember(d => d.DueDate, s => s.MapFrom(p => MapDueDateWithPeriod(p)))
                 .ForMember(d => d.DeputiesList, s => s.MapFrom(p => p.Deputies.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username })))
                 .ForMember(d => d.Deputies, s => s.MapFrom(p => p.Deputies.Select(x => x.UserID)))
-                .ForMember(d => d.DeputyName, s => s.MapFrom(p => string.Join(",", p.Deputies.Select(x => x.User.Username))))
-                .ForMember(d => d.PIC, s => s.MapFrom(p => p.Tags != null ? string.Join(",", p.Tags.Select(x => x.User.Username)) : ""))
+              .ForMember(d => d.DeputyName, s => s.MapFrom(p => p.Deputies != null ? string.Join(",", p.Deputies.Select(x => x.User.Username)) : "#N/A"))
+                .ForMember(d => d.PIC, s => s.MapFrom(p => p.Tags != null ? string.Join(",", p.Tags.Select(x => x.User.Username)) : "#N/A"))
                 .ForMember(d => d.BeAssigneds, s => s.MapFrom(p => p.Tags != null ? p.Tags.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username }) : new List<BeAssigned>()))
                 .ForMember(d => d.PICs, s => s.MapFrom(p => p.Tags != null ? p.Tags.Select(x=>x.UserID): new List<int>()));
 
             CreateMap<TreeViewTask, Data.Models.Task>();
-
+            CreateMap<Data.Models.Task, TreeViewTaskForHistory>()
+              .ForMember(d => d.Project, s => s.MapFrom(p => p.Project == null ? new Project() : p.Project))
+              .ForMember(d => d.Tutorial, s => s.MapFrom(p => p.Tutorial == null ? new TreeViewTutorial() :
+              new TreeViewTutorial
+              {
+                  ID = p.Tutorial.ID,
+                  Name = p.Tutorial.Name,
+                  ParentID = p.Tutorial.ParentID,
+                  Path = p.Tutorial.Path,
+                  URL = p.Tutorial.URL,
+                  Level = p.Tutorial.Level,
+                  ProjectID = p.Tutorial.ProjectID,
+                  TaskID = p.Tutorial.TaskID
+              }))
+              .ForMember(d => d.PriorityID, s => s.MapFrom(p => p.Priority))
+              .ForMember(d => d.From, s => s.MapFrom(p => p.User.Username))
+              .ForMember(d => d.User, s => s.MapFrom(p => p.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
+              .ForMember(d => d.FromWho, s => s.MapFrom(p => p.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
+              .ForMember(d => d.FromWhere, s => s.MapFrom(p => p.OC == null ? new FromWhere() : new FromWhere { ID = p.OC.ID, Name = p.OC.Name }))
+              .ForMember(d => d.state, s => s.MapFrom(p => CheckStatusForHistory(p)))
+              .ForMember(d => d.Follows, s => s.MapFrom(p => p.Follows))
+              .ForMember(d => d.CreatedDate, s => s.MapFrom(p => p.CreatedDate.ToString("dd MMM, yyyy hh:mm:ss tt")))
+              .ForMember(d => d.TaskCode, s => s.MapFrom(p => p.Code))
+              .ForMember(d => d.ProjectName, s => s.MapFrom(p => p.Project == null ? p.JobTypeID.ToString() : p.Project.Name))
+              .ForMember(d => d.VideoLink, s => s.MapFrom(p => p.Tutorial == null ? "#N/A" : p.Tutorial.URL))
+              .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Tutorial == null ? false : true))
+              .ForMember(d => d.Priority, s => s.MapFrom(p => CastPriority(p.Priority)))
+              .ForMember(d => d.DueDateTime, s => s.MapFrom(p => MapDueDatTimeeWithPeriod(p)))
+              .ForMember(d => d.DueDate, s => s.MapFrom(p => MapDueDateWithPeriod(p)))
+              .ForMember(d => d.DeputiesList, s => s.MapFrom(p => p.Deputies.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username })))
+              .ForMember(d => d.Deputies, s => s.MapFrom(p => p.Deputies.Select(x => x.UserID)))
+              .ForMember(d => d.DeputyName, s => s.MapFrom(p => p.Deputies != null ? string.Join(",", p.Deputies.Select(x => x.User.Username)): "#N/A"))
+              .ForMember(d => d.PIC, s => s.MapFrom(p => p.Tags != null ? string.Join(",", p.Tags.Select(x => x.User.Username)) : "#N/A"))
+              .ForMember(d => d.BeAssigneds, s => s.MapFrom(p => p.Tags != null ? p.Tags.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username }) : new List<BeAssigned>()))
+              .ForMember(d => d.PICs, s => s.MapFrom(p => p.Tags != null ? p.Tags.Select(x => x.UserID) : new List<int>()));
             //CreateMap<Follow, TreeViewTask>()
             //    .ForMember(d => d.DueDateDaily, s => s.MapFrom(p => p.Task.DueDateDaily))
             //    .ForMember(d => d.DueDateWeekly, s => s.MapFrom(p => p.Task.DueDateWeekly))
@@ -291,6 +371,9 @@ namespace WorkManagement.Helpers
 
             CreateMap<HierarchyNode<TreeViewTask>, TreeViewTask>();
             CreateMap<TreeViewTask, HierarchyNode <TreeViewTask>>()
+                .ForMember(d => d.Entity, s => s.MapFrom(p => p));
+            CreateMap<HierarchyNode<TreeViewTaskForHistory>, TreeViewTaskForHistory>();
+            CreateMap<TreeViewTaskForHistory, HierarchyNode<TreeViewTaskForHistory>>()
                 .ForMember(d => d.Entity, s => s.MapFrom(p => p));
             //CreateMap<UserAccount, UserModel>();
             //CreateMap<RegisterModel, UserAccount>();
