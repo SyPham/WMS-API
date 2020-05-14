@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Service.Helpers;
+using Service.Hub;
 using Service.Interface;
 using WorkManagement.Helpers;
 using WorkManagement.Hub;
@@ -22,16 +23,13 @@ namespace WorkManagement.Controllers
     [Authorize]
     public class CommentsController : ControllerBase
     {
-        private readonly IHubContext<WorkingManagementHub> _hubContext;
         private readonly ICommentService _commentService;
         private static IWebHostEnvironment _environment;
         public CommentsController(ICommentService commentService,
-            IHubContext<WorkingManagementHub> hubContext,
             IWebHostEnvironment environment
             )
         {
             _commentService = commentService;
-            _hubContext = hubContext;
             _environment = environment;
         }
 
@@ -90,7 +88,7 @@ namespace WorkManagement.Controllers
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             var model = await _commentService.Add(comment,userID);
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, "message");
+           // await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, "message");
             return Ok(model.Item3);
         }
         [HttpPost]
@@ -100,7 +98,7 @@ namespace WorkManagement.Controllers
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             subComment.CurrentUser = userID;
             var model = await _commentService.AddSub(subComment);
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, "message");
+           // await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, "message");
             return Ok(model.Item3);
         }
     }

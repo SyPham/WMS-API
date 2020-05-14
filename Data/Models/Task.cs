@@ -27,11 +27,12 @@ namespace Data.Models
         public int FromWhoID { get; set; }
         [MaxLength(2)]
         public string Priority { get; set; } = "M";
-        public string DueDateDaily { get; set; } = "";
-        public string DueDateWeekly { get; set; } = "";
-        public string DueDateMonthly { get; set; } = "";
-        public string SpecificDate { get; set; } = "";
+        //public string DueDateDaily { get; set; } = "";
+        //public string DueDateWeekly { get; set; } = "";
+        //public string DueDateMonthly { get; set; } = "";
+        //public string SpecificDate { get; set; } = "";
         public string ModifyDateTime { get; set; }
+        public string DueDateTime { get; set; }
         public bool FinishedMainTask { get; set; }
         public bool Status { get; set; }
         public DateTime CreatedDate { get; set; }

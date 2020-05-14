@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WorkManagement.Hub
+namespace Service.Hub
 {
     public class WorkingManagementHub : Microsoft.AspNetCore.SignalR.Hub
     {

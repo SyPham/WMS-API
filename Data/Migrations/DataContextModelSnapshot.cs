@@ -479,13 +479,7 @@ namespace Data.Migrations
                     b.Property<int>("DepartmentID")
                         .HasColumnType("int");
 
-                    b.Property<string>("DueDateDaily")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DueDateMonthly")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DueDateWeekly")
+                    b.Property<string>("DueDateTime")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("FinishedMainTask")
@@ -518,9 +512,6 @@ namespace Data.Migrations
 
                     b.Property<int?>("ProjectID")
                         .HasColumnType("int");
-
-                    b.Property<string>("SpecificDate")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");

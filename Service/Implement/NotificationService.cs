@@ -145,78 +145,7 @@ namespace Service.Implement
             };
 
         }
-        public async Task<object> GetAllByUserIDa(int userid, int page, int pageSize)
-        {
-            var userModel = _context.Users;
-            var model1 = await _context.NotificationDetails.Where(x => x.UserID == userid)
-                .Join(_context.Notifications,
-                 detail => detail.NotificationID,
-                notify => notify.ID,
-                (detail, notify) => new
-                {
-                    notify,
-                    detail
-                })
-                 .Join(_context.Users,
-                 a => a.notify.UserID,
-                b => b.ID,
-                (a, b) => new
-                {
-                    a,
-                    b
-                })
-                .Select(_ => new NotificationViewModel
-                {
-                    ID = _.a.detail.ID,
-                    Message = _.a.notify.Message,
-                    Function = _.a.notify.Function,
-                    CreatedBy = _.a.notify.UserID,
-                    BeAssigned = _.a.detail.UserID,
-                    Seen = _.a.detail.Seen,
-                    URL = _.a.notify.URL,
-                    Sender = _.b.Username,
-                    ImageBase64 = _.b.ImageBase64,
-                    CreatedTime = _.a.notify.CreatedTime,
-                }).OrderByDescending(_ => _.CreatedTime).ToListAsync();
-
-            var model2 = await _context.NotificationDetails.Where(x => x.UserID == userid)
-               .Join(_context.Notifications.Where(x => x.UserID == 0 && x.Function.Equals(Data.Enum.AlertType.BeLate.ToSafetyString())),
-                detail => detail.NotificationID,
-               notify => notify.ID,
-               (detail, notify) => new
-               {
-                   notify,
-                   detail
-               }).Select(_ => new NotificationViewModel
-               {
-                   ID = _.detail.ID,
-                   Message = _.notify.Message,
-                   Function = _.notify.Function,
-                   BeAssigned = _.detail.UserID,
-                   Seen = _.detail.Seen,
-                   URL = _.notify.URL,
-                   CreatedTime = _.notify.CreatedTime,
-               }).OrderByDescending(_ => _.CreatedTime).ToListAsync();
-            var total = 0;
-            var listID = new List<int>();
-            var model = model1.Union(model2).ToList();
-            foreach (var item in model)
-            {
-                if (item.Seen == false)
-                {
-                    total++;
-                    listID.Add(item.ID);
-                }
-            }
-            var paging = PagedList<NotificationViewModel>.Create(model, page, pageSize);
-
-            return new
-            {
-                model = paging,
-                total,
-                paging.TotalCount
-            };
-        }
+  
         public async Task<object> GetNotificationByUser(int userid, int page, int pageSize)
         {
             var userModel = _context.Users;
@@ -247,7 +176,6 @@ namespace Service.Implement
                     Seen = _.a.detail.Seen,
                     URL = _.a.notify.URL,
                     Sender = _.b.Username,
-                    ImageBase64 = _.b.ImageBase64,
                     CreatedTime = _.a.notify.CreatedTime,
                 }).OrderByDescending(_ => _.CreatedTime).ToListAsync();
             var total = 0;

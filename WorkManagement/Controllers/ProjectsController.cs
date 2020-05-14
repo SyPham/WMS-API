@@ -14,6 +14,7 @@ using Service.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using WorkManagement.Hub;
 using Microsoft.AspNetCore.SignalR;
+using Service.Hub;
 
 namespace WorkManagement.Controllers
 {

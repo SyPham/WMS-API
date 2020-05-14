@@ -23,6 +23,7 @@ namespace Service.Interface
         Task<object> Unsubscribe(int id, int userid);
         Task<object> GetDeputies();
         Task<object> GetListUser(int userid, int projectid);
+        Task<object> UpdateDueDateTime();
 
         Task<HashSet<HierarchyNode<TreeViewTask>>> Todolist(string sort = "", string priority = "", int userid = 0, string startDate = "", string endDate = "", string weekdays = "", string monthly = "", string quarterly = "");
         Task<List<HierarchyNode<TreeViewTask>>> TodolistSortBy(string beAssigned, string assigned, int userid);
@@ -32,5 +33,6 @@ namespace Service.Interface
         Task<List<HierarchyNode<TreeViewTask>>> Follow(string sort = "", string priority = "", int userid = 0);
         Task<List<HierarchyNode<TreeViewTaskForHistory>>> History(int userid, string start, string end);
         Task<List<HierarchyNode<TreeViewTask>>> TodolistSortBy(Data.Enum.Status status, int userid);
+        Task<List<HierarchyNode<TreeViewTaskForHistory>>> HistoryFilterByDueDateTime(int userid, string start, string end);
     }
 }

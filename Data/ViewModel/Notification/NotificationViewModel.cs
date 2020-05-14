@@ -14,7 +14,7 @@ namespace Data.ViewModel.Notification
         public bool Seen { get; set; }
         public int BeAssigned { get; set; }
         public string URL { get; set; }
-        public byte[] ImageBase64 { get; set; }
+        public string ImageBase64 { get; set; }
         public string Sender { get; set; }
         public int? CreatedBy { get; set; }
       

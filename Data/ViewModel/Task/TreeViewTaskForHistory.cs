@@ -29,7 +29,7 @@ namespace Data.ViewModel.Task
         public string VideoLink { get; set; }
         public int Level { get; set; }
         public int ParentID { get; set; }
-        public string CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
         public string DeputyName { get; set; }
         public Enum.JobType JobTypeID { get; set; }
         public int FromWhoID { get; set; }
@@ -56,6 +56,7 @@ namespace Data.ViewModel.Task
         public string DueDateMonthly { get; set; }
         public string SpecificDate { get; set; }
         public string ModifyDateTime { get; set; }
+        public DateTime FinishedDateTime { get; set; }
         public DateTime DueDateTime { get; set; }
         public List<Follow> Follows { get; set; } = new List<Models.Follow>();
         public bool BeAssigned { get; set; }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Service.Helpers;
+using Service.Hub;
 using Service.Interface;
 using WorkManagement.Helpers;
 using WorkManagement.Hub;
@@ -68,6 +69,14 @@ namespace WorkManagement.Controllers
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             return Ok(await _taskService.History(userID, start, end));
         }
+        [HttpGet]
+        [HttpGet("{start}/{end}")]
+        public async Task<IActionResult> HistoryFilterByDueDateTime(string start, string end)
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.HistoryFilterByDueDateTime(userID, start, end));
+        }
         [HttpGet("{projectid}/{sort}")]
         [HttpGet("{projectid}/{priority}/{sort}")]
         [HttpGet("{projectid}")]
@@ -106,7 +115,7 @@ namespace WorkManagement.Controllers
             createTask.FromWhoID = userID;
             createTask.UserID = userID;
             var model = await _taskService.CreateTask(createTask);
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, model.Item3);
+          //  await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, model.Item3);
            // await _hubContext.Clients.All.SendAsync("ReceiveAlertMessage", model.Item2, model.Item3);
             return Ok(model.Item1);
         }
@@ -143,7 +152,7 @@ namespace WorkManagement.Controllers
             var model = await _taskService.Done(id, userID);
             if (model.Item1)
             {
-                await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item3, "message");
+               // await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item3, "message");
                 return Ok(new
                 {
                     status = model.Item1,

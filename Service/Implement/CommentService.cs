@@ -3,9 +3,11 @@ using Data;
 using Data.Models;
 using Data.ViewModel.Comment;
 using Data.ViewModel.Notification;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Service.Helpers;
+using Service.Hub;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -21,12 +23,20 @@ namespace Service.Implement
         private readonly INotificationService _notificationService;
         private readonly IConfiguration _configuaration;
         private readonly IMapper _mapper;
-        public CommentService(DataContext context, IMapper mapper, IConfiguration configuaration, INotificationService notificationService)
+        private readonly IHubContext<WorkingManagementHub> _hubContext;
+
+        public CommentService(
+            DataContext context, 
+            IMapper mapper,
+            IHubContext<WorkingManagementHub> hubContext,
+            IConfiguration configuaration, 
+            INotificationService notificationService)
         {
             _context = context;
             _notificationService = notificationService;
             _configuaration = configuaration;
             _mapper = mapper;
+            _hubContext = hubContext;
         }
 
         private async Task<Tuple<List<int>, string, string>> AlertComment(int taskid, int userid , Data.Enum.ClientRouter clientRouter)
@@ -174,6 +184,8 @@ namespace Service.Implement
                         URL = alert.Item3,
                         UserID = comment.UserID
                     });
+                    await _hubContext.Clients.All.SendAsync("ReceiveMessage", listUsers, "message");
+
                     return Tuple.Create(true, string.Join(",", listUsers.ToArray()), comment);
                 }
                 else
@@ -232,6 +244,7 @@ namespace Service.Implement
                         URL = alert.Item3,
                         UserID = comment.UserID
                     });
+                    await _hubContext.Clients.All.SendAsync("ReceiveMessage", listUsers, "message");
                     return Tuple.Create(true, string.Join(",", listUsers.ToArray()), comment);
                 }
             }

@@ -1,8 +1,10 @@
 ﻿using Data;
 using Data.Models;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Service.Helpers;
+using Service.Hub;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -14,12 +16,17 @@ namespace Service.Implement
 {
     public class ChatService : IChatService
     {
-
+        private readonly IHubContext<WorkingManagementHub> _hubContext;
         private readonly DataContext _context;
         private readonly IConfiguration _configuaration;
-        public ChatService(DataContext context, IConfiguration configuaration)
+        public ChatService(
+            DataContext context, 
+            IHubContext<WorkingManagementHub> hubContext,
+            IConfiguration configuaration
+            )
         {
             _context = context;
+            _hubContext = hubContext;
             _configuaration = configuaration;
         }
 
@@ -113,7 +120,7 @@ namespace Service.Implement
                 //add message userid
                 await _context.AddAsync(chat);
                 await _context.SaveChangesAsync();
-
+                await _hubContext.Clients.Group(chat.RoomID.ToString()).SendAsync("ReceiveMessageGroup", chat.RoomID.ToInt());
                 return chat;
             }
             catch (Exception ex)

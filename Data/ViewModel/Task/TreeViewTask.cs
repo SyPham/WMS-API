@@ -29,7 +29,7 @@ namespace Data.ViewModel.Task
         public string VideoLink { get; set; }
         public int Level { get; set; }
         public int ParentID { get; set; }
-        public string CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
         public string DeputyName { get; set; }
         public Enum.JobType JobTypeID { get; set; }
         public int FromWhoID { get; set; }
@@ -46,18 +46,17 @@ namespace Data.ViewModel.Task
         public FromWhere FromWhere { get; set; }
         public ProjectViewModel Project { get; set; } = new ProjectViewModel();
         public List<History.History> Histories { get; set; } = new List<History.History>();
-
         public string state { get; set; }
         public bool FinishTask { get; set; }
         public string DueDateDaily { get; set; }
-        public string DueDate { get; set; }
+        public DateTime DueDate { get; set; }
         public string SpecificDueDate { get; set; }
         public string DueDateWeekly { get; set; }
         public string DueDateMonthly { get; set; }
         public string SpecificDate { get; set; }
         public string ModifyDateTime { get; set; }
-        public DateTime DueDateTime { get; set; }
         public List<Follow> Follows { get; set; } = new List<Models.Follow>();
+        public List<TreeViewTask> RelatedTasks { get; set; } = new List<TreeViewTask>();
         public bool BeAssigned { get; set; }
         public bool HasChildren
         {
@@ -96,5 +95,11 @@ namespace Data.ViewModel.Task
     {
         public int ID { get; set; }
         public string Name { get; set; }
+    }
+    public class RelatedTask
+    {
+        public int ID { get; set; }
+        public DateTime DueDate { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

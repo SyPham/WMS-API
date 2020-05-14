@@ -14,6 +14,8 @@ using Service.Helpers;
 using Service.Interface;
 using WorkManagement.Hub;
 using Microsoft.Extensions.Configuration;
+using Service.Hub;
+
 namespace WorkManagement.Controllers
 {
     [Route("api/[controller]/[action]")]
@@ -21,16 +23,13 @@ namespace WorkManagement.Controllers
     [Authorize]
     public class ChatController : ControllerBase
     {
-        private readonly IHubContext<WorkingManagementHub> _hubContext;
         private readonly IChatService _chatService;
         private static IWebHostEnvironment _environment;
         public ChatController(IChatService chatService,
-            IHubContext<WorkingManagementHub> hubContext,
             IWebHostEnvironment environment
             )
         {
             _chatService = chatService;
-            _hubContext = hubContext;
             _environment = environment;
         }
         [AllowAnonymous]
@@ -44,7 +43,6 @@ namespace WorkManagement.Controllers
         public async Task<IActionResult> AddMessageGroup([FromBody]CreateChatParameters chat)
         {
             var res = await _chatService.AddMessageGroup(chat.RoomID.ToInt(), chat.Message, chat.UserID);
-            await _hubContext.Clients.Group(chat.RoomID.ToString()).SendAsync("ReceiveMessageGroup", chat.RoomID.ToInt());
             return Ok(res);
         }
         [HttpPost]
