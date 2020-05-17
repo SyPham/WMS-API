@@ -1967,7 +1967,7 @@ namespace Service.Implement
         {
             try
             {
-              // await UpdateDueDateTime();
+                // await UpdateDueDateTime();
                 // Lay tat ca task chi dinh hoac dc chi dinh
                 var listTasks = GetAllTasks().Where(x => x.Status == false).Where(x =>
                                                            x.Tags.Select(x => x.UserID).Contains(userid)
@@ -2010,7 +2010,7 @@ namespace Service.Implement
             }
 
         }
-        public async Task<List<HierarchyNode<TreeViewTask>>> Routine(string sort, string priority, int userid, int ocid)
+        public async Task<List<HierarchyNode<TreeViewTaskForRoutine>>> Routine(string sort, string priority, int userid, int ocid)
         {
             try
             {
@@ -2018,7 +2018,7 @@ namespace Service.Implement
 
                 var jobtype = Data.Enum.JobType.Routine;
                 if (ocid == 0)
-                    return new List<HierarchyNode<TreeViewTask>>();
+                    return new List<HierarchyNode<TreeViewTaskForRoutine>>();
                 var listTasks = GetAllTasks().Where(x => x.Status == false)
                                             .Where(x => x.JobTypeID.Equals(jobtype) && x.OCID == ocid)
                                             .Where(x =>
@@ -2027,31 +2027,43 @@ namespace Service.Implement
                                             || x.Deputies.Select(x => x.UserID).Contains(userid)
                                             ).Distinct();
                 var listTasksSort = await SortRoutine(listTasks, sort, priority).ToListAsync();
-              
+
                 var all = _mapper.Map<List<TreeViewTask>>(listTasksSort).ToList();
-                var results = all.GroupBy(p => p).Select(x => new TreeViewTaskForRoutine
-                {
-                    Task = x.Key,
-                    RelatedTasks = x.ToList()
-                }).ToList();
-                
                 all.ForEach(item =>
                 {
                     item.Follow = item.Follows.Any(x => x.TaskID == item.ID && x.UserID == userid) ? "Yes" : "No";
                 });
                 all = all.Where(x => !x.periodType.Equals(Data.Enum.PeriodType.Daily) || x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDate.Date.CompareTo(DateTime.Now.Date) != 1)
                                       .ToList();
-                var tree = all.AsHierarchy(x => x.ID, x => x.ParentID).ToList();
+                var results = all.GroupBy(p => new {
+                p.TaskCode,
+
+                }).Select(x => new TreeViewTaskForRoutine
+                {
+                    TaskCode = x.Key.TaskCode,
+                    JobName = x.FirstOrDefault().JobName,
+                    ID = x.FirstOrDefault().ID,
+                    PIC = x.FirstOrDefault().PIC,
+                    Level = x.FirstOrDefault().Level,
+                    DeputyName = x.FirstOrDefault().DeputyName,
+                    From = x.FirstOrDefault().From,
+                    Priority = x.FirstOrDefault().Priority,
+                    periodType = x.FirstOrDefault().periodType,
+                    ParentID = x.FirstOrDefault().ParentID,
+                    RelatedTasks = x.ToList()
+                }).ToList();
+
+                var tree = results.AsHierarchy(x => x.ID, x => x.ParentID).ToList();
                 var flatten = tree.Flatten(x => x.ChildNodes).ToList();
-                var itemWithOutParent = all.Where(x => !flatten.Select(x => x.Entity.ID).Contains(x.ID));
-                var map = _mapper.Map<List<HierarchyNode<TreeViewTask>>>(itemWithOutParent);
+                var itemWithOutParent = results.Where(x => !flatten.Select(x => x.Entity.ID).Contains(x.ID));
+                var map = _mapper.Map<List<HierarchyNode<TreeViewTaskForRoutine>>>(itemWithOutParent);
                 tree = tree.Concat(map).ToList();
 
                 return tree;
             }
             catch (Exception ex)
             {
-                return new List<HierarchyNode<TreeViewTask>>();
+                return new List<HierarchyNode<TreeViewTaskForRoutine>>();
                 throw;
             }
 

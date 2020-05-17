@@ -104,8 +104,8 @@ namespace WorkManagement.Controllers
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
                 return Ok(await _taskService.TodolistSortBy(status, userID));
         }
-      
-     
+
+
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody]CreateTaskViewModel createTask)
         {

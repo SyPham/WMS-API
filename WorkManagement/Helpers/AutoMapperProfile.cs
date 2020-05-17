@@ -182,8 +182,8 @@ namespace WorkManagement.Helpers
 
             CreateMap<Data.Models.Task, TreeViewTask>()
                 .ForMember(d => d.Project, s => s.MapFrom(p => p.Project == null ? new Project() : p.Project))
-                .ForMember(d => d.Tutorial, s => s.MapFrom(p => p.Tutorial == null ? new TreeViewTutorial() : 
-                new TreeViewTutorial 
+                .ForMember(d => d.Tutorial, s => s.MapFrom(p => p.Tutorial == null ? new TreeViewTutorial() :
+                new TreeViewTutorial
                 {
                     ID = p.Tutorial.ID,
                     Name = p.Tutorial.Name,
@@ -358,4 +358,3 @@ namespace WorkManagement.Helpers
         }
     }
 }
- 
