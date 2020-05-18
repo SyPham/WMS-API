@@ -118,10 +118,11 @@ namespace Service.Implement
                                 Priority = c.Priority,
                                 BeAssigneds = c.BeAssigneds,
                                 Follow = c.Follow,
-                                DueDateDaily = c.DueDateDaily,
-                                DueDateWeekly = c.DueDateWeekly,
-                                DueDateMonthly = c.DueDateMonthly,
-                                SpecificDate = c.SpecificDate,
+                                DueDate = c.DueDate,
+                                //DueDateDaily = c.DueDateDaily,
+                                //DueDateWeekly = c.DueDateWeekly,
+                                //DueDateMonthly = c.DueDateMonthly,
+                                //SpecificDate = c.SpecificDate,
                                 children = GetChildren(tasks, c.ID)
                             })
                             .ToHashSet();
@@ -159,10 +160,11 @@ namespace Service.Implement
                         BeAssigneds = c.BeAssigneds,
                         Deputies = c.Deputies,
                         DeputiesList = c.DeputiesList,
-                        DueDateDaily = c.DueDateDaily,
-                        DueDateWeekly = c.DueDateWeekly,
-                        DueDateMonthly = c.DueDateMonthly,
-                        SpecificDate = c.SpecificDate,
+                        DueDate = c.DueDate,
+                        //DueDateDaily = c.DueDateDaily,
+                        //DueDateWeekly = c.DueDateWeekly,
+                        //DueDateMonthly = c.DueDateMonthly,
+                        //SpecificDate = c.SpecificDate,
                         DeputyName = c.DeputyName,
                         periodType = c.periodType,
                         children = GetChildren(tasks, c.ID)

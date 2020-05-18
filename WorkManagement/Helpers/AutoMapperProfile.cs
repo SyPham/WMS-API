@@ -22,7 +22,7 @@ namespace WorkManagement.Helpers
 
         private DateTime MapDueDateWithPeriod(Data.Models.Task task)
         {
-            var result =string.Empty;
+            var result = DateTime.MinValue;
             switch (task.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
@@ -40,7 +40,7 @@ namespace WorkManagement.Helpers
                 default:
                     break;
             }
-            return result.ToParseStringDateTime();
+            return result;
         }
         private string CheckStatus(Data.Models.Task task)
         {
@@ -49,16 +49,16 @@ namespace WorkManagement.Helpers
             switch (task.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) > 0 ? "Delay": "On going";
+                    result = currentDate.CompareTo(task.DueDateTime) > 0 ? "Delay": "On going";
                     break;
                 case Data.Enum.PeriodType.Weekly:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) > 0 ? "Delay" : "On going";
+                    result = currentDate.CompareTo(task.DueDateTime) > 0 ? "Delay" : "On going";
                     break;
                 case Data.Enum.PeriodType.Monthly:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) > 0 ? "Delay" : "On going";
+                    result = currentDate.CompareTo(task.DueDateTime) > 0 ? "Delay" : "On going";
                     break;
                 case Data.Enum.PeriodType.SpecificDate:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) > 0 ? "Delay" : "On going";
+                    result = currentDate.CompareTo(task.DueDateTime) > 0 ? "Delay" : "On going";
                     break;
                 default:
                     break;
@@ -83,16 +83,16 @@ namespace WorkManagement.Helpers
             switch (task.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
                     break;
                 case Data.Enum.PeriodType.Weekly:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
                     break;
                 case Data.Enum.PeriodType.Monthly:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
                     break;
                 case Data.Enum.PeriodType.SpecificDate:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
                     break;
                 default:
                     break;
@@ -106,23 +106,23 @@ namespace WorkManagement.Helpers
             switch (task.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
                     break;
                 case Data.Enum.PeriodType.Weekly:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
                     break;
                 case Data.Enum.PeriodType.Monthly:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
                     break;
                 case Data.Enum.PeriodType.SpecificDate:
-                    result = currentDate.CompareTo(task.DueDateTime.ToParseStringDateTime()) <= 0 ? "On time" : "Late";
+                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
                     break;
                 default:
                     break;
             }
             return result;
         }
-        private string CheckDuedate(CreateTaskViewModel createTaskView)
+        private DateTime CheckDuedate(CreateTaskViewModel createTaskView)
         {
 
             switch (createTaskView.periodType)
@@ -136,7 +136,7 @@ namespace WorkManagement.Helpers
                 case Data.Enum.PeriodType.SpecificDate:
                     return createTaskView.DueDate;
                 default:
-                    return "";
+                    return DateTime.MinValue;
             }
         }
         private Data.Enum.JobType CheckJobType(CreateTaskViewModel task)
@@ -165,7 +165,8 @@ namespace WorkManagement.Helpers
                 .ForMember(x => x.PIC, option => option.Ignore())
                 .ForMember(x => x.DueDate, option => option.Ignore())
                 .ForMember(x => x.Deputies, option => option.Ignore())
-                .ForMember(d => d.CreatedBy, s => s.MapFrom(p => p.FromWhoID));
+                .ForMember(x => x.FromWhoID, s => s.MapFrom(p => p.FromWhoID))
+                .ForMember(d => d.CreatedBy, s => s.MapFrom(p => p.CreatedBy));
 
             CreateMap<CreateTaskViewModel, Data.Models.Task>()
                 .ForMember(x => x.Deputies, option => option.Ignore())
@@ -178,6 +179,7 @@ namespace WorkManagement.Helpers
                 .ForMember(x => x.Project, option => option.Ignore())
                 .ForMember(x => x.Follows, option => option.Ignore())
                 .ForMember(x => x.Tags, option => option.Ignore())
+                .ForMember(x => x.User, option => option.Ignore())
                 .ForMember(x => x.Tutorial, option => option.Ignore());
 
             CreateMap<Data.Models.Task, TreeViewTask>()
@@ -194,6 +196,7 @@ namespace WorkManagement.Helpers
                     ProjectID = p.Tutorial.ProjectID,
                     TaskID = p.Tutorial.TaskID
                 }))
+                .ForMember(d => d.ProjectID, s => s.MapFrom(p => p.ProjectID == null ? 0: p.ProjectID))
                 .ForMember(d => d.PriorityID, s => s.MapFrom(p => p.Priority))
                 .ForMember(d => d.From, s => s.MapFrom(p => p.User.Username))
                 .ForMember(d => d.User, s => s.MapFrom(p => p.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
@@ -207,7 +210,7 @@ namespace WorkManagement.Helpers
                 .ForMember(d => d.VideoLink, s => s.MapFrom(p => p.Tutorial == null ? "#N/A" : p.Tutorial.URL))
                 .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Tutorial == null ? false : true))
                 .ForMember(d => d.Priority, s => s.MapFrom(p => CastPriority(p.Priority)))
-                .ForMember(d => d.DueDate, s => s.MapFrom(p => MapDueDateWithPeriod(p)))
+                .ForMember(d => d.DueDate, s => s.MapFrom(p => p.DueDateTime))
                 .ForMember(d => d.DeputiesList, s => s.MapFrom(p => p.Deputies.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username })))
                 .ForMember(d => d.Deputies, s => s.MapFrom(p => p.Deputies.Select(x => x.UserID)))
                 .ForMember(d => d.DeputyName, s => s.MapFrom(p => p.Deputies != null ? string.Join(",", p.Deputies.Select(x => x.User.Username)) : "#N/A"))
@@ -245,55 +248,14 @@ namespace WorkManagement.Helpers
               .ForMember(d => d.VideoLink, s => s.MapFrom(p => p.Tutorial == null ? "#N/A" : p.Tutorial.URL))
               .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Tutorial == null ? false : true))
               .ForMember(d => d.Priority, s => s.MapFrom(p => CastPriority(p.Priority)))
-              .ForMember(d => d.DueDate, s => s.MapFrom(p => MapDueDateWithPeriod(p)))
+              .ForMember(d => d.DueDate, s => s.MapFrom(p => p.DueDateTime))
               .ForMember(d => d.DeputiesList, s => s.MapFrom(p => p.Deputies.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username })))
               .ForMember(d => d.Deputies, s => s.MapFrom(p => p.Deputies.Select(x => x.UserID)))
               .ForMember(d => d.DeputyName, s => s.MapFrom(p => p.Deputies.Count > 0 ? string.Join(",", p.Deputies.Select(x => x.User.Username)): "#N/A"))
               .ForMember(d => d.PIC, s => s.MapFrom(p => p.Tags != null ? string.Join(",", p.Tags.Select(x => x.User.Username)) : "#N/A"))
               .ForMember(d => d.BeAssigneds, s => s.MapFrom(p => p.Tags != null ? p.Tags.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username }) : new List<BeAssigned>()))
               .ForMember(d => d.PICs, s => s.MapFrom(p => p.Tags != null ? p.Tags.Select(x => x.UserID) : new List<int>()));
-            //CreateMap<Follow, TreeViewTask>()
-            //    .ForMember(d => d.DueDateDaily, s => s.MapFrom(p => p.Task.DueDateDaily))
-            //    .ForMember(d => d.DueDateWeekly, s => s.MapFrom(p => p.Task.DueDateWeekly))
-            //    .ForMember(d => d.DueDateMonthly, s => s.MapFrom(p => p.Task.DueDateMonthly))
-            //    .ForMember(d => d.SpecificDate, s => s.MapFrom(p => p.Task.SpecificDate))
-            //    .ForMember(d => d.periodType, s => s.MapFrom(p => p.Task.periodType))
-            //    .ForMember(d => d.ModifyDateTime, s => s.MapFrom(p => p.Task.ModifyDateTime))
-            //    .ForMember(d => d.CreatedDate, s => s.MapFrom(p => p.Task.CreatedDate.ToString("dd MMM, yyyy hh:mm:ss tt")))
-            //    .ForMember(d => d.CreatedBy, s => s.MapFrom(p => p.Task.CreatedBy))
-            //    .ForMember(d => d.FromWhoID, s => s.MapFrom(p => p.Task.FromWhoID))
-            //    .ForMember(d => d.PriorityID, s => s.MapFrom(p => p.Task.Priority))
-            //    .ForMember(d => d.From, s => s.MapFrom(p => p.User.Username))
-            //    .ForMember(d => d.User, s => s.MapFrom(p => p.Task.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
-            //    .ForMember(d => d.FromWho, s => s.MapFrom(p => p.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
-            //    .ForMember(d => d.FromWhere, s => s.MapFrom(p => p.Task.OC == null ? new FromWhere() : new FromWhere { ID = p.Task.OC.ID, Name = p.Task.OC.Name }))
-            //    .ForMember(d => d.state, s => s.MapFrom(p => p.Task.Status == false ? "Undone" : "Done"))
-            //    .ForMember(d => d.Follows, s => s.MapFrom(p => p.Task.Follows))
-            //    .ForMember(d => d.TaskCode, s => s.MapFrom(p => p.Task.Code))
-            //    .ForMember(d => d.ProjectName, s => s.MapFrom(p => p.Task.Project == null ? "" : p.Task.Project.Name))
-            //    .ForMember(d => d.VideoLink, s => s.MapFrom(p => p.Task.Tutorial == null ? "" : p.Task.Tutorial.URL))
-            //    .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Task.Tutorial == null ? false : true))
-            //    .ForMember(d => d.Priority, s => s.MapFrom(p => CastPriority(p.Task.Priority)))
-            //    .ForMember(d => d.DueDateTime, s => s.MapFrom(p => MapDueDatTimeeWithPeriod(p.Task)))
-            //    .ForMember(d => d.DueDate, s => s.MapFrom(p => MapDueDateWithPeriod(p.Task)))
-            //    .ForMember(d => d.SpecificDueDate, s => s.MapFrom(p => MapSpecificDueDateWithPeriod(p.Task)))
-            //    .ForMember(d => d.DeputiesList, s => s.MapFrom(p => p.Task.Deputies.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username })))
-            //    .ForMember(d => d.Deputies, s => s.MapFrom(p => p.Task.Deputies.Select(x => x.UserID)))
-            //    .ForMember(d => d.DeputyName, s => s.MapFrom(p => string.Join(",", p.Task.Deputies.Select(x => x.User.Username))))
-            //    .ForMember(d => d.PIC, s => s.MapFrom(p => string.Join(",", p.Task.Tags.Select(x => x.User.Username))))
-            //    .ForMember(d => d.BeAssigneds, s => s.MapFrom(p => p.Task.Tags.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username })))
-            //    .ForMember(d => d.PICs, s => s.MapFrom(p => p.Task.Tags.Select(x => x.UserID)));
 
-            /*  ID = _.a.detail.ID,
-                    Message = _.a.notify.Message,
-                    Function = _.a.notify.Function,
-                    CreatedBy = _.a.notify.UserID,
-                    BeAssigned = _.a.detail.UserID,
-                    Seen = _.a.detail.Seen,
-                    URL = _.a.notify.URL,
-                    Sender = _.b.Username,
-                    ImageBase64 = _.b.ImageBase64,
-                    CreatedTime = _.a.notify.CreatedTime,*/
             CreateMap<NotificationDetail, NotificationViewModel>()
                 .ForMember(d => d.Message, s => s.MapFrom(p => p.Notification.Message))
                 .ForMember(d => d.Function, s => s.MapFrom(p => p.Notification.Function))
@@ -346,9 +308,11 @@ namespace WorkManagement.Helpers
             CreateMap<CloneTaskViewModel, Data.Models.Task> ()
           .ForMember(x => x.ID, option => option.Ignore());
 
-            CreateMap<HierarchyNode<TreeViewTask>, TreeViewTask>();
-            CreateMap<TreeViewTask, HierarchyNode <TreeViewTask>>()
+            CreateMap<TreeViewTask, HierarchyNode<TreeViewTask>>()
                 .ForMember(d => d.Entity, s => s.MapFrom(p => p));
+
+            CreateMap<HierarchyNode<TreeViewTask>, TreeViewTask>();
+
             CreateMap<HierarchyNode<TreeViewTaskForHistory>, TreeViewTaskForHistory>();
             CreateMap<TreeViewTaskForHistory, HierarchyNode<TreeViewTaskForHistory>>()
                 .ForMember(d => d.Entity, s => s.MapFrom(p => p));

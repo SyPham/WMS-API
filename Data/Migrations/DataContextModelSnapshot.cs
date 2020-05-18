@@ -479,14 +479,17 @@ namespace Data.Migrations
                     b.Property<int>("DepartmentID")
                         .HasColumnType("int");
 
-                    b.Property<string>("DueDateTime")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("DueDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("FinishedMainTask")
                         .HasColumnType("bit");
 
                     b.Property<int>("FromWhoID")
                         .HasColumnType("int");
+
+                    b.Property<string>("GroupCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("JobName")
                         .HasColumnType("nvarchar(max)");

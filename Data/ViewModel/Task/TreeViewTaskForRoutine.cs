@@ -1,14 +1,19 @@
-﻿using Data.Models;
+﻿using Data.Extensions;
+using Data.Models;
 using Data.ViewModel.Project;
 using Data.ViewModel.Tutorial;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-
 namespace Data.ViewModel.Task
 {
     public class TreeViewTaskForRoutine
     {
+        public TreeViewTaskForRoutine()
+        {
+            this.ChildNodes = new List<HierarchyNode<TreeViewTask>>();
+        }
         public int ID { get; set; }
         public string Follow { get; set; }
         public string Priority { get; set; }
@@ -50,6 +55,11 @@ namespace Data.ViewModel.Task
         public string ModifyDateTime { get; set; }
         public List<Follow> Follows { get; set; } = new List<Models.Follow>();
         public bool BeAssigned { get; set; }
-        public List<TreeViewTask> RelatedTasks { get; set; } = new List<TreeViewTask>();
+        public List<HierarchyNode<TreeViewTask>> RelatedTasks { get; set; } = new List<HierarchyNode<TreeViewTask>>();
+        public List<HierarchyNode<TreeViewTask>> ChildNodes { get; set; } = new List<HierarchyNode<TreeViewTask>>();
+        public bool HasChildren
+        {
+            get { return ChildNodes.Any(); }
+        }
     }
 }
