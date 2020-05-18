@@ -31,7 +31,7 @@ namespace Service.Implement
         }
         public IEnumerable<TreeViewTask> GetListTree(List<Data.Models.Task> listTasks)
         {
-            var tasks = new HashSet<TreeViewTask>();
+            var tasks = new List<TreeViewTask>();
             foreach (var item in listTasks)
             {
                 var levelItem = new TreeViewTask();
@@ -41,7 +41,7 @@ namespace Service.Implement
                 tasks.Add(levelItem);
             }
 
-            HashSet<TreeViewTask> hierarchy = new HashSet<TreeViewTask>();
+            List<TreeViewTask> hierarchy = new List<TreeViewTask>();
 
             hierarchy = tasks.Where(c => c.ParentID == 0)
                             .Select(c => new TreeViewTask
@@ -51,7 +51,7 @@ namespace Service.Implement
                                 ParentID = c.ParentID,
                                 children = GetChildren(tasks, c.ID)
                             })
-                            .ToHashSet();
+                            .ToList();
 
             return hierarchy;
         }
@@ -62,7 +62,7 @@ namespace Service.Implement
                //.Include(x => x.User)
                .OrderBy(x => x.Level).ToListAsync();
 
-            var tasks = new HashSet<TreeViewTask>();
+            var tasks = new List<TreeViewTask>();
             foreach (var item in listTasks)
             {
                 var beAssigneds = _context.Tags.Where(x => x.TaskID == item.ID)
@@ -97,7 +97,7 @@ namespace Service.Implement
                 tasks.Add(levelItem);
             }
 
-            HashSet<TreeViewTask> hierarchy = new HashSet<TreeViewTask>();
+            List<TreeViewTask> hierarchy = new List<TreeViewTask>();
 
             hierarchy = tasks.Where(c => c.ID == id && c.ParentID == parentID)
                             .Select(c => new TreeViewTask
@@ -125,7 +125,7 @@ namespace Service.Implement
                                 //SpecificDate = c.SpecificDate,
                                 children = GetChildren(tasks, c.ID)
                             })
-                            .ToHashSet();
+                            .ToList();
 
             return hierarchy;
         }
@@ -134,7 +134,7 @@ namespace Service.Implement
             var descendants = rootNodes.SelectMany(x => GetAllTaskDescendants(x.children));
             return rootNodes.Concat(descendants);
         }
-        public HashSet<TreeViewTask> GetChildren(HashSet<TreeViewTask> tasks, int parentid)
+        public List<TreeViewTask> GetChildren(List<TreeViewTask> tasks, int parentid)
         {
             return tasks
                     .Where(c => c.ParentID == parentid)
@@ -170,10 +170,10 @@ namespace Service.Implement
                         children = GetChildren(tasks, c.ID)
                     })
                     .OrderByDescending(x => x.ID)
-                    .ToHashSet();
+                    .ToList();
         }
 
-        public void HieararchyWalk(HashSet<TreeViewTask> hierarchy)
+        public void HieararchyWalk(List<TreeViewTask> hierarchy)
         {
             if (hierarchy != null)
             {

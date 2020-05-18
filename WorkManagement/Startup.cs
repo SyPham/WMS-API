@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using AutoMapper;
 using WorkManagement.Helpers;
 using Service.Hub;
+using Service.AutoMapper;
 
 namespace WorkManagement
 {
@@ -37,11 +38,11 @@ namespace WorkManagement
         {
             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
 
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+           services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             var conn = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<DataContext>(x => 
-            x.UseLazyLoadingProxies()
-            .UseSqlServer(conn)
+            services.AddDbContext<DataContext>(x =>
+            x.UseSqlServer(conn)
             );
             services.AddAuthentication(options =>
             {
@@ -104,6 +105,14 @@ namespace WorkManagement
                 });
 
             });
+            //Auto Mapper
+            services.AddAutoMapper(typeof(Startup));
+            services.AddScoped<IMapper>(sp =>
+            {
+                return new Mapper(AutoMapperConfig.RegisterMappings());
+            });
+            services.AddSingleton(AutoMapperConfig.RegisterMappings());
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",

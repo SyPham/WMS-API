@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Data;
 using Data.Models;
 using Data.ViewModel.Notification;
@@ -17,10 +18,12 @@ namespace Service.Implement
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        public NotificationService(DataContext context, IMapper mapper)
+        private MapperConfiguration _configMapper;
+        public NotificationService(DataContext context, IMapper mapper, MapperConfiguration configMapper)
         {
             _context = context;
             _mapper = mapper;
+            _configMapper = configMapper;
         }
 
 
@@ -117,16 +120,16 @@ namespace Service.Implement
         }
         public async Task<object> GetAllByUserID(int userid, int page, int pageSize)
         {
-            var model = _context.NotificationDetails
+            var list = _context.NotificationDetails
                 .Where(x=>x.UserID == userid)
                 .Include(x => x.Notification).ThenInclude(x=>x.User)
                 .Include(x => x.Notification).ThenInclude(x => x.NotificationDetails).ThenInclude(x=>x.User)
-                .Include(x => x.User).AsQueryable();
-            var listAsync = await model.ToListAsync();
-           var list =  _mapper.Map<List<NotificationViewModel>>(model);
+                .Include(x => x.User).ProjectTo<NotificationViewModel>(_configMapper);
+           // var listAsync = await model.ToListAsync();
+           //var list =  _mapper.Map<List<NotificationViewModel>>(model);
             var total = 0;
             var listID = new List<int>();
-           
+
             foreach (var item in list)
             {
                 if (item.Seen == false)
@@ -135,7 +138,7 @@ namespace Service.Implement
                     listID.Add(item.ID);
                 }
             }
-            var paging = PagedList<NotificationViewModel>.Create(list, page, pageSize);
+            var paging =await PagedList<NotificationViewModel>.CreateAsync(list, page, pageSize);
 
             return new
             {
@@ -145,7 +148,7 @@ namespace Service.Implement
             };
 
         }
-  
+
         public async Task<object> GetNotificationByUser(int userid, int page, int pageSize)
         {
             var userModel = _context.Users;

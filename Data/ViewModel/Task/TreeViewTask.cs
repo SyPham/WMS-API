@@ -13,9 +13,9 @@ namespace Data.ViewModel.Task
     {
         public TreeViewTask()
         {
-            this.children = new HashSet<TreeViewTask>();
+            this.children = new List<TreeViewTask>();
         }
-       
+
         public int ID { get; set; }
         public string Follow { get; set; }
         public string Priority { get; set; }
@@ -63,10 +63,10 @@ namespace Data.ViewModel.Task
             get { return children.Any(); }
         }
 
-        public HashSet<TreeViewTask> children { get; set; }
-      
-       
-       
+        public List<TreeViewTask> children { get; set; }
+
+
+
         public static List<TreeViewTask> Flatten(TreeViewTask root)
         {
 

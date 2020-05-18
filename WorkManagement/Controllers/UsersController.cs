@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Service.Dto;
 using Service.Helpers;
 using Service.Interface;
-using WorkManagement.Dto;
 using WorkManagement.Helpers;
 
 namespace WorkManagement.Controllers
@@ -61,7 +61,7 @@ namespace WorkManagement.Controllers
             //}
             return Ok(await _userService.Create(user));
         }
-      
+
         [HttpPost]
         public async Task<IActionResult> ChangeAvatar([FromForm]IFormFile formFile)
         {
@@ -88,7 +88,7 @@ namespace WorkManagement.Controllers
         {
             return Ok(await _userService.Update(user));
         }
-       
+
         [HttpPost]
         public async Task<IActionResult> UploapProfile(IFormFile formFile)
         {

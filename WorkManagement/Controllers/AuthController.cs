@@ -12,10 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Service.Dto;
 using Service.Helpers;
 using Service.Interface;
-using WorkManagement.Dto;
-using WorkManagement.Dtos;
+
 
 namespace WorkManagement.Controllers
 {

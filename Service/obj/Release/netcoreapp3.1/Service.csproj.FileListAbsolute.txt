@@ -34,3 +34,15 @@ F:\0.Document\angular9\WMS-API\Service\obj\Release\netcoreapp3.1\Service.Assembl
 F:\0.Document\angular9\WMS-API\Service\obj\Release\netcoreapp3.1\Service.csproj.CopyComplete
 F:\0.Document\angular9\WMS-API\Service\obj\Release\netcoreapp3.1\Service.dll
 F:\0.Document\angular9\WMS-API\Service\obj\Release\netcoreapp3.1\Service.pdb
+D:\wwwroot\WMS-API\Service\bin\Release\netcoreapp3.1\Service.deps.json
+D:\wwwroot\WMS-API\Service\bin\Release\netcoreapp3.1\Service.dll
+D:\wwwroot\WMS-API\Service\bin\Release\netcoreapp3.1\Service.pdb
+D:\wwwroot\WMS-API\Service\bin\Release\netcoreapp3.1\Data.dll
+D:\wwwroot\WMS-API\Service\bin\Release\netcoreapp3.1\Data.pdb
+D:\wwwroot\WMS-API\Service\obj\Release\netcoreapp3.1\Service.csprojAssemblyReference.cache
+D:\wwwroot\WMS-API\Service\obj\Release\netcoreapp3.1\Service.csproj.CoreCompileInputs.cache
+D:\wwwroot\WMS-API\Service\obj\Release\netcoreapp3.1\Service.AssemblyInfoInputs.cache
+D:\wwwroot\WMS-API\Service\obj\Release\netcoreapp3.1\Service.AssemblyInfo.cs
+D:\wwwroot\WMS-API\Service\obj\Release\netcoreapp3.1\Service.csproj.CopyComplete
+D:\wwwroot\WMS-API\Service\obj\Release\netcoreapp3.1\Service.dll
+D:\wwwroot\WMS-API\Service\obj\Release\netcoreapp3.1\Service.pdb

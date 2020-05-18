@@ -8,40 +8,17 @@ using Data.ViewModel.Project;
 using Data.ViewModel.Task;
 using Data.ViewModel.Tutorial;
 using Data.ViewModel.User;
+using Service.Dto;
 using Service.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using WorkManagement.Dtos;
 
 namespace WorkManagement.Helpers
 {
     public class AutoMapperProfile : Profile
     {
-
-        private DateTime MapDueDateWithPeriod(Data.Models.Task task)
-        {
-            var result = DateTime.MinValue;
-            switch (task.periodType)
-            {
-                case Data.Enum.PeriodType.Daily:
-                    result = task.DueDateTime;
-                    break;
-                case Data.Enum.PeriodType.Weekly:
-                    result = task.DueDateTime;
-                    break;
-                case Data.Enum.PeriodType.Monthly:
-                    result = task.DueDateTime;
-                    break;
-                case Data.Enum.PeriodType.SpecificDate:
-                    result = task.DueDateTime;
-                    break;
-                default:
-                    break;
-            }
-            return result;
-        }
         private string CheckStatus(Data.Models.Task task)
         {
             string result = "#N/A";
@@ -99,46 +76,6 @@ namespace WorkManagement.Helpers
             }
             return result;
         }
-        private string MapDueDateTime(Data.Models.Task task)
-        {
-            string result = "#N/A";
-            var currentDate = DateTime.Now;
-            switch (task.periodType)
-            {
-                case Data.Enum.PeriodType.Daily:
-                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
-                    break;
-                case Data.Enum.PeriodType.Weekly:
-                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
-                    break;
-                case Data.Enum.PeriodType.Monthly:
-                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
-                    break;
-                case Data.Enum.PeriodType.SpecificDate:
-                    result = currentDate.CompareTo(task.DueDateTime) <= 0 ? "On time" : "Late";
-                    break;
-                default:
-                    break;
-            }
-            return result;
-        }
-        private DateTime CheckDuedate(CreateTaskViewModel createTaskView)
-        {
-
-            switch (createTaskView.periodType)
-            {
-                case Data.Enum.PeriodType.Daily:
-                    return createTaskView.DueDate;
-                case Data.Enum.PeriodType.Weekly:
-                    return createTaskView.DueDate;
-                case Data.Enum.PeriodType.Monthly:
-                    return createTaskView.DueDate;
-                case Data.Enum.PeriodType.SpecificDate:
-                    return createTaskView.DueDate;
-                default:
-                    return DateTime.MinValue;
-            }
-        }
         private Data.Enum.JobType CheckJobType(CreateTaskViewModel task)
         {
             switch (task.JobTypeID)
@@ -155,20 +92,21 @@ namespace WorkManagement.Helpers
         }
         public AutoMapperProfile()
         {
-            CreateMap<User, UserForRegisterDto>();
-            CreateMap<UserForRegisterDto, User>()
+            CreateMap<User, UserForRegisterDto>(); //
+
+            CreateMap<UserForRegisterDto, User>()//
                 .ForMember(x => x.Role, option => option.Ignore())
                 .ForMember(x => x.Email, option => option.Ignore())
                 .ForMember(x => x.OCID, option => option.Ignore());
 
-            CreateMap<Data.Models.Task, CreateTaskViewModel>()
+            CreateMap<Data.Models.Task, CreateTaskViewModel>()//
                 .ForMember(x => x.PIC, option => option.Ignore())
                 .ForMember(x => x.DueDate, option => option.Ignore())
                 .ForMember(x => x.Deputies, option => option.Ignore())
                 .ForMember(x => x.FromWhoID, s => s.MapFrom(p => p.FromWhoID))
                 .ForMember(d => d.CreatedBy, s => s.MapFrom(p => p.CreatedBy));
 
-            CreateMap<CreateTaskViewModel, Data.Models.Task>()
+            CreateMap<CreateTaskViewModel, Data.Models.Task>()//
                 .ForMember(x => x.Deputies, option => option.Ignore())
                 .ForMember(d => d.JobTypeID, s => s.MapFrom(p => CheckJobType(p)))
                 .ForMember(d => d.DueDateTime, s => s.MapFrom(p => p.DueDate))
@@ -182,7 +120,7 @@ namespace WorkManagement.Helpers
                 .ForMember(x => x.User, option => option.Ignore())
                 .ForMember(x => x.Tutorial, option => option.Ignore());
 
-            CreateMap<Data.Models.Task, TreeViewTask>()
+            CreateMap<Data.Models.Task, TreeViewTask>()//
                 .ForMember(d => d.Project, s => s.MapFrom(p => p.Project == null ? new Project() : p.Project))
                 .ForMember(d => d.Tutorial, s => s.MapFrom(p => p.Tutorial == null ? new TreeViewTutorial() :
                 new TreeViewTutorial
@@ -218,9 +156,9 @@ namespace WorkManagement.Helpers
                 .ForMember(d => d.BeAssigneds, s => s.MapFrom(p => p.Tags != null ? p.Tags.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username }) : new List<BeAssigned>()))
                 .ForMember(d => d.PICs, s => s.MapFrom(p => p.Tags != null ? p.Tags.Select(x=>x.UserID): new List<int>()));
 
-            CreateMap<TreeViewTask, Data.Models.Task>();
+            CreateMap<TreeViewTask, Data.Models.Task>(); //
 
-            CreateMap<Data.Models.Task, TreeViewTaskForHistory>()
+            CreateMap<Data.Models.Task, TreeViewTaskForHistory>()//
               .ForMember(d => d.Project, s => s.MapFrom(p => p.Project == null ? new Project() : p.Project))
               .ForMember(d => d.Tutorial, s => s.MapFrom(p => p.Tutorial == null ? new TreeViewTutorial() :
               new TreeViewTutorial
@@ -266,23 +204,23 @@ namespace WorkManagement.Helpers
                 .ForMember(d => d.Sender, s => s.MapFrom(p => p.Notification.User != null ? p.Notification.User.Username : "From System"))
                 .ForMember(d => d.ImageBase64, s => s.MapFrom(p => "avatar/logo-1.png"))
                 .ForMember(d => d.CreatedTime, s => s.MapFrom(p => p.Notification.CreatedTime));
-            CreateMap<User, UserViewModel>();
+            CreateMap<User, UserViewModel>();//
 
-            CreateMap<UserViewModel, User>();
+            CreateMap<UserViewModel, User>();//
 
-            CreateMap<Tutorial, TreeViewTutorial>();
+            CreateMap<Tutorial, TreeViewTutorial>();//
 
-            CreateMap<TreeViewTutorial, Tutorial>();
+            CreateMap<TreeViewTutorial, Tutorial>();//
 
-            CreateMap<OC, CreateOCViewModel>();
+            CreateMap<OC, CreateOCViewModel>();//
 
-            CreateMap<CreateOCViewModel, OC>();
+            CreateMap<CreateOCViewModel, OC>();//
 
-            CreateMap<Comment, CommentViewModel>();
+            CreateMap<Comment, CommentViewModel>();//
 
-            CreateMap<CommentViewModel, Comment>();
+            CreateMap<CommentViewModel, Comment>();//
 
-            CreateMap<Comment, AddCommentViewModel>().ForMember(d => d.ClientRouter, s => s.Ignore());
+            CreateMap<Comment, AddCommentViewModel>().ForMember(d => d.ClientRouter, s => s.Ignore());//
 
             CreateMap<AddCommentViewModel, Comment>();
 
