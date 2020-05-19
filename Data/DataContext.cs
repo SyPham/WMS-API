@@ -1,6 +1,7 @@
 ﻿using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 
 namespace Data
 {
@@ -66,6 +67,15 @@ namespace Data
              .HasOne(u => u.Tutorial)
              .WithOne(c => c.Task)
              .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Task>() //Tutorial
+              .HasMany(u => u.Tags)
+              .WithOne(c => c.Task)
+          .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Tag>() //Tutorial
+              .HasOne(u => u.Task)
+              .WithMany(c => c.Tags)
+          .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Tutorial>() //Tutorial
               .HasOne(u => u.Task)
               .WithOne(c => c.Tutorial)
@@ -80,6 +90,12 @@ namespace Data
                 .WithMany(c => c.Follows)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            //foreach (var relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            //{
+            //    relationship.DeleteBehavior = DeleteBehavior.NoAction;
+            //}
+
+            //base.OnModelCreating(builder);
         }
     }
 }

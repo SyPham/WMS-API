@@ -17,10 +17,7 @@ namespace Data.ViewModel.Task
         public int OCID { get; set; }
         public int FromWhoID { get; set; }
         public string Priority { get; set; } = "M";
-        public string DueDateDaily { get; set; } = "";
-        public string DueDateWeekly { get; set; } = "";
-        public string DueDateMonthly { get; set; } = "";
-        public string SpecificDate { get; set; } = "";
+        public DateTime DueDateTime { get; set; }
         public string ModifyDateTime { get; set; }
         public bool FinishedMainTask { get; set; }
         public bool Status { get; set; }

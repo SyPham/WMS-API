@@ -244,7 +244,8 @@ namespace WorkManagement.Helpers
               .ForMember(x => x.ParentTemp, option => option.MapFrom(x => x.ParentID));
 
             CreateMap<CloneTaskViewModel, Data.Models.Task> ()
-          .ForMember(x => x.ID, option => option.Ignore());
+                .ForMember(x => x.Tags, option => option.Ignore())
+                .ForMember(x => x.ID, option => option.Ignore());
 
             CreateMap<TreeViewTask, HierarchyNode<TreeViewTask>>()
                 .ForMember(d => d.Entity, s => s.MapFrom(p => p));

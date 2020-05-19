@@ -369,7 +369,22 @@ namespace Service.Implement
                 await PeriodType(item, false);
             }
         }
-  
+        private async Task<bool> CheckExistTaskForMultiTask(Data.Models.Task task)
+        {
+            var currentDate = DateTime.Now;
+            task.DueDateTime = MapDueDateTime(task);
+            switch (task.periodType)
+            {
+                case Data.Enum.PeriodType.Daily:
+                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime));
+                case Data.Enum.PeriodType.Weekly:
+                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime));
+                case Data.Enum.PeriodType.Monthly:
+                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime));
+                default:
+                    return false;
+            }
+        }
         public async System.Threading.Tasks.Task TaskListIsLate()
         {
             var listTasks = _context.Tasks
@@ -380,28 +395,15 @@ namespace Service.Implement
             var currentDate = DateTime.Now.Date;
             foreach (var item in listTasks)
             {
-                if (item.periodType.Equals(Data.Enum.PeriodType.Daily))
+                if (!CheckCompletedTask(item))
                 {
-                    var daily = item.DueDateTime.Date;
-                    if (currentDate != daily && !CheckCompletedTask(item))
-                    {
-                        unCompletedTaskList.Add(item);
-                    }
-                    if (currentDate == daily && !CheckCompletedTask(item))
-                    {
-                        unCompletedTaskList.Add(item);
-                    }
-                }
-                else
-                {
-                    if (!CheckCompletedTask(item))
-                    {
-                        unCompletedTaskList.Add(item);
-                    }
+                    unCompletedTaskList.Add(item);
                 }
             }
 
             var allTasks = _context.Tasks.AsQueryable();
+            var listSingleTask = new List<Data.Models.Task>();
+            var listMultiTask = new List<List<Data.Models.Task>>();
             // Clone
             foreach (var item in unCompletedTaskList)
             {
@@ -414,14 +416,24 @@ namespace Service.Implement
                 var seftAndDescendants = await _context.Tasks.Where(x => taskDescendants.Contains(x.ID)).ToListAsync();
                 if (seftAndDescendants.Count == 1)
                 {
-                    // Clone task nay luon
-                    await CloneSingleTask(item);
+                    listSingleTask.Add(seftAndDescendants.First());
+
                 }
-                if (seftAndDescendants.Count > 1)
+                if (seftAndDescendants.Count > 1 && await CheckExistTask(item))
                 {
-                    // clone theo cha con luon
-                    await CloneMultiTask(seftAndDescendants);
+                    listMultiTask.Add(seftAndDescendants.OrderByDescending(x => x.ID).ToList());
                 }
+            }
+            foreach (var item in listSingleTask.Distinct())
+            {
+                await CloneSingleTask(item);
+
+            }
+            var tas = listMultiTask.DistinctBy(x => x.First().ID).ToList();
+            foreach (var item in tas)
+            {
+                await CloneMultiTask(item);
+
             }
             //Alert
             var tasks = _mapper.Map<List<TreeViewTask>>(unCompletedTaskList).Where(x => x.PICs.Count > 0).ToList();
@@ -1076,7 +1088,7 @@ namespace Service.Implement
                     return false;
             }
         }
-        
+
         private async System.Threading.Tasks.Task UpdateDueDateViaPeriod(Data.Models.Task task)
         {
             var update = await _context.Tasks.FindAsync(task.ID);
@@ -1372,26 +1384,13 @@ namespace Service.Implement
                 Priority = task.Priority,
                 ProjectID = task.ProjectID,
                 JobTypeID = task.JobTypeID,
-                DueDateTime = task.DueDateTime,
+                DueDateTime = MapDueDateTime(task),
                 Code = task.Code,
                 periodType = task.periodType,
                 CreatedBy = task.CreatedBy,
-                Level = task.Level
+                Level = task.Level,
+
             };
-            switch (task.periodType)
-            {
-                case Data.Enum.PeriodType.Daily:
-                    newTask.DueDateTime = task.DueDateTime.AddDays(1);
-                    break;
-                case Data.Enum.PeriodType.Weekly:
-                    newTask.DueDateTime = task.DueDateTime.AddDays(7);
-                    break;
-                case Data.Enum.PeriodType.Monthly:
-                    newTask.DueDateTime = task.DueDateTime.AddMonths(1);
-                    break;
-                default:
-                    break;
-            }
             //Kiem tra cai task chuan bi clone nay da ton tai chua
             var check = await CheckExistTask(newTask);
             if (!check)
@@ -1402,56 +1401,38 @@ namespace Service.Implement
             }
 
         }
-        private async System.Threading.Tasks.Task CloneMultiTask(List<Data.Models.Task> tasks)
+        DateTime MapDueDateTime(Data.Models.Task item)
         {
-            var listTemp = new List<CloneTaskViewModel>();
-            foreach (var item in tasks)
+            var result = DateTime.MinValue;
+            switch (item.periodType)
             {
-                switch (item.periodType)
-                {
-                    case Data.Enum.PeriodType.Daily:
-                        item.DueDateTime = item.DueDateTime.AddDays(1);
-                        break;
-                    case Data.Enum.PeriodType.Weekly:
-                        item.DueDateTime = item.DueDateTime.AddDays(7);
-                        break;
-                    case Data.Enum.PeriodType.Monthly:
-                        item.DueDateTime = item.DueDateTime.AddMonths(1);
-                        break;
-                    default:
-                        break;
-                }
-                var check = await CheckExistTask(item);
-                if (!check)
-                {
-                    var temp = _mapper.Map<CloneTaskViewModel>(item);
-                    temp.IDTemp = item.ID;
-                    temp.ParentTemp = item.ParentID;
-                    item.ID = 0;
-                    item.Status = false;
-                    item.FinishedMainTask = false;
-                    item.ModifyDateTime = "";
-                    item.CreatedDate = DateTime.Now;
-                    await _context.AddAsync(item);
-                    await _context.SaveChangesAsync();
-                    temp.ID = item.ID;
-                    listTemp.Add(temp);
-                }
+                case Data.Enum.PeriodType.Daily:
+                    result = item.DueDateTime.AddDays(1);
+                    break;
+                case Data.Enum.PeriodType.Weekly:
+                    result = item.DueDateTime.AddDays(7);
+                    break;
+                case Data.Enum.PeriodType.Monthly:
+                    result = item.DueDateTime.AddMonths(1);
+                    break;
+                default:
+                    break;
             }
+            return result;
+        }
+        async System.Threading.Tasks.Task SaveChangeAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+        private async Task<Data.Models.Task> CreateTaskAsync(Data.Models.Task task)
+        {
+            await _context.AddAsync(task);
+            await _context.SaveChangesAsync();
+            return task;
+        }
+        async System.Threading.Tasks.Task UpdateTaskForMultiTask(List<CloneTaskViewModel> listTemp)
+        {
             var update = _context.Tasks.Where(x => listTemp.Select(a => a.ID).Contains(x.ID)).ToList();
-            //listTemp
-            /// ID = 3347, ParentID = 0, ParentTemp = 0, IDTemp = 3342
-            /// ID = 3348, ParentID = 3342, ParentTemp = 3342, IDTemp = 3344
-            /// ID = 3349, ParentID = 3342, ParentTemp = 3342, IDTemp = 3345
-            /// List new
-            /// ID = 3347, ParentID = 0
-            /// ID = 3348, ParentID = 3342
-            /// ID = 3348, ParentID = 3342
-            foreach (var item in listTemp)
-            {
-              //  await UpdatePeriodForDone(item);
-                await ClonePICForDone(item);
-            }
 
             update.ForEach(item =>
             {
@@ -1461,6 +1442,42 @@ namespace Service.Implement
                 }
             });
             await _context.SaveChangesAsync();
+
+        }
+        private async System.Threading.Tasks.Task CloneMultiTask(List<Data.Models.Task> tasks)
+        {
+            var listTemp = new List<CloneTaskViewModel>();
+            foreach (var item in tasks)
+            {
+                var check = await CheckExistTaskForMultiTask(item);
+                if (!check)
+                {
+                    var temp = _mapper.Map<CloneTaskViewModel>(item);
+                    temp.IDTemp = item.ID;
+                    temp.ParentTemp = item.ParentID;
+                    var task = new Data.Models.Task();
+                    task.Code = item.Code;
+                    task.JobName = item.JobName;
+                    task.ParentID = item.ParentID;
+                    task.Level = item.Level;
+                    task.ProjectID = item.ProjectID;
+                    task.CreatedBy = item.CreatedBy;
+                    task.OCID = item.OCID;
+                    task.FromWhoID = item.FromWhoID;
+                    task.Priority = item.Priority;
+                    task.periodType = item.periodType;
+                    task.DueDateTime = task.DueDateTime;
+                    task.JobTypeID = item.JobTypeID;
+                    task.CreatedDate = DateTime.Now;
+                    temp.ID = (await CreateTaskAsync(task)).ID;
+                    listTemp.Add(temp);
+                }
+            }
+            foreach (var item in listTemp)
+            {
+                await ClonePICForDone(item);
+            }
+            await UpdateTaskForMultiTask(listTemp);
         }
 
         private bool CheckDailyOntime(Data.Models.Task update)
