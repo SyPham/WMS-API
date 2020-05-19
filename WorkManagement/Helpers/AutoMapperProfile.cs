@@ -201,7 +201,7 @@ namespace WorkManagement.Helpers
                 .ForMember(d => d.BeAssigned, s => s.MapFrom(p => p.UserID))
                 .ForMember(d => d.URL, s => s.MapFrom(p => p.Notification.URL))
                 .ForMember(d => d.Seen, s => s.MapFrom(p => p.Seen))
-                .ForMember(d => d.Sender, s => s.MapFrom(p => p.Notification.User != null ? p.Notification.User.Username : "From System"))
+                .ForMember(d => d.Sender, s => s.MapFrom(p =>  p.Notification.User.Username))
                 .ForMember(d => d.ImageBase64, s => s.MapFrom(p => "avatar/logo-1.png"))
                 .ForMember(d => d.CreatedTime, s => s.MapFrom(p => p.Notification.CreatedTime));
             CreateMap<User, UserViewModel>();//

@@ -112,7 +112,7 @@ namespace Service.AutoMapper
            .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Tutorial == null ? false : true))
            .ForMember(d => d.Priority, s => s.MapFrom(p => p.Priority == "H" ? "High" : p.Priority == "L" ? "Low" : "Medium"))
            .ForMember(d => d.DueDate, s => s.MapFrom(p => p.DueDateTime))
-           .ForMember(d => d.state, s => s.MapFrom(p => DateTime.Now.CompareTo(p.DueDateTime) <= 0 ? "On time" : "Late"))
+           .ForMember(d => d.state, s => s.MapFrom(p => DateTime.Now.CompareTo(p.DueDateTime) <= 0 ? "On going" : "Delay"))
            .ForMember(d => d.User, s => s.MapFrom(p => p.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
            .ForMember(d => d.FromWho, s => s.MapFrom(p => p.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
            .ForMember(d => d.FromWhere, s => s.MapFrom(p => p.OC == null ? new FromWhere() : new FromWhere { ID = p.OC.ID, Name = p.OC.Name }))

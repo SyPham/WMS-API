@@ -35,12 +35,12 @@ namespace WorkManagement.Controllers
         [HttpGet("{priority}/{sort}/{start}/{end}/{weekdays}/{monthly}")]
         [HttpGet("{priority}/{sort}/{start}/{end}/{weekdays}/{monthly}/{quarterly}")]
         [HttpGet]
-        public  IActionResult Todolist(string sort = "", string priority = "", string start = "", string end = "", string weekdays = "", string monthly = "", string quarterly = "")
+        public async Task<IActionResult> Todolist(string sort = "", string priority = "", string start = "", string end = "", string weekdays = "", string monthly = "", string quarterly = "")
         {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
 
-            return Ok(_taskService.Todolist(sort, priority, userID, start, end, weekdays, monthly, quarterly));
+            return Ok(await _taskService.Todolist(sort, priority, userID, start, end, weekdays, monthly, quarterly));
         }
         [HttpGet("{ocid}/{sort}")]
         [HttpGet("{ocid}/{priority}/{sort}")]

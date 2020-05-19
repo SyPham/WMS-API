@@ -10,7 +10,7 @@ namespace Service.Interface
 {
     public interface ITaskService
     {
-        System.Threading.Tasks.Task TaskListIsLate(int userid);
+        System.Threading.Tasks.Task TaskListIsLate();
         Task<Tuple<bool, string, object>> CreateTask(CreateTaskViewModel task);
         Task<object> CreateSubTask(CreateTaskViewModel task);
         Task<object> UpdateTask(UpdateTaskViewModel task);
@@ -25,7 +25,7 @@ namespace Service.Interface
         Task<object> GetListUser(int userid, int projectid);
         Task<object> UpdateDueDateTime();
 
-        List<HierarchyNode<TreeViewTask>> Todolist(string sort = "", string priority = "", int userid = 0, string startDate = "", string endDate = "", string weekdays = "", string monthly = "", string quarterly = "");
+        Task<List<HierarchyNode<TreeViewTask>>> Todolist(string sort = "", string priority = "", int userid = 0, string startDate = "", string endDate = "", string weekdays = "", string monthly = "", string quarterly = "");
         Task<List<HierarchyNode<TreeViewTask>>> TodolistSortBy(string beAssigned, string assigned, int userid);
         Task<List<HierarchyNode<TreeViewTask>>> Routine(string sort, string priority, int userid, int ocid);
         Task<List<HierarchyNode<TreeViewTask>>> Abnormal(int ocid, string priority, int userid, string startDate, string endDate, string weekdays);

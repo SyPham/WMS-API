@@ -19,6 +19,7 @@ namespace Service.Implement
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private MapperConfiguration _configMapper;
+        const int ADMIN = 1;
         public NotificationService(DataContext context, IMapper mapper, MapperConfiguration configMapper)
         {
             _context = context;
@@ -38,7 +39,11 @@ namespace Service.Implement
                     URL = entity.URL,
                     Function = entity.AlertType.ToString()
                 };
-                item.UserID = entity.UserID.GetValueOrDefault();
+                if (entity.UserID == 0 || entity.UserID == null)
+
+                    item.UserID = ADMIN;
+                else
+                    item.UserID = entity.UserID.Value;
                 await _context.Notifications.AddAsync(item);
                 await _context.SaveChangesAsync();
 
@@ -59,8 +64,11 @@ namespace Service.Implement
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                await _context.AddRangeAsync(new CheckTask { Function = entity.Message });
+
+                await _context.SaveChangesAsync();
                 return false;
 
             }
@@ -121,12 +129,12 @@ namespace Service.Implement
         public async Task<object> GetAllByUserID(int userid, int page, int pageSize)
         {
             var list = _context.NotificationDetails
-                .Where(x=>x.UserID == userid)
-                .Include(x => x.Notification).ThenInclude(x=>x.User)
-                .Include(x => x.Notification).ThenInclude(x => x.NotificationDetails).ThenInclude(x=>x.User)
+                .Where(x => x.UserID == userid)
+                .Include(x => x.Notification).ThenInclude(x => x.User)
+                .Include(x => x.Notification).ThenInclude(x => x.NotificationDetails).ThenInclude(x => x.User)
                 .Include(x => x.User).ProjectTo<NotificationViewModel>(_configMapper);
-           // var listAsync = await model.ToListAsync();
-           //var list =  _mapper.Map<List<NotificationViewModel>>(model);
+            // var listAsync = await model.ToListAsync();
+            //var list =  _mapper.Map<List<NotificationViewModel>>(model);
             var total = 0;
             var listID = new List<int>();
 
@@ -138,7 +146,7 @@ namespace Service.Implement
                     listID.Add(item.ID);
                 }
             }
-            var paging =await PagedList<NotificationViewModel>.CreateAsync(list, page, pageSize);
+            var paging = await PagedList<NotificationViewModel>.CreateAsync(list, page, pageSize);
 
             return new
             {
