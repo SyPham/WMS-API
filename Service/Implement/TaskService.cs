@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Service.ConfigLine;
 using Service.Hub;
 using Service.Interface;
@@ -1161,7 +1162,7 @@ namespace Service.Implement
             userlistForHub.AddRange(pic.Select(x => x.UserID));
             userlistForHub.AddRange(deputies.Select(x => x.UserID));
             userlistForHub.AddRange(follows.Select(x => x.UserID));
-          
+
             return userlistForHub.Distinct().ToList();
 
         }
@@ -2032,10 +2033,12 @@ namespace Service.Implement
             }
             return listTasks;
         }
-        public async Task<string> GetCodeLineAsync(string code, string state)
+        public async Task<object> GetCodeLineAsync(string code, string state)
         {
+
             var url = "https://notify-bot.line.me/oauth/token";
             var lineNotifyConfig = _configuration.GetSection("LineNotifyConfig").Get<LineNotifyConfig>();
+            lineNotifyConfig.code = code;
             using (var client = new HttpClient())
             {
                 // tin nhắn sẽ được thông báo
@@ -2043,11 +2046,10 @@ namespace Service.Implement
                 {
                     { "grant_type", lineNotifyConfig.grant_type },
                     { "code", code },
-                    { "redirect_uri", lineNotifyConfig.redirect_uri },
+                    //{ "redirect_uri", lineNotifyConfig.redirect_uri },
                     { "client_id", lineNotifyConfig.client_id },
                     { "client_secret", lineNotifyConfig.client_secret },
                 });
-
                 // thêm mã token vào header
                 //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ACCESS_TOKEN);
 
@@ -2056,16 +2058,18 @@ namespace Service.Implement
                 if (result.IsSuccessStatusCode)
                 {
                     string res = result.Content.ReadAsStringAsync().Result;
+                    return res;
+
                 }
-                    // Luu token notifi vao db 
-                }
-            return "";
+                return result;
+                // Luu token notifi vao db
+            }
         }
-        private async void PublishhMessage(string message)
+        private async void PublishhMessage(string message = "Test")
         {
             // mã token truy cập
 
-            var ACCESS_TOKEN = "9NTHsazZWhEtSG3T89FXoZxNgRRVJ9afmfZxzurbQUo";
+            var ACCESS_TOKEN = "7WFjkrUVVugK9W6OPrOgAKhdOZIkRPU8pSd5ZOMb8cY";
 
             using (var client = new HttpClient())
             {
@@ -2170,7 +2174,7 @@ namespace Service.Implement
             try
             {
                 //A: Setup and stuff you don't want timed
-                //PublishhMessage("Good morning!");
+                PublishhMessage("Good morning!");
                 //  await _notificationService.Create(new CreateNotifyParams { Message = "Test", TaskID = 3675, AlertType = Data.Enum.AlertType.BeLate, URL = "/todolist/Demo-daily-is-late" });
                 var listTasks = GetAllTasks()
                     .Where(x =>

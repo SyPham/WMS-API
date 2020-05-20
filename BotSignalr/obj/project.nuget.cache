@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "q5AIifMfssKd+kaba+rMbYIalCNpGlDpZxqnQEn9hfNrSbrq810OH4dZSUvGn9BoUqt6tWPJ6kL9GLliOL8UAg==",
+  "dgSpecHash": "DV8GcVs307DGtLvFi1h3p+JrBkjiFSpV63Il+dWmYddjBI18OG2fZSrE7yan775oBkwlzrJQ5NUcQUcOB0bH/w==",
   "success": true,
-  "projectFilePath": "F:\\0.Document\\angular9\\WMS-API\\BotSignalr\\BotSignalr.csproj",
+  "projectFilePath": "D:\\wwwroot\\WMS-API\\BotSignalr\\BotSignalr.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

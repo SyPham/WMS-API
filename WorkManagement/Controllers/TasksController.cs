@@ -217,10 +217,10 @@ namespace WorkManagement.Controllers
             return Ok(await _taskService.GetDeputies());
         }
         [HttpGet("{code}/{state}")]
-        public async Task<string> GetCodeLineAsync(string code, string state)
+        public async Task<IActionResult> GetCodeLineAsync(string code, string state)
         {
-            await _taskService.GetCodeLineAsync(code, state);
-            return "Xac nhan thanh cong!";
+           // await _taskService.GetCodeLineAsync(code, state);
+            return Ok(await _taskService.GetCodeLineAsync(code, state));
         }
     }
 }
