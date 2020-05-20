@@ -14,7 +14,8 @@ namespace Data.Models
             CreatedDate = DateTime.Now;
             this.ModifyDateTime = DateTime.Now.ToString("d MMM, yyyy hh:mm:ss tt");
         }
-
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         public string TaskCode { get; set; }
         public int TaskID { get; set; }

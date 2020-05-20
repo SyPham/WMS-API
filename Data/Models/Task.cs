@@ -13,6 +13,8 @@ namespace Data.Models
         {
             CreatedDate = DateTime.Now;
         }
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         public string Code { get; set; }
         public string JobName { get; set; }

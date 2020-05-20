@@ -104,7 +104,7 @@ namespace WorkManagement.Controllers
         {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
-                return Ok(await _taskService.TodolistSortBy(status, userID));
+            return Ok(await _taskService.TodolistSortBy(status, userID));
         }
 
 
@@ -117,8 +117,8 @@ namespace WorkManagement.Controllers
             createTask.FromWhoID = userID;
             createTask.UserID = userID;
             var model = await _taskService.CreateTask(createTask);
-          //  await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, model.Item3);
-           // await _hubContext.Clients.All.SendAsync("ReceiveAlertMessage", model.Item2, model.Item3);
+            //  await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, model.Item3);
+            // await _hubContext.Clients.All.SendAsync("ReceiveAlertMessage", model.Item2, model.Item3);
             return Ok(model.Item1);
         }
         [HttpPost]
@@ -154,19 +154,22 @@ namespace WorkManagement.Controllers
             var model = await _taskService.Done(id, userID);
             if (model.Item1)
             {
-               // await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item3, "message");
+                // await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item3, "message");
                 return Ok(new
                 {
                     status = model.Item1,
                     message = "The task was finished!!!"
                 });
-            } else if (!model.Item1)
+            }
+            else if (!model.Item1)
             {
-                return Ok(new {
+                return Ok(new
+                {
                     status = model.Item1,
                     message = model.Item3
                 });
-            } else
+            }
+            else
             {
                 return Ok(new
                 {
@@ -212,6 +215,12 @@ namespace WorkManagement.Controllers
         public async Task<IActionResult> GetDeputies()
         {
             return Ok(await _taskService.GetDeputies());
+        }
+        [HttpGet("{code}/{state}")]
+        public async Task<string> GetCodeLineAsync(string code, string state)
+        {
+            await _taskService.GetCodeLineAsync(code, state);
+            return "Xac nhan thanh cong!";
         }
     }
 }

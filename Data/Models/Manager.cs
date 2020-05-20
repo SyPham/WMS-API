@@ -8,6 +8,8 @@ namespace Data.Models
 {
     public class Manager
     {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         public int UserID { get; set; }
         public int ProjectID { get; set; }

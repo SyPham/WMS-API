@@ -24,7 +24,7 @@ namespace Service.Interface
         Task<object> GetDeputies();
         Task<object> GetListUser(int userid, int projectid);
         Task<object> UpdateDueDateTime();
-
+        Task<string> GetCodeLineAsync(string code, string state);
         Task<List<HierarchyNode<TreeViewTask>>> Todolist(string sort = "", string priority = "", int userid = 0, string startDate = "", string endDate = "", string weekdays = "", string monthly = "", string quarterly = "");
         Task<List<HierarchyNode<TreeViewTask>>> TodolistSortBy(string beAssigned, string assigned, int userid);
         Task<List<HierarchyNode<TreeViewTask>>> Routine(string sort, string priority, int userid, int ocid);

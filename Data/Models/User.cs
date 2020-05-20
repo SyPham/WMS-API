@@ -2,6 +2,8 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Data.Models
@@ -9,6 +11,8 @@ namespace Data.Models
     [JsonObject(IsReference = true)]
     public class User : IEntity
     {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         public string Username { get; set; }
         public byte[] PasswordHash { get; set; }

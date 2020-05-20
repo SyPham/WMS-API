@@ -10,6 +10,7 @@ namespace Data.ViewModel.Task
 {
     public class Task
     {
+       
         public int ID { get; set; }
         public string JobName { get; set; }
         public string Description { get; set; }

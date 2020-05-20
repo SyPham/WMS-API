@@ -1,0 +1,20 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "description": "The bot use to check notification for dot net core",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@microsoft/signalr": "^3.1.4",
+    "express": "^4.17.1",
+    "greenlock-express": "^4.0.3",
+    "https-localhost": "^4.5.3",
+    "letsencrypt-express": "^2.0.7",
+    "nodemon": "^2.0.4"
+  }
+}

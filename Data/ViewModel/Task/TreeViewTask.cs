@@ -48,12 +48,7 @@ namespace Data.ViewModel.Task
         public List<History.History> Histories { get; set; } = new List<History.History>();
         public string state { get; set; }
         public bool FinishTask { get; set; }
-        //public string DueDateDaily { get; set; }
         public DateTime DueDate { get; set; }
-        //public string SpecificDueDate { get; set; }
-        //public string DueDateWeekly { get; set; }
-        //public string DueDateMonthly { get; set; }
-        //public string SpecificDate { get; set; }
         public string ModifyDateTime { get; set; }
         public List<Follow> Follows { get; set; } = new List<Models.Follow>();
         public List<TreeViewTask> RelatedTasks { get; set; } = new List<TreeViewTask>();

@@ -10,6 +10,8 @@ using Data.ViewModel.Task;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Service.ConfigLine;
 using Service.Hub;
 using Service.Interface;
 using System;
@@ -34,6 +36,7 @@ namespace Service.Implement
         private readonly IOCService _ocService;
         private readonly INotificationService _notificationService;
         private readonly IHubContext<WorkingManagementHub> _hubContext;
+        private IConfiguration _configuration;
         private MapperConfiguration _configMapper;
 
         #endregion
@@ -46,6 +49,7 @@ namespace Service.Implement
             IHubContext<WorkingManagementHub> hubContext,
             IProjectService projectService,
             MapperConfiguration configMapper,
+            IConfiguration configuration,
             IOCService ocService)
         {
             _context = context;
@@ -56,6 +60,7 @@ namespace Service.Implement
             _hubContext = hubContext;
             _notificationService = notificationService;
             _configMapper = configMapper;
+            _configuration = configuration;
         }
 
         #endregion
@@ -244,7 +249,7 @@ namespace Service.Implement
             else
                 return listPIC.Union(listFollow).Union(listDeputie).ToList();
         }
-        private async System.Threading.Tasks.Task AlertTasksIsLate(TreeViewTask item, string message, bool isProject)
+        private async Task<List<int>> AlertTasksIsLate(TreeViewTask item, string message, bool isProject)
         {
             var notifyParams = new CreateNotifyParams
             {
@@ -257,7 +262,9 @@ namespace Service.Implement
             if (notifyParams.Users.Count > 0)
             {
                 await _notificationService.Create(notifyParams);
+                return notifyParams.Users;
             }
+            return new List<int>();
         }
         private string Message(Data.Enum.PeriodType periodType, TreeViewTask item)
         {
@@ -285,34 +292,36 @@ namespace Service.Implement
         {
             return _context.Notifications.Any(x => x.TaskID == id && x.Function.Equals(Data.Enum.AlertType.BeLate.ToSafetyString()));
         }
-        private async System.Threading.Tasks.Task PeriodType(TreeViewTask item, bool isProject)
+        private async Task<List<int>> PeriodType(TreeViewTask item, bool isProject)
         {
             string mes = Message(item.periodType, item);
+            var useListForHub = new List<int>();
             switch (item.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
                     var checkDaily = CheckNotification(item.ID);
                     if (!checkDaily)
-                        await AlertTasksIsLate(item, mes, isProject);
+                        useListForHub.AddRange(await AlertTasksIsLate(item, mes, isProject));
                     break;
                 case Data.Enum.PeriodType.Weekly:
                     var checkWeekly = CheckNotification(item.ID);
                     if (!checkWeekly)
-                        await AlertTasksIsLate(item, mes, isProject);
+                        useListForHub.AddRange(await AlertTasksIsLate(item, mes, isProject));
                     break;
                 case Data.Enum.PeriodType.Monthly:
                     var checkMonthly = CheckNotification(item.ID);
                     if (!checkMonthly)
-                        await AlertTasksIsLate(item, mes, isProject);
+                        useListForHub.AddRange(await AlertTasksIsLate(item, mes, isProject));
                     break;
                 case Data.Enum.PeriodType.SpecificDate:
                     var checkSpecificDate = CheckNotification(item.ID);
                     if (!checkSpecificDate)
-                        await AlertTasksIsLate(item, mes, isProject);
+                        useListForHub.AddRange(await AlertTasksIsLate(item, mes, isProject));
                     break;
                 default:
                     break;
             }
+            return useListForHub.Distinct().ToList();
         }
         #endregion
 
@@ -346,41 +355,46 @@ namespace Service.Implement
             }
             return result;
         }
-        private async System.Threading.Tasks.Task ProjectTaskIsLate(HashSet<TreeViewTask> tasks)
+        private async Task<List<int>> ProjectTaskIsLate(List<TreeViewTask> tasks)
         {
+            var useListForHub = new List<int>();
 
             foreach (var item in tasks)
             {
-                await PeriodType(item, true);
+                useListForHub.AddRange(await PeriodType(item, true));
             }
+            return useListForHub.ToList();
         }
-        private async System.Threading.Tasks.Task RoutineTaskIsLate(HashSet<TreeViewTask> tasks)
+        private async Task<List<int>> RoutineTaskIsLate(List<TreeViewTask> tasks)
         {
+            var useListForHub = new List<int>();
             foreach (var item in tasks)
             {
-                await PeriodType(item, false);
+                useListForHub.AddRange(await PeriodType(item, false));
             }
+            return useListForHub.ToList();
         }
-        private async System.Threading.Tasks.Task AbnormalTaskIsLate(HashSet<TreeViewTask> tasks)
+        private async Task<List<int>> AbnormalTaskIsLate(List<TreeViewTask> tasks)
         {
-
+            var useListForHub = new List<int>();
             foreach (var item in tasks)
             {
-                await PeriodType(item, false);
+                useListForHub.AddRange(await PeriodType(item, false));
             }
+            return useListForHub.ToList();
         }
         private async Task<bool> CheckExistTaskForMultiTask(Data.Models.Task task)
         {
             var currentDate = DateTime.Now;
-            task.DueDateTime = MapDueDateTime(task);
+            var dueDateTime = MapDueDateTime(task);
             switch (task.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
-                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime));
+                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(dueDateTime));
                 case Data.Enum.PeriodType.Weekly:
-                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime));
+                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(dueDateTime));
                 case Data.Enum.PeriodType.Monthly:
-                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime));
+                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(dueDateTime));
                 default:
                     return false;
             }
@@ -390,7 +404,10 @@ namespace Service.Implement
             var listTasks = _context.Tasks
               .Include(x => x.Tags).ThenInclude(x => x.User)
               .Include(x => x.Deputies).ThenInclude(x => x.User)
-              .Where(x => x.DueDateTime.Date.CompareTo(DateTime.Now.Date) <= 0 && x.Status == false);
+              .Where(x => x.DueDateTime.Date.CompareTo(DateTime.Now.Date) <= 0 && x.Status == false && x.Tags.Count > 0);
+            var userListForHub = new List<int>();
+            if (listTasks.Count() == 0)
+                return;
             var unCompletedTaskList = new List<Data.Models.Task>();
             var currentDate = DateTime.Now.Date;
             foreach (var item in listTasks)
@@ -409,6 +426,7 @@ namespace Service.Implement
             {
                 // Tim root cua task hien tai
                 var root = ToFindParentByChild(allTasks, item.ID);
+
                 // Tim tat ca cac con cua task root vua tim dc
                 var tasksList = AsTreeView(root.ParentID, root.ID);
                 //Tim tat ca con chau
@@ -426,25 +444,34 @@ namespace Service.Implement
             }
             foreach (var item in listSingleTask.Distinct())
             {
-                await CloneSingleTask(item);
+                userListForHub.AddRange(await CloneSingleTask(item));
 
             }
             var tas = listMultiTask.DistinctBy(x => x.First().ID).ToList();
             foreach (var item in tas)
             {
-                await CloneMultiTask(item);
+                userListForHub.AddRange(await CloneMultiTask(item));
 
             }
             //Alert
             var tasks = _mapper.Map<List<TreeViewTask>>(unCompletedTaskList).Where(x => x.PICs.Count > 0).ToList();
             try
             {
-                var projects = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Project).ToHashSet();
-                var routine = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Routine).ToHashSet();
-                var abnormal = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Abnormal).ToHashSet();
-                await ProjectTaskIsLate(projects);
-                await RoutineTaskIsLate(routine);
-                await AbnormalTaskIsLate(abnormal);
+                var projects = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Project).ToList();
+                var routine = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Routine).ToList();
+                var abnormal = tasks.Where(x => x.JobTypeID == Data.Enum.JobType.Abnormal).ToList();
+                var listNotify = new List<int>();
+                listNotify.AddRange(await ProjectTaskIsLate(projects));
+                listNotify.AddRange(await RoutineTaskIsLate(routine));
+                listNotify.AddRange(await AbnormalTaskIsLate(abnormal));
+                if (userListForHub.Distinct().Count() > 0)
+                {
+                    await _hubContext.Clients.All.SendAsync("ReceiveMessageForCurd", string.Join(",", userListForHub.Distinct()));
+                }
+                if (listNotify.Distinct().Count() > 0)
+                {
+                    await _hubContext.Clients.All.SendAsync("ReceiveMessage", string.Join(",", listNotify.Distinct()), GetAlertDueDate());
+                }
             }
             catch (Exception ex)
             {
@@ -1031,16 +1058,49 @@ namespace Service.Implement
         //}
         #endregion
 
-        private async System.Threading.Tasks.Task ClonePIC(int oldTaskid, int newTaskID)
+        private async Task<List<int>> ClonePIC(int oldTaskid, int newTaskID)
         {
+
+            var userlistForHub = new List<int>();
             var pic = _context.Tags.Where(x => x.TaskID == oldTaskid).ToList();
             var list = new List<Tag>();
             foreach (var item in pic)
             {
                 list.Add(new Tag { TaskID = newTaskID, UserID = item.UserID });
             }
-            await _context.AddRangeAsync(list);
+            await _context.Tags.AddRangeAsync(list);
             await _context.SaveChangesAsync();
+
+            var deputies = _context.Deputies.Where(x => x.TaskID == oldTaskid).ToList();
+            var list2 = new List<Deputy>();
+            foreach (var item in deputies)
+            {
+                list2.Add(new Deputy { TaskID = newTaskID, UserID = item.UserID });
+            }
+            await _context.Deputies.AddRangeAsync(list2);
+            await _context.SaveChangesAsync();
+
+            var follows = _context.Follows.Where(x => x.TaskID == oldTaskid).ToList();
+            var list3 = new List<Follow>();
+            foreach (var item in follows)
+            {
+                list3.Add(new Follow { TaskID = newTaskID, UserID = item.UserID });
+            }
+            await _context.Follows.AddRangeAsync(list3);
+            await _context.SaveChangesAsync();
+
+            var tutorials = _context.Tutorials.Where(x => x.TaskID == oldTaskid).ToList();
+            var list4 = new List<Tutorial>();
+            foreach (var item in tutorials)
+            {
+                list4.Add(new Tutorial { TaskID = newTaskID, Name = item.Name, Level = item.Level, ParentID = item.ParentID, Path = item.Path, URL = item.URL });
+            }
+            await _context.Tutorials.AddRangeAsync(list4);
+            await _context.SaveChangesAsync();
+            userlistForHub.AddRange(pic.Select(x => x.UserID));
+            userlistForHub.AddRange(deputies.Select(x => x.UserID));
+            userlistForHub.AddRange(follows.Select(x => x.UserID));
+            return userlistForHub.Distinct().ToList();
         }
         private async Task<Data.Models.Task> UpdatePeriodForDone(CloneTaskViewModel task)
         {
@@ -1062,6 +1122,49 @@ namespace Service.Implement
             await _context.SaveChangesAsync();
             return update;
         }
+        private async Task<List<int>> CloneRelatedTable(CloneTaskViewModel task)
+        {
+            var userlistForHub = new List<int>();
+            var pic = _context.Tags.Where(x => x.TaskID == task.IDTemp).ToList();
+            var list = new List<Tag>();
+            foreach (var item in pic)
+            {
+                list.Add(new Tag { TaskID = task.ID, UserID = item.UserID });
+            }
+            await _context.Tags.AddRangeAsync(list);
+            await _context.SaveChangesAsync();
+
+            var deputies = _context.Deputies.Where(x => x.TaskID == task.IDTemp).ToList();
+            var list2 = new List<Deputy>();
+            foreach (var item in deputies)
+            {
+                list2.Add(new Deputy { TaskID = task.ID, UserID = item.UserID });
+            }
+            await _context.Deputies.AddRangeAsync(list2);
+            await _context.SaveChangesAsync();
+            var follows = _context.Follows.Where(x => x.TaskID == task.IDTemp).ToList();
+            var list3 = new List<Follow>();
+            foreach (var item in follows)
+            {
+                list3.Add(new Follow { TaskID = task.ID, UserID = item.UserID });
+            }
+            await _context.Follows.AddRangeAsync(list3);
+            await _context.SaveChangesAsync();
+            var tutorials = _context.Tutorials.Where(x => x.TaskID == task.IDTemp).ToList();
+            var list4 = new List<Tutorial>();
+            foreach (var item in tutorials)
+            {
+                list4.Add(new Tutorial { TaskID = task.ID, Name = item.Name, Level = item.Level, ParentID = item.ParentID, Path = item.Path, URL = item.URL });
+            }
+            await _context.Tutorials.AddRangeAsync(list4);
+            await _context.SaveChangesAsync();
+            userlistForHub.AddRange(pic.Select(x => x.UserID));
+            userlistForHub.AddRange(deputies.Select(x => x.UserID));
+            userlistForHub.AddRange(follows.Select(x => x.UserID));
+          
+            return userlistForHub.Distinct().ToList();
+
+        }
         private async System.Threading.Tasks.Task ClonePICForDone(CloneTaskViewModel task)
         {
             var pic = _context.Tags.Where(x => x.TaskID == task.IDTemp).ToList();
@@ -1073,6 +1176,7 @@ namespace Service.Implement
             await _context.AddRangeAsync(list);
             await _context.SaveChangesAsync();
         }
+
         private async Task<bool> CheckExistTask(Data.Models.Task task)
         {
             var currentDate = DateTime.Now;
@@ -1226,10 +1330,10 @@ namespace Service.Implement
         #region Helper For Done
         private Data.Models.Task ToFindParentByChild(IQueryable<Data.Models.Task> rootNodes, int taskID)
         {
-            var parentItem = rootNodes.FirstOrDefault(x => x.ID.Equals(taskID));
-            if (parentItem == null)
+            var parentItem = rootNodes.Any(x => x.ID.Equals(taskID));
+            if (!parentItem)
                 return null;
-            var parent = parentItem.ParentID;
+            var parent = rootNodes.FirstOrDefault(x => x.ID.Equals(taskID)).ParentID;
             if (parent == 0)
                 return rootNodes.FirstOrDefault(x => x.ID.Equals(taskID));
             else
@@ -1285,10 +1389,6 @@ namespace Service.Implement
                                 VideoLink = c.VideoLink,
                                 VideoStatus = c.VideoStatus,
                                 DeputiesList = c.DeputiesList,
-                                //DueDateDaily = c.DueDateDaily,
-                                //DueDateWeekly = c.DueDateWeekly,
-                                //DueDateMonthly = c.DueDateMonthly,
-                                //SpecificDate = c.SpecificDate,
                                 DeputyName = c.DeputyName,
                                 Tutorial = c.Tutorial,
                                 ModifyDateTime = c.ModifyDateTime,
@@ -1373,8 +1473,11 @@ namespace Service.Implement
             await _context.SaveChangesAsync();
             return update;
         }
-        private async System.Threading.Tasks.Task CloneSingleTask(Data.Models.Task task)
+        private async Task<List<int>> CloneSingleTask(Data.Models.Task task)
         {
+            var userListForHub = new List<int>();
+            using var transaction = _context.Database.BeginTransaction();
+
             int old = task.ID;
             var newTask = new Data.Models.Task
             {
@@ -1395,11 +1498,12 @@ namespace Service.Implement
             var check = await CheckExistTask(newTask);
             if (!check)
             {
-                await _context.AddAsync(newTask);
-                await _context.SaveChangesAsync();
-                await ClonePIC(old, newTask.ID);
+                await CreateTaskAsync(newTask);
+                userListForHub.Add(newTask.FromWhoID);
+                userListForHub.AddRange(await ClonePIC(old, newTask.ID));
             }
-
+            await transaction.CommitAsync();
+            return userListForHub.Distinct().ToList();
         }
         DateTime MapDueDateTime(Data.Models.Task item)
         {
@@ -1419,10 +1523,6 @@ namespace Service.Implement
                     break;
             }
             return result;
-        }
-        async System.Threading.Tasks.Task SaveChangeAsync()
-        {
-            await _context.SaveChangesAsync();
         }
         private async Task<Data.Models.Task> CreateTaskAsync(Data.Models.Task task)
         {
@@ -1444,9 +1544,12 @@ namespace Service.Implement
             await _context.SaveChangesAsync();
 
         }
-        private async System.Threading.Tasks.Task CloneMultiTask(List<Data.Models.Task> tasks)
+        private async Task<List<int>> CloneMultiTask(List<Data.Models.Task> tasks)
         {
             var listTemp = new List<CloneTaskViewModel>();
+            var userListForHub = new List<int>();
+            using var transaction = _context.Database.BeginTransaction();
+
             foreach (var item in tasks)
             {
                 var check = await CheckExistTaskForMultiTask(item);
@@ -1466,18 +1569,22 @@ namespace Service.Implement
                     task.FromWhoID = item.FromWhoID;
                     task.Priority = item.Priority;
                     task.periodType = item.periodType;
-                    task.DueDateTime = task.DueDateTime;
+                    task.DueDateTime = MapDueDateTime(item);
                     task.JobTypeID = item.JobTypeID;
                     task.CreatedDate = DateTime.Now;
-                    temp.ID = (await CreateTaskAsync(task)).ID;
+                    var taskModel = await CreateTaskAsync(task);
+                    temp.ID = taskModel.ID;
+                    userListForHub.Add(taskModel.FromWhoID);
                     listTemp.Add(temp);
                 }
             }
             foreach (var item in listTemp)
             {
-                await ClonePICForDone(item);
+                userListForHub.AddRange(await CloneRelatedTable(item));
             }
             await UpdateTaskForMultiTask(listTemp);
+            await transaction.CommitAsync();
+            return userListForHub.Distinct().ToList();
         }
 
         private bool CheckDailyOntime(Data.Models.Task update)
@@ -1925,9 +2032,39 @@ namespace Service.Implement
             }
             return listTasks;
         }
+        public async Task<string> GetCodeLineAsync(string code, string state)
+        {
+            var url = "https://notify-bot.line.me/oauth/token";
+            var lineNotifyConfig = _configuration.GetSection("LineNotifyConfig").Get<LineNotifyConfig>();
+            using (var client = new HttpClient())
+            {
+                // tin nhắn sẽ được thông báo
+                var content = new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+                    { "grant_type", lineNotifyConfig.grant_type },
+                    { "code", code },
+                    { "redirect_uri", lineNotifyConfig.redirect_uri },
+                    { "client_id", lineNotifyConfig.client_id },
+                    { "client_secret", lineNotifyConfig.client_secret },
+                });
+
+                // thêm mã token vào header
+                //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ACCESS_TOKEN);
+
+                // Thực hiện gửi thông báo
+                var result = await client.PostAsync(url, content);
+                if (result.IsSuccessStatusCode)
+                {
+                    string res = result.Content.ReadAsStringAsync().Result;
+                }
+                    // Luu token notifi vao db 
+                }
+            return "";
+        }
         private async void PublishhMessage(string message)
         {
             // mã token truy cập
+
             var ACCESS_TOKEN = "9NTHsazZWhEtSG3T89FXoZxNgRRVJ9afmfZxzurbQUo";
 
             using (var client = new HttpClient())
@@ -2041,7 +2178,7 @@ namespace Service.Implement
                                || x.Deputies.Select(x => x.UserID).Contains(userid)
                                || x.FromWhoID == userid
                                || x.CreatedBy == userid)
-                               && x.Status == false
+                               && x.Status == false && x.Tags.Count > 0
                     )
                     .Where(x => !x.periodType.Equals(Data.Enum.PeriodType.Daily) || x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateTime.Date.CompareTo(DateTime.Now.Date) != 1).Distinct();
                 var listtasksfillter = await Fillter(listTasks, sort, priority, userid, startDate, endDate, weekdays, monthly, quarterly).ToListAsync();
