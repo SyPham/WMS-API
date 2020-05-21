@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewData["Title"] = "Notify";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var code = ViewBag.Code as string;
+}
+
+<h1>Notify</h1>
+<button class="btn btn-primary" id="Button1">
+    Get Token
+</button>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    function ExecuteAPI() {
+        var formData = new FormData();
+        formData.append('grant_type', 'authorization_code');
+        formData.append('code', '@code');
+        formData.append('client_id', 'HF6qOCM9xL4lXFsqOLPzhJ');
+        formData.append('redirect_uri', 'http://localhost:61621/Home/Notify');
+        formData.append('client_secret', 'IvjiGAE8TAD8DOONBJ0Z71Ir9daUNlqMsy69ebokcQN');
+
+        $.ajax({
+            url: "https://notify-bot.line.me/oauth/token",
+            type: "post",
+            crossDomain: true,
+            contentType: "application/x-www-form-urlencoded",
+            success: function (apiResult) {
+                console.log(apiResult)
+            },
+            error: function (ex) {
+                console.log(ex)
+            }
+        })
+    }
+        //hook event
+        $(document).ready(function () {
+            $('#Button1').click(ExecuteAPI);
+        });
+
+</script>

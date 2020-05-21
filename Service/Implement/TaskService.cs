@@ -405,7 +405,7 @@ namespace Service.Implement
             var listTasks = _context.Tasks
               .Include(x => x.Tags).ThenInclude(x => x.User)
               .Include(x => x.Deputies).ThenInclude(x => x.User)
-              .Where(x => x.DueDateTime.Date.CompareTo(DateTime.Now.Date) <= 0 && x.Status == false && x.Tags.Count > 0);
+              .Where(x => x.DueDateTime.Date.CompareTo(DateTime.Now.Date) <= 0 && x.Status == false && x.Tags.Count > 0 && x.DueDateTime.Date.CompareTo(DateTime.MinValue) != 0);
             var userListForHub = new List<int>();
             if (listTasks.Count() == 0)
                 return;
@@ -423,7 +423,7 @@ namespace Service.Implement
             var listSingleTask = new List<Data.Models.Task>();
             var listMultiTask = new List<List<Data.Models.Task>>();
             // Clone
-            foreach (var item in unCompletedTaskList)
+            foreach (var item in unCompletedTaskList.Where(x => !x.periodType.Equals(Data.Enum.PeriodType.SpecificDate)))
             {
                 // Tim root cua task hien tai
                 var root = ToFindParentByChild(allTasks, item.ID);
@@ -2046,7 +2046,7 @@ namespace Service.Implement
                 {
                     { "grant_type", lineNotifyConfig.grant_type },
                     { "code", code },
-                    //{ "redirect_uri", lineNotifyConfig.redirect_uri },
+                    { "redirect_uri", lineNotifyConfig.redirect_uri },
                     { "client_id", lineNotifyConfig.client_id },
                     { "client_secret", lineNotifyConfig.client_secret },
                 });
@@ -2115,7 +2115,7 @@ namespace Service.Implement
 
                 var flatten = tree.Flatten(x => x.ChildNodes).ToHashSet();
                 var itemWithOutParent = all.Where(x => !flatten.Select(x => x.Entity.ID).Contains(x.ID));
-                var map = _mapper.Map<HashSet<HierarchyNode<TreeViewTask>>>(itemWithOutParent).Where(x => x.Entity.periodType.Equals(Data.Enum.PeriodType.Daily) && x.Entity.DueDate.Date.CompareTo(DateTime.Now.Date) <= 0).ToList();
+                var map = _mapper.Map<HashSet<HierarchyNode<TreeViewTask>>>(itemWithOutParent).Where(x => x.Entity.periodType.Equals(Data.Enum.PeriodType.Daily) && x.Entity.DueDate.Date.CompareTo(DateTime.Now.Date) <= 0 && x.Entity.DueDate.Date.CompareTo(DateTime.MinValue) != 0).ToList();
                 tree = tree.Concat(map).ToList();
 
                 return tree;
@@ -2137,7 +2137,7 @@ namespace Service.Implement
                             || x.CreatedBy == userid)
                             && x.Status == false
                     )
-                    .Where(x => !x.periodType.Equals(Data.Enum.PeriodType.Daily) || x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateTime.Date.CompareTo(DateTime.Now.Date) != 1).Distinct();
+                    .Where(x => !x.periodType.Equals(Data.Enum.PeriodType.Daily) || x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateTime.Date.CompareTo(DateTime.Now.Date) != 1 && x.DueDateTime.Date.CompareTo(DateTime.MinValue) != 0).Distinct();
                 if (status != Data.Enum.Status.Unknown)
                 {
                     switch (status)
@@ -2174,7 +2174,7 @@ namespace Service.Implement
             try
             {
                 //A: Setup and stuff you don't want timed
-                PublishhMessage("Good morning!");
+                // PublishhMessage("Good morning!");
                 //  await _notificationService.Create(new CreateNotifyParams { Message = "Test", TaskID = 3675, AlertType = Data.Enum.AlertType.BeLate, URL = "/todolist/Demo-daily-is-late" });
                 var listTasks = GetAllTasks()
                     .Where(x =>
@@ -2184,7 +2184,7 @@ namespace Service.Implement
                                || x.CreatedBy == userid)
                                && x.Status == false && x.Tags.Count > 0
                     )
-                    .Where(x => !x.periodType.Equals(Data.Enum.PeriodType.Daily) || x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateTime.Date.CompareTo(DateTime.Now.Date) != 1).Distinct();
+                    .Where(x => !x.periodType.Equals(Data.Enum.PeriodType.Daily) || x.periodType.Equals(Data.Enum.PeriodType.Daily) && x.DueDateTime.Date.CompareTo(DateTime.Now.Date) != 1 && x.DueDateTime.Date.CompareTo(DateTime.MinValue) != 0).Distinct();
                 var listtasksfillter = await Fillter(listTasks, sort, priority, userid, startDate, endDate, weekdays, monthly, quarterly).ToListAsync();
 
                 var all = _mapper.Map<List<Data.Models.Task>, List<TreeViewTask>>(listtasksfillter,

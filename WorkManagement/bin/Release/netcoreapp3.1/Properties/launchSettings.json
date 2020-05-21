@@ -17,6 +17,9 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
+
+
+
     "WorkManagement": {
       "commandName": "Project",
       "launchBrowser": true,
@@ -25,8 +28,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "nativeDebugging": false,
-      "applicationUrl": "http://192.168.1.13:1000"
-       // "applicationUrl": "http://10.4.4.224:106"
+      //"applicationUrl": "https://localhost:1000"
+       "applicationUrl": "https://10.4.4.224:106"
     }
   }
 }

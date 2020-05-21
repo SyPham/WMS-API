@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\wwwroot\\WMS-API\\BotSignalr\\BotSignalr.csproj": {}
+    "F:\\0.Document\\angular9\\WMS-API\\BotSignalr\\BotSignalr.csproj": {}
   },
   "projects": {
-    "D:\\wwwroot\\WMS-API\\BotSignalr\\BotSignalr.csproj": {
+    "F:\\0.Document\\angular9\\WMS-API\\BotSignalr\\BotSignalr.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\wwwroot\\WMS-API\\BotSignalr\\BotSignalr.csproj",
+        "projectUniqueName": "F:\\0.Document\\angular9\\WMS-API\\BotSignalr\\BotSignalr.csproj",
         "projectName": "BotSignalr",
-        "projectPath": "D:\\wwwroot\\WMS-API\\BotSignalr\\BotSignalr.csproj",
-        "packagesPath": "C:\\Users\\henry\\.nuget\\packages\\",
-        "outputPath": "D:\\wwwroot\\WMS-API\\BotSignalr\\obj\\",
+        "projectPath": "F:\\0.Document\\angular9\\WMS-API\\BotSignalr\\BotSignalr.csproj",
+        "packagesPath": "C:\\Users\\sy.pham\\.nuget\\packages\\",
+        "outputPath": "F:\\0.Document\\angular9\\WMS-API\\BotSignalr\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\henry\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\sy.pham\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -40,6 +40,12 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -58,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
         }
       }
     }
