@@ -83,6 +83,11 @@ namespace WorkManagement.Controllers
         {
             return Ok(await _userService.ChangeAvatar(img.UserID, img.Imagebase64));
         }
+        [HttpGet("{userid}/{token}")]
+        public async Task<IActionResult> UpdateTokenLineForUser(string token, int userid)
+        {
+            return Ok(await _userService.UpdateTokenLineForUser(token, userid));
+        }
         [HttpPost]
         public async Task<IActionResult> Update(User user )
         {
@@ -106,7 +111,11 @@ namespace WorkManagement.Controllers
             }
             return Ok(await _userService.UploapProfile(userID,image));
         }
-
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveTokenLineForUser(int id)
+        {
+            return Ok(await _userService.RemoveTokenLineForUser(id));
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

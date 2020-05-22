@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BotSignalr.Controllers
 {
@@ -24,6 +25,58 @@ namespace BotSignalr.Controllers
         {
             _logger = logger;
             _configuration = configuration;
+        }
+        /// <summary>取得使用者 Token</summary>
+        /// <param name="code">用來取得 Access Tokens 的 Authorize Code</param>
+        /// <returns></returns>
+        private async Task<string> FetchToken(string code)
+        {
+            var _tokenUrl = "https://notify-bot.line.me/oauth/token";
+            var lineNotifyConfig = _configuration.GetSection("LineNotifyConfig").Get<LineNotifyConfig>();
+
+            using (var client = new HttpClient())
+            {
+                client.Timeout = new TimeSpan(0, 0, 60);
+                client.BaseAddress = new Uri(_tokenUrl);
+
+                var content = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("grant_type", "authorization_code"),
+                    new KeyValuePair<string, string>("code", code),
+                    new KeyValuePair<string, string>("redirect_uri",lineNotifyConfig.redirect_uri),
+                    new KeyValuePair<string, string>("client_id", lineNotifyConfig.client_id),
+                    new KeyValuePair<string, string>("client_secret", lineNotifyConfig.client_secret)
+                });
+                var response = await client.PostAsync("", content);
+                var data = await response.Content.ReadAsStringAsync();
+
+                return JsonConvert.DeserializeObject<JObject>(data)["access_token"].ToString();
+            }
+        }
+        // GET: api/LineNotify/SendMessage?target=PoyChang&message=HelloWorld
+        /// <summary>傳送文字訊息</summary>
+        /// <param name="token">令牌</param>
+        /// <param name="message">訊息</param>
+        [HttpGet]
+        [Route("SendMessage")]
+        public async Task<IActionResult> SendMessage(string token, string message)
+        {
+            var _notifyUrl = "https://notify-bot.line.me/oauth/token";
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_notifyUrl);
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+
+                var form = new FormUrlEncodedContent(new[]
+                {
+            new KeyValuePair<string, string>("message", message)
+        });
+
+                await client.PostAsync("", form);
+            }
+
+            return new EmptyResult();
         }
         public async Task<IActionResult> Notify(string code, string state)
         {

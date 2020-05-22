@@ -15,9 +15,11 @@ namespace Service.Implement
     public class AuthService : IAuthService
     {
         private readonly DataContext _context;
-        public AuthService(DataContext context)
+        private readonly ILineService _lineService;
+        public AuthService(DataContext context, ILineService lineService)
         {
             _context = context;
+            _lineService = lineService;
         }
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
@@ -42,7 +44,6 @@ namespace Service.Implement
 
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return null;
-            // PublishhMessage();
             return user;
         }
         private async void PublishhMessage()

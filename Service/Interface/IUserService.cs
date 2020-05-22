@@ -11,6 +11,7 @@ namespace Service.Interface
    public interface IUserService
     {
         Task<bool> Create(UserViewModel entity);
+        Task<bool> UpdateTokenLineForUser(string token, int userID);
         Task<bool> Update(User entity);
         Task<bool> Delete(int id);
         Task<bool> ResetPassword(int id);
@@ -21,5 +22,6 @@ namespace Service.Interface
         Task<object> GetListUser();
         Task<bool> ChangeAvatar(int userid, string imagePath);
         Task<PagedList<ListViewModel>> GetAllPaging(int page, int pageSize, string keyword);
+        Task<bool> RemoveTokenLineForUser(int userID);
     }
 }

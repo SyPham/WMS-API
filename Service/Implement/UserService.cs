@@ -219,5 +219,34 @@ namespace Service.Implement
             }
             throw new NotImplementedException();
         }
+
+        public async Task<bool> UpdateTokenLineForUser(string token, int userID)
+        {
+            var item = await _context.Users.FindAsync(userID);
+            item.AccessTokenLineNotify = token;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> RemoveTokenLineForUser(int userID)
+        {
+            var item = await _context.Users.FindAsync(userID);
+            item.AccessTokenLineNotify = null;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

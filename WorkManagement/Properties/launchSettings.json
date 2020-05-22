@@ -29,7 +29,7 @@
       },
       "nativeDebugging": false,
       //"applicationUrl": "https://localhost:1000"
-       "applicationUrl": "https://10.4.4.224:106"
+       "applicationUrl": "http://10.4.4.224:106"
     }
   }
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Data.Models;
+using Data.ViewModel.Line;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -26,17 +27,20 @@ namespace WorkManagement.Controllers
         private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
         private readonly IOCService _oCService;
+        private readonly ILineService _lineService;
         private readonly IMapper _mapper;
 
         public AuthController(IAuthService authService,
             IConfiguration configuration,
             IOCService oCService,
+            ILineService lineService,
             IMapper mapper)
         {
             _authService = authService;
             _configuration = configuration;
             _oCService = oCService;
             _mapper = mapper;
+            _lineService = lineService;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserForRegisterDto userForRegisterDto)
@@ -62,7 +66,12 @@ namespace WorkManagement.Controllers
                 .Login(userForLoginDto.Username, userForLoginDto.Password);
             if (result == null)
                 return NotFound();
-
+            var subscribeLine = new bool();
+            if (!user.AccessTokenLineNotify.IsNullOrEmpty())
+            {
+               await _lineService.SendWithSticker(new MessageParams {Message = $"Hi {user.Username}! ,Welcome to Work Management System!", Token = user.AccessTokenLineNotify, StickerPackageId = "2", StickerId = "41" });
+                subscribeLine = true;
+            }
             var userprofile = new UserProfileDto()
             {
                 User = new UserForReturnLogin
@@ -71,9 +80,10 @@ namespace WorkManagement.Controllers
                     Role = user.RoleID,
                     ID = user.ID,
                     OCLevel = user.LevelOC,
-                    ListOCs =await _oCService.ListOCIDofUser(user.OCID),
+                    ListOCs = await _oCService.ListOCIDofUser(user.OCID),
                     IsLeader = user.isLeader,
-                    image=user.ImageBase64
+                    image = user.ImageBase64,
+                    SubscribeLine = subscribeLine
                 },
                 //Menus = JsonConvert.SerializeObject(await _authService.GetMenusAsync(user.Role))
             };

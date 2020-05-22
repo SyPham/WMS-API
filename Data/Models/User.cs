@@ -22,6 +22,7 @@ namespace Data.Models
         public string Email { get; set; }
         public int RoleID { get; set; }
         public string ImageURL { get; set; }
+        public string AccessTokenLineNotify { get; set; }
         public byte[] ImageBase64 { get; set; }
         public bool isLeader { get; set; }
         public virtual Role Role { get; set; }

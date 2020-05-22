@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Data;
 using Data.Models;
+using Data.ViewModel.Line;
 using Data.ViewModel.Notification;
 using Microsoft.EntityFrameworkCore;
 using Service.Helpers;
@@ -18,13 +19,15 @@ namespace Service.Implement
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
+        private readonly ILineService _lineService;
         private MapperConfiguration _configMapper;
         const int ADMIN = 1;
-        public NotificationService(DataContext context, IMapper mapper, MapperConfiguration configMapper)
+        public NotificationService(DataContext context, IMapper mapper, MapperConfiguration configMapper, ILineService lineService)
         {
             _context = context;
             _mapper = mapper;
             _configMapper = configMapper;
+            _lineService = lineService;
         }
 
 
@@ -32,6 +35,11 @@ namespace Service.Implement
         {
             try
             {
+                var accessTokenLines = _context.Users.Where(x => entity.Users.Contains(x.ID)).Select(x => x.AccessTokenLineNotify).ToList();
+                foreach (var token in accessTokenLines)
+                {
+                    await _lineService.SendMessage(new MessageParams { Message = entity.Message, Token = token });
+                }
                 var item = new Notification
                 {
                     TaskID = entity.TaskID,

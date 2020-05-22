@@ -15,5 +15,6 @@ namespace Service.Dto
         public object ListOCs { get; set; }
         public byte[] image { get; set; }
         public bool IsLeader { get; set; }
+        public bool SubscribeLine { get; set; }
     }
 }
