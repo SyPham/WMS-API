@@ -46,33 +46,6 @@ namespace Service.Implement
                 return null;
             return user;
         }
-        private async void PublishhMessage()
-        {
-            // mã token truy cập
-            var code = "HENRY";
-            var grant_type = "authorization_code";
-            var redirect_uri = "http://10.4.4.224:100/todolist";
-            var client_id = "HF6qOCM9xL4lXFsqOLPzhJ";
-            var client_secret = "IvjiGAE8TAD8DOONBJ0Z71Ir9daUNlqMsy69ebokcQN";
-            using (var client = new HttpClient())
-            {
-                // tin nhắn sẽ được thông báo
-                var content = new FormUrlEncodedContent(new Dictionary<string, string>
-                {
-                    { "grant_type", grant_type },
-                    { "code", code },
-                    { "redirect_uri", redirect_uri },
-                    { "client_id", client_id },
-                    { "client_secret", client_secret },
-                });
-
-                // thêm mã token vào header
-              //  client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ACCESS_TOKEN);
-
-                // Thực hiện gửi thông báo
-                var result = await client.PostAsync("https://api.line.me/oauth2/v2.1/token", content);
-            }
-        }
         public async Task<Role> GetRolesAsync(int role)
         {
             return await _context.Roles.FirstOrDefaultAsync(x => x.ID == role);

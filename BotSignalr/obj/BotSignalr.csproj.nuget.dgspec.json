@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "F:\\0.Document\\angular9\\WMS-API\\BotSignalr\\BotSignalr.csproj": {}
+    "D:\\wwwroot\\WMS-API\\BotSignalr\\BotSignalr.csproj": {}
   },
   "projects": {
-    "F:\\0.Document\\angular9\\WMS-API\\BotSignalr\\BotSignalr.csproj": {
+    "D:\\wwwroot\\WMS-API\\BotSignalr\\BotSignalr.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\0.Document\\angular9\\WMS-API\\BotSignalr\\BotSignalr.csproj",
+        "projectUniqueName": "D:\\wwwroot\\WMS-API\\BotSignalr\\BotSignalr.csproj",
         "projectName": "BotSignalr",
-        "projectPath": "F:\\0.Document\\angular9\\WMS-API\\BotSignalr\\BotSignalr.csproj",
-        "packagesPath": "C:\\Users\\sy.pham\\.nuget\\packages\\",
-        "outputPath": "F:\\0.Document\\angular9\\WMS-API\\BotSignalr\\obj\\",
+        "projectPath": "D:\\wwwroot\\WMS-API\\BotSignalr\\BotSignalr.csproj",
+        "packagesPath": "C:\\Users\\henry\\.nuget\\packages\\",
+        "outputPath": "D:\\wwwroot\\WMS-API\\BotSignalr\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\sy.pham\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\henry\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -64,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -400,15 +400,17 @@ namespace Service.Implement
                     return false;
             }
         }
-        public async System.Threading.Tasks.Task TaskListIsLate()
+
+        public async Task<Tuple<List<int>, List<int>>> TaskListIsLate()
         {
             var listTasks = _context.Tasks
+              .Where(x => x.DueDateTime.Date.CompareTo(new DateTime(2020, 1, 1)) > 0)
               .Include(x => x.Tags).ThenInclude(x => x.User)
               .Include(x => x.Deputies).ThenInclude(x => x.User)
               .Where(x => x.DueDateTime.Date.CompareTo(DateTime.Now.Date) <= 0 && x.Status == false && x.Tags.Count > 0 && x.DueDateTime.Date.CompareTo(DateTime.MinValue) != 0);
             var userListForHub = new List<int>();
             if (listTasks.Count() == 0)
-                return;
+                return Tuple.Create(new List<int>(), new List<int>());
             var unCompletedTaskList = new List<Data.Models.Task>();
             var currentDate = DateTime.Now.Date;
             foreach (var item in listTasks)
@@ -473,6 +475,7 @@ namespace Service.Implement
                 {
                     await _hubContext.Clients.All.SendAsync("ReceiveMessage", string.Join(",", listNotify.Distinct()), GetAlertDueDate());
                 }
+                return Tuple.Create(userListForHub, listNotify);
             }
             catch (Exception ex)
             {
@@ -660,16 +663,16 @@ namespace Service.Implement
             switch (createTaskView.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
-                    task.DueDateTime = createTaskView.DueDate;
+                    task.DueDateTime = createTaskView.DueDate.ToParseStringDateTime();
                     break;
                 case Data.Enum.PeriodType.Weekly:
-                    task.DueDateTime = createTaskView.DueDate;
+                    task.DueDateTime = createTaskView.DueDate.ToParseStringDateTime();
                     break;
                 case Data.Enum.PeriodType.Monthly:
-                    task.DueDateTime = createTaskView.DueDate;
+                    task.DueDateTime = createTaskView.DueDate.ToParseStringDateTime();
                     break;
                 case Data.Enum.PeriodType.SpecificDate:
-                    task.DueDateTime = createTaskView.DueDate;
+                    task.DueDateTime = createTaskView.DueDate.ToParseStringDateTime();
                     break;
                 default:
                     break;
@@ -957,7 +960,7 @@ namespace Service.Implement
                             if (!task.DueDate.Equals(edit.DueDateTime))
                             {
                                 var daily = await AlertDeadlineChanging(Data.Enum.AlertDeadline.Daily, edit, edit.FromWhoID, pics);
-                                edit.DueDateTime = task.DueDate;
+                                edit.DueDateTime = task.DueDate.ToParseStringDateTime();
                                 listUsers.AddRange(daily.Item1);
                             }
                             break;
@@ -965,7 +968,7 @@ namespace Service.Implement
                             if (!task.DueDate.Equals(edit.DueDateTime))
                             {
                                 var weekly = await AlertDeadlineChanging(Data.Enum.AlertDeadline.Weekly, edit, edit.FromWhoID, pics);
-                                edit.DueDateTime = task.DueDate;
+                                edit.DueDateTime = task.DueDate.ToParseStringDateTime();
                                 listUsers.AddRange(weekly.Item1);
                             }
                             break;
@@ -973,7 +976,7 @@ namespace Service.Implement
                             if (!task.DueDate.Equals(edit.DueDateTime))
                             {
                                 var mon = await AlertDeadlineChanging(Data.Enum.AlertDeadline.Monthly, edit, edit.FromWhoID, pics);
-                                edit.DueDateTime = task.DueDate;
+                                edit.DueDateTime = task.DueDate.ToParseStringDateTime();
                                 listUsers.AddRange(mon.Item1);
                             }
 
@@ -983,7 +986,7 @@ namespace Service.Implement
                             {
                                 var due = await AlertDeadlineChanging(Data.Enum.AlertDeadline.Deadline, edit, edit.FromWhoID, pics);
                                 listUsers.AddRange(due.Item1);
-                                edit.DueDateTime = task.DueDate;
+                                edit.DueDateTime = task.DueDate.ToParseStringDateTime();
                             }
                             break;
                         default:

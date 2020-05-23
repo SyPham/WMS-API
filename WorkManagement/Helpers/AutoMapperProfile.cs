@@ -109,7 +109,7 @@ namespace WorkManagement.Helpers
             CreateMap<CreateTaskViewModel, Data.Models.Task>()//
                 .ForMember(x => x.Deputies, option => option.Ignore())
                 .ForMember(d => d.JobTypeID, s => s.MapFrom(p => CheckJobType(p)))
-                .ForMember(d => d.DueDateTime, s => s.MapFrom(p => p.DueDate))
+                .ForMember(d => d.DueDateTime, s => s.MapFrom(p => p.DueDate.ToParseStringDateTime()))
                 .ForMember(d => d.Priority, s => s.MapFrom(p => p.Priority.ToUpper()))
                 .ForMember(d => d.ProjectID, s => s.MapFrom(p => p.ProjectID == 0 ? null : p.ProjectID))
                 .ForMember(d => d.OCID, s => s.MapFrom(p => p.OCID == 0 ? null : p.OCID))

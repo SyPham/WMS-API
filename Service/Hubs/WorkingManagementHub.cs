@@ -95,10 +95,13 @@ namespace Service.Hub
         }
         public async System.Threading.Tasks.Task CheckAlert(string user)
         {
-            int userId = user.ToInt();
-            var id = Context.ConnectionId;//"LzX9uE94Ovlp6Yx8s6PvhA"
-             await _taskService.TaskListIsLate();
+            var model = await _taskService.TaskListIsLate();
            await Clients.All.SendAsync("ReceiveCheckAlert", user);
+            if(model.Item1.Count > 0)
+           await Clients.All.SendAsync("ReceiveMessageForCurd", string.Join(",", model.Item1));
+            if (model.Item2.Count > 0)
+                await Clients.All.SendAsync("ReceiveMessage", string.Join(",", model.Item2));
+
         }
         public async System.Threading.Tasks.Task Online(string user, string message)
         {

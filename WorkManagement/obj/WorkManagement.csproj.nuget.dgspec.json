@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "F:\\0.Document\\angular9\\WMS-API\\WorkManagement\\WorkManagement.csproj": {}
+    "D:\\wwwroot\\WMS-API\\WorkManagement\\WorkManagement.csproj": {}
   },
   "projects": {
-    "F:\\0.Document\\angular9\\WMS-API\\Data\\Data.csproj": {
+    "D:\\wwwroot\\WMS-API\\Data\\Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\0.Document\\angular9\\WMS-API\\Data\\Data.csproj",
+        "projectUniqueName": "D:\\wwwroot\\WMS-API\\Data\\Data.csproj",
         "projectName": "Data",
-        "projectPath": "F:\\0.Document\\angular9\\WMS-API\\Data\\Data.csproj",
-        "packagesPath": "C:\\Users\\sy.pham\\.nuget\\packages\\",
-        "outputPath": "F:\\0.Document\\angular9\\WMS-API\\Data\\obj\\",
+        "projectPath": "D:\\wwwroot\\WMS-API\\Data\\Data.csproj",
+        "packagesPath": "C:\\Users\\henry\\.nuget\\packages\\",
+        "outputPath": "D:\\wwwroot\\WMS-API\\Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\sy.pham\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\henry\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -89,24 +89,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\0.Document\\angular9\\WMS-API\\Service\\Service.csproj": {
+    "D:\\wwwroot\\WMS-API\\Service\\Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\0.Document\\angular9\\WMS-API\\Service\\Service.csproj",
+        "projectUniqueName": "D:\\wwwroot\\WMS-API\\Service\\Service.csproj",
         "projectName": "Service",
-        "projectPath": "F:\\0.Document\\angular9\\WMS-API\\Service\\Service.csproj",
-        "packagesPath": "C:\\Users\\sy.pham\\.nuget\\packages\\",
-        "outputPath": "F:\\0.Document\\angular9\\WMS-API\\Service\\obj\\",
+        "projectPath": "D:\\wwwroot\\WMS-API\\Service\\Service.csproj",
+        "packagesPath": "C:\\Users\\henry\\.nuget\\packages\\",
+        "outputPath": "D:\\wwwroot\\WMS-API\\Service\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\sy.pham\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\henry\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -119,8 +119,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "F:\\0.Document\\angular9\\WMS-API\\Data\\Data.csproj": {
-                "projectPath": "F:\\0.Document\\angular9\\WMS-API\\Data\\Data.csproj"
+              "D:\\wwwroot\\WMS-API\\Data\\Data.csproj": {
+                "projectPath": "D:\\wwwroot\\WMS-API\\Data\\Data.csproj"
               }
             }
           }
@@ -158,24 +158,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\0.Document\\angular9\\WMS-API\\WorkManagement\\WorkManagement.csproj": {
+    "D:\\wwwroot\\WMS-API\\WorkManagement\\WorkManagement.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\0.Document\\angular9\\WMS-API\\WorkManagement\\WorkManagement.csproj",
+        "projectUniqueName": "D:\\wwwroot\\WMS-API\\WorkManagement\\WorkManagement.csproj",
         "projectName": "WorkManagement",
-        "projectPath": "F:\\0.Document\\angular9\\WMS-API\\WorkManagement\\WorkManagement.csproj",
-        "packagesPath": "C:\\Users\\sy.pham\\.nuget\\packages\\",
-        "outputPath": "F:\\0.Document\\angular9\\WMS-API\\WorkManagement\\obj\\",
+        "projectPath": "D:\\wwwroot\\WMS-API\\WorkManagement\\WorkManagement.csproj",
+        "packagesPath": "C:\\Users\\henry\\.nuget\\packages\\",
+        "outputPath": "D:\\wwwroot\\WMS-API\\WorkManagement\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\sy.pham\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\henry\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -188,11 +188,11 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "F:\\0.Document\\angular9\\WMS-API\\Data\\Data.csproj": {
-                "projectPath": "F:\\0.Document\\angular9\\WMS-API\\Data\\Data.csproj"
+              "D:\\wwwroot\\WMS-API\\Data\\Data.csproj": {
+                "projectPath": "D:\\wwwroot\\WMS-API\\Data\\Data.csproj"
               },
-              "F:\\0.Document\\angular9\\WMS-API\\Service\\Service.csproj": {
-                "projectPath": "F:\\0.Document\\angular9\\WMS-API\\Service\\Service.csproj"
+              "D:\\wwwroot\\WMS-API\\Service\\Service.csproj": {
+                "projectPath": "D:\\wwwroot\\WMS-API\\Service\\Service.csproj"
               }
             }
           }
@@ -309,7 +309,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

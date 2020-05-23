@@ -10,7 +10,12 @@ namespace Service.Interface
 {
     public interface ITaskService
     {
-        System.Threading.Tasks.Task TaskListIsLate();
+        /// <summary>
+        /// item1 clone task
+        /// item2 notify
+        /// </summary>
+        /// <returns></returns>
+        Task<Tuple<List<int>,List<int>>> TaskListIsLate();
         Task<Tuple<bool, string, object>> CreateTask(CreateTaskViewModel task);
         Task<object> CreateSubTask(CreateTaskViewModel task);
         Task<object> UpdateTask(UpdateTaskViewModel task);

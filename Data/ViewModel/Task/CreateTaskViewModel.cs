@@ -25,7 +25,7 @@ namespace Data.ViewModel.Task
         public JobType JobTypeID { get; set; }
         public PeriodType periodType { get; set; }
         public int FromWhoID { get; set; }
-        public DateTime DueDate { get; set; }
+        public string DueDate { get; set; }
         public int[] Deputies { get; set; }
         public int DepartmentID { get; set; }
 
