@@ -55,11 +55,11 @@ namespace WorkManagement.Controllers
         }
 
         // GET: api/Authorize/Callback
-        /// <summary>取得使用者 code</summary>
-        /// <param name="code">用來取得 Access Tokens 的 Authorize Code</param>
-        /// <param name="state">驗證用。避免 CSRF 攻擊</param>
-        /// <param name="error">錯誤訊息</param>
-        /// <param name="errorDescription">錯誤描述</param>
+        /// <summary>Nhận mã người dùng </summary>
+        /// <param name="code">Mã ủy quyền được sử dụng để nhận Mã thông báo truy cập</param>
+        /// <param name="state">Để xác minh. Tránh các cuộc tấn công CSRF</param>
+        /// <param name="error"> Thông báo lỗi</param>
+        /// <param name="errorDescription">Mô tả lỗi </param>
         /// <returns></returns>
         [HttpGet]
         [Route("Callback")]
@@ -81,8 +81,8 @@ namespace WorkManagement.Controllers
             return new EmptyResult();
         }
 
-        /// <summary>取得使用者 Token</summary>
-        /// <param name="code">用來取得 Access Tokens 的 Authorize Code</param>
+        /// <summary>Nhận mã thông báo người dùng</summary>
+        /// <param name="code">Mã ủy quyền được sử dụng để nhận Mã thông báo truy cập </param>
         /// <returns></returns>
         private async Task<string> FetchToken(string code)
         {

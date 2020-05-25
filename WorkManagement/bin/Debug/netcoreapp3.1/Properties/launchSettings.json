@@ -28,8 +28,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "nativeDebugging": false,
-      "applicationUrl": "http://localhost:1000"
-       //"applicationUrl": "http://10.4.4.224:106"
+      //"applicationUrl": "http://localhost:1000"
+       "applicationUrl": "http://10.4.4.224:106"
     }
   }
 }

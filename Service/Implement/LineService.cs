@@ -28,7 +28,13 @@ namespace Service.Implement
             _config = config;
             var lineConfig = _config.GetSection("LineNotifyConfig");
             _notifyUrl = lineConfig.GetValue<string>("notifyUrl");
-
+            _authorizeUrl = lineConfig.GetValue<string>("authorizeUrl");
+            _tokenUrl = lineConfig.GetValue<string>("tokenUrl");
+            _clientId = lineConfig.GetValue<string>("client_id");
+            _clientSecret = lineConfig.GetValue<string>("client_secret");
+            _redirectUri = lineConfig.GetValue<string>("redirect_uri");
+            _state = lineConfig.GetValue<string>("state");
+            _successUri = lineConfig.GetValue<string>("successUri");
         }
 
         public async Task SendMessage(MessageParams msg)

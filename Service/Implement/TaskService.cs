@@ -404,7 +404,7 @@ namespace Service.Implement
         public async Task<Tuple<List<int>, List<int>>> TaskListIsLate()
         {
             var listTasks = _context.Tasks
-              .Where(x => x.DueDateTime.Date.CompareTo(new DateTime(2020, 1, 1)) > 0)
+              .Where(x => x.DueDateTime.Date.CompareTo( DateTime.MinValue) > 0)
               .Include(x => x.Tags).ThenInclude(x => x.User)
               .Include(x => x.Deputies).ThenInclude(x => x.User)
               .Where(x => x.DueDateTime.Date.CompareTo(DateTime.Now.Date) <= 0 && x.Status == false && x.Tags.Count > 0 && x.DueDateTime.Date.CompareTo(DateTime.MinValue) != 0);
@@ -1112,13 +1112,22 @@ namespace Service.Implement
             switch (task.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
-                    update.DueDateTime = update.DueDateTime.AddDays(1);
+                    if (update.DueDateTime.DayOfWeek == DayOfWeek.Sunday)
+                        update.DueDateTime = update.DueDateTime.AddDays(2);
+                    else
+                        update.DueDateTime = update.DueDateTime.AddDays(1);
                     break;
                 case Data.Enum.PeriodType.Weekly:
                     update.DueDateTime = update.DueDateTime.AddDays(7);
                     break;
                 case Data.Enum.PeriodType.Monthly:
-                    update.DueDateTime = update.DueDateTime.AddMonths(1);
+                    if(update.DueDateTime.AddMonths(1).DayOfWeek == DayOfWeek.Sunday)
+                    {
+                        update.DueDateTime = update.DueDateTime.AddMonths(1).AddDays(1);
+                    } else
+                    {
+                        update.DueDateTime = update.DueDateTime.AddMonths(1);
+                    }
                     break;
                 default:
                     break;
@@ -1515,13 +1524,19 @@ namespace Service.Implement
             switch (item.periodType)
             {
                 case Data.Enum.PeriodType.Daily:
-                    result = item.DueDateTime.AddDays(1);
+                    if (item.DueDateTime.AddDays(1).DayOfWeek == DayOfWeek.Sunday)
+                        result = item.DueDateTime.AddDays(2);
+                    else
+                        result = item.DueDateTime.AddDays(1);
                     break;
                 case Data.Enum.PeriodType.Weekly:
                     result = item.DueDateTime.AddDays(7);
                     break;
                 case Data.Enum.PeriodType.Monthly:
-                    result = item.DueDateTime.AddMonths(1);
+                    if (item.DueDateTime.AddMonths(1).DayOfWeek == DayOfWeek.Sunday)
+                        result = item.DueDateTime.AddMonths(1).AddDays(1);
+                    else
+                        result = item.DueDateTime.AddMonths(1);
                     break;
                 default:
                     break;
@@ -2180,6 +2195,7 @@ namespace Service.Implement
                 // PublishhMessage("Good morning!");
                 //  await _notificationService.Create(new CreateNotifyParams { Message = "Test", TaskID = 3675, AlertType = Data.Enum.AlertType.BeLate, URL = "/todolist/Demo-daily-is-late" });
                 var listTasks = GetAllTasks()
+                    .Where(x => !x.DueDateTime.Equals(DateTime.MinValue))
                     .Where(x =>
                                (x.Tags.Select(x => x.UserID).Contains(userid)
                                || x.Deputies.Select(x => x.UserID).Contains(userid)
