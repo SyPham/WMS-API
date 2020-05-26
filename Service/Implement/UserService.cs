@@ -135,7 +135,7 @@ namespace Service.Implement
 
         public async Task<PagedList<ListViewModel>> GetAllPaging(int page, int pageSize, string keyword)
         {
-            var source = _context.Users.Where(x => x.Username != "admin").Select(x => new ListViewModel { isLeader = x.isLeader, ID = x.ID, Username = x.Username, Email = x.Email, RoleName = x.Role.Name, RoleID = x.RoleID }).AsQueryable();
+            var source = _context.Users.Where(x => x.Username != "admin").OrderByDescending(x=>x.ID).Select(x => new ListViewModel { isLeader = x.isLeader, ID = x.ID, Username = x.Username, Email = x.Email, RoleName = x.Role.Name, RoleID = x.RoleID }).AsQueryable();
             if (!keyword.IsNullOrEmpty())
             {
                 source = source.Where(x => x.Username.Contains(keyword) || x.Email.Contains(keyword));

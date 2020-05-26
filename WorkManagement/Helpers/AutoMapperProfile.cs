@@ -149,6 +149,7 @@ namespace WorkManagement.Helpers
                 .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Tutorial == null ? false : true))
                 .ForMember(d => d.Priority, s => s.MapFrom(p => CastPriority(p.Priority)))
                 .ForMember(d => d.DueDate, s => s.MapFrom(p => p.DueDateTime))
+                .ForMember(d => d.LastComment, s => s.MapFrom(p => p.Comment.CommentDetails.OrderByDescending(x=>x.CreatedTime).Select(x=>x.Comment.Content).FirstOrDefault()))
                 .ForMember(d => d.DeputiesList, s => s.MapFrom(p => p.Deputies.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username })))
                 .ForMember(d => d.Deputies, s => s.MapFrom(p => p.Deputies.Select(x => x.UserID)))
                 .ForMember(d => d.DeputyName, s => s.MapFrom(p => p.Deputies != null ? string.Join(",", p.Deputies.Select(x => x.User.Username)) : "#N/A"))

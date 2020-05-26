@@ -39,6 +39,7 @@ namespace Data.Models
         public virtual ICollection<Tag> Tags { get; set; } 
         public virtual ICollection<Deputy> Deputies { get; set; } 
         public virtual ICollection<Follow> Follows { get; set; } 
+        public virtual Comment Comment { get; set; }
         public virtual Project Project { get; set; } 
         public virtual Tutorial Tutorial { get; set; } 
         public virtual OC OC { get; set; }

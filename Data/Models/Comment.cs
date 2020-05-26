@@ -22,5 +22,8 @@ namespace Data.Models
         public string TaskCode { get; set; }
         public int Level { get; set; }
         public DateTime CreatedTime { get; set; }
+        public virtual Task Task { get; set; }
+        public virtual ICollection<CommentDetail> CommentDetails { get; set; }
+
     }
 }

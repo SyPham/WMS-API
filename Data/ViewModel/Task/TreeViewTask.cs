@@ -47,6 +47,7 @@ namespace Data.ViewModel.Task
         public ProjectViewModel Project { get; set; } = new ProjectViewModel();
         public List<History.History> Histories { get; set; } = new List<History.History>();
         public string state { get; set; }
+        public string LastComment { get; set; }
         public bool FinishTask { get; set; }
         public DateTime DueDate { get; set; }
         public string ModifyDateTime { get; set; }

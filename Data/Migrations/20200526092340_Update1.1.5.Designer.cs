@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200526092340_Update1.1.5")]
+    partial class Update115
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,9 +111,6 @@ namespace Data.Migrations
 
                     b.Property<int>("CommentID")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Seen")
                         .HasColumnType("bit");
@@ -702,7 +701,7 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Models.CommentDetail", b =>
                 {
-                    b.HasOne("Data.Models.Comment", "Comment")
+                    b.HasOne("Data.Models.Comment", null)
                         .WithMany("CommentDetails")
                         .HasForeignKey("CommentID")
                         .OnDelete(DeleteBehavior.Cascade)

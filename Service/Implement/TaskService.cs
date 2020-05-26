@@ -139,7 +139,7 @@ namespace Service.Implement
                     await _notificationService.Create(new CreateNotifyParams
                     {
                         AlertType = Data.Enum.AlertType.ChangeQuarterly,
-                        Message = CheckMessage(task.JobTypeID, projectName, user.Username, task.JobName, Data.Enum.AlertType.ChangeQuarterly),
+                        Message = CheckMessage(task.JobTypeID, projectName, user.Username, task.JobName, Data.Enum.AlertType.ChangeQuarterly, task.DueDateTime),
                         Users = users.ToList(),
                         TaskID = task.ID,
                         URL = urlResult,
@@ -151,7 +151,7 @@ namespace Service.Implement
                     await _notificationService.Create(new CreateNotifyParams
                     {
                         AlertType = Data.Enum.AlertType.ChangeDeadline,
-                        Message = CheckMessage(task.JobTypeID, projectName, user.Username, task.JobName, Data.Enum.AlertType.ChangeDeadline),
+                        Message = CheckMessage(task.JobTypeID, projectName, user.Username, task.JobName, Data.Enum.AlertType.ChangeDeadline, task.DueDateTime),
                         Users = users.ToList(),
                         TaskID = task.ID,
                         URL = urlResult,
@@ -167,6 +167,7 @@ namespace Service.Implement
         private string AlertMessage(string username, string jobName, string project, bool isProject, Data.Enum.AlertType alertType, DateTime deadline = new DateTime())
         {
             var message = string.Empty;
+            
             switch (alertType)
             {
                 case Data.Enum.AlertType.Done:
@@ -203,21 +204,21 @@ namespace Service.Implement
                     break;
                 case Data.Enum.AlertType.ChangeDeadline:
                     if (isProject)
-                        message = $"{username.ToTitleCase()} has changed deadline to {deadline} of the task name ' {jobName} ' in {project} project";
-                    else
-                        message = $"{username.ToTitleCase()} has changed deadline to {deadline} of the task name ' {jobName} '";
-                    break;
-                case Data.Enum.AlertType.ChangeWeekly:
-                    if (isProject)
-                        message = $"{username.ToTitleCase()} has changed deadline to {deadline} of the task name ' {jobName} ' in {project} project";
-                    else
-                        message = $"{username.ToTitleCase()} has changed deadline to {deadline} of the task name ' {jobName} '";
-                    break;
-                case Data.Enum.AlertType.ChangeMonthly:
-                    if (isProject)
-                        message = $"{username.ToTitleCase()} has changed deadline to {deadline} of the task name ' {jobName} ' in {project} project";
-                    else
-                        message = $"{username.ToTitleCase()} has changed deadline to {deadline} of the task name ' {jobName} '";
+                        message = $"{username.ToTitleCase()} has changed deadline to {deadline:dd MMM, yyyy hh:mm:ss tt} of the task name ' {jobName} ' in {project} project";
+                    else                                                                                             
+                        message = $"{username.ToTitleCase()} has changed deadline to {deadline:dd MMM, yyyy hh:mm:ss tt} of the task name ' {jobName} '";
+                    break;                                                                                           
+                case Data.Enum.AlertType.ChangeWeekly:                                                              
+                    if (isProject)                                                                                   
+                        message = $"{username.ToTitleCase()} has changed deadline to {deadline:dd MMM, yyyy hh:mm:ss tt} of the task name ' {jobName} ' in {project} project";
+                    else                                                                                             
+                        message = $"{username.ToTitleCase()} has changed deadline to {deadline:dd MMM, yyyy hh:mm:ss tt} of the task name ' {jobName} '";
+                    break;                                                                                          
+                case Data.Enum.AlertType.ChangeMonthly:                                                             
+                    if (isProject)                                                                                 
+                        message = $"{username.ToTitleCase()} has changed deadline to {deadline:dd MMM, yyyy hh:mm:ss tt} of the task name ' {jobName} ' in {project} project";
+                    else                                                                                           
+                        message = $"{username.ToTitleCase()} has changed deadline to {deadline:dd MMM, yyyy hh:mm:ss tt} of the task name ' {jobName} '";
                     break;
                 default:
                     break;
@@ -404,7 +405,7 @@ namespace Service.Implement
         public async Task<Tuple<List<int>, List<int>>> TaskListIsLate()
         {
             var listTasks = _context.Tasks
-              .Where(x => x.DueDateTime.Date.CompareTo( DateTime.MinValue) > 0)
+              .Where(x => x.DueDateTime.Date.CompareTo(DateTime.MinValue) > 0)
               .Include(x => x.Tags).ThenInclude(x => x.User)
               .Include(x => x.Deputies).ThenInclude(x => x.User)
               .Where(x => x.DueDateTime.Date.CompareTo(DateTime.Now.Date) <= 0 && x.Status == false && x.Tags.Count > 0 && x.DueDateTime.Date.CompareTo(DateTime.MinValue) != 0);
@@ -933,12 +934,16 @@ namespace Service.Implement
                         await _hubContext.Clients.All.SendAsync("ReceiveMessage", string.Join(",", listUsers.Distinct()), GetAlertDueDate());
                         await _hubContext.Clients.All.SendAsync("ReceiveMessageForCurd", string.Join(",", listUsers.Distinct()));
                     }
+                    await _context.SaveChangesAsync();
+
                     return Tuple.Create(true, string.Join(",", listUsers.Distinct()), GetAlertDueDate());
 
                 }
                 else
                 {
                     var edit = _context.Tasks.Find(task.ID);
+                    var oldDueDateTime = edit.DueDateTime;
+
                     edit.Priority = task.Priority.ToUpper();
                     edit.JobName = task.JobName;
                     edit.Priority = task.Priority;
@@ -954,46 +959,62 @@ namespace Service.Implement
                         listUsers.AddRange(await EditDeputy(task, edit));
                     }
                     var pics = await _context.Tags.Where(x => x.TaskID.Equals(edit.ID)).Select(x => x.UserID).ToListAsync();
+                    var duedatetime = task.DueDate.ToParseStringDateTime();
                     switch (task.periodType)
                     {
                         case Data.Enum.PeriodType.Daily:
-                            if (!task.DueDate.Equals(edit.DueDateTime))
+                                edit.DueDateTime = duedatetime;
+                            break;
+                        case Data.Enum.PeriodType.Weekly:
+                                edit.DueDateTime = duedatetime;
+                            break;
+                        case Data.Enum.PeriodType.Monthly:
+                                edit.DueDateTime = duedatetime;
+
+                            break;
+                        case Data.Enum.PeriodType.SpecificDate:
+                                edit.DueDateTime = duedatetime;
+                            break;
+                        default:
+                            break;
+                    }
+                    await _context.SaveChangesAsync();
+
+                    switch (task.periodType)
+                    {
+                        case Data.Enum.PeriodType.Daily:
+                            if (!duedatetime.Equals(oldDueDateTime))
                             {
                                 var daily = await AlertDeadlineChanging(Data.Enum.AlertDeadline.Daily, edit, edit.FromWhoID, pics);
-                                edit.DueDateTime = task.DueDate.ToParseStringDateTime();
                                 listUsers.AddRange(daily.Item1);
                             }
                             break;
                         case Data.Enum.PeriodType.Weekly:
-                            if (!task.DueDate.Equals(edit.DueDateTime))
+                            if (!duedatetime.Equals(oldDueDateTime))
                             {
                                 var weekly = await AlertDeadlineChanging(Data.Enum.AlertDeadline.Weekly, edit, edit.FromWhoID, pics);
-                                edit.DueDateTime = task.DueDate.ToParseStringDateTime();
                                 listUsers.AddRange(weekly.Item1);
                             }
                             break;
                         case Data.Enum.PeriodType.Monthly:
-                            if (!task.DueDate.Equals(edit.DueDateTime))
+                            if (!duedatetime.Equals(oldDueDateTime))
                             {
                                 var mon = await AlertDeadlineChanging(Data.Enum.AlertDeadline.Monthly, edit, edit.FromWhoID, pics);
-                                edit.DueDateTime = task.DueDate.ToParseStringDateTime();
                                 listUsers.AddRange(mon.Item1);
                             }
 
                             break;
                         case Data.Enum.PeriodType.SpecificDate:
-                            if (!task.DueDate.Equals(edit.DueDateTime))
+                            if (!duedatetime.Equals(oldDueDateTime))
                             {
                                 var due = await AlertDeadlineChanging(Data.Enum.AlertDeadline.Deadline, edit, edit.FromWhoID, pics);
                                 listUsers.AddRange(due.Item1);
-                                edit.DueDateTime = task.DueDate.ToParseStringDateTime();
                             }
                             break;
                         default:
                             break;
                     }
                 }
-                await _context.SaveChangesAsync();
                 if (listUsers.Count > 0)
                 {
                     await _hubContext.Clients.All.SendAsync("ReceiveMessage", string.Join(",", listUsers.Distinct()), GetAlertDueDate());
@@ -1019,6 +1040,12 @@ namespace Service.Implement
                 _context.Tags.RemoveRange(await _context.Tags.Where(x => arrTasks.Contains(x.TaskID)).ToListAsync());
                 _context.Deputies.RemoveRange(await _context.Deputies.Where(x => arrTasks.Contains(x.TaskID)).ToListAsync());
                 _context.Follows.RemoveRange(await _context.Follows.Where(x => arrTasks.Contains(x.TaskID)).ToListAsync());
+                var comments = await _context.Comments.Where(x => arrTasks.Contains(x.TaskID)).Include(x=>x.CommentDetails).ToListAsync();
+                foreach (var comment in comments)
+                {
+                    _context.CommentDetails.RemoveRange(comment.CommentDetails);
+                }
+                _context.Comments.RemoveRange(comments));
                 _context.Tasks.RemoveRange(await _context.Tasks.Where(x => arrTasks.Contains(x.ID)).ToListAsync());
                 _context.Tutorials.RemoveRange(await _context.Tutorials.Where(x => arrTasks.Contains(x.TaskID ?? 0)).ToListAsync());
 
@@ -1121,10 +1148,11 @@ namespace Service.Implement
                     update.DueDateTime = update.DueDateTime.AddDays(7);
                     break;
                 case Data.Enum.PeriodType.Monthly:
-                    if(update.DueDateTime.AddMonths(1).DayOfWeek == DayOfWeek.Sunday)
+                    if (update.DueDateTime.AddMonths(1).DayOfWeek == DayOfWeek.Sunday)
                     {
                         update.DueDateTime = update.DueDateTime.AddMonths(1).AddDays(1);
-                    } else
+                    }
+                    else
                     {
                         update.DueDateTime = update.DueDateTime.AddMonths(1);
                     }
@@ -1661,7 +1689,8 @@ namespace Service.Implement
                 if (seftAndDescendants.Count() == 1 && item.Level == 1)
                 {
                     //Clone them cai moi voi period moi
-                    await CloneSingleTask(item);
+                    if (item.periodType != Data.Enum.PeriodType.SpecificDate)
+                        await CloneSingleTask(item);
                 }
                 // Neu task hien tai level 1 va co con chau thi kiem tra neu con chua done thi return
                 if (seftAndDescendants.Where(x => x.Level > 1).Count() >= 2 && item.Level == 1)
@@ -1723,7 +1752,8 @@ namespace Service.Implement
                     if (!temp && count >= 1)
                     {
                         //Update Status task con hien tai
-                        await CloneMultiTask(seftAndDescendants);
+                        if (item.periodType != Data.Enum.PeriodType.SpecificDate)
+                            await CloneMultiTask(seftAndDescendants);
                     }
                 }
                 if (listUserAlertHub.Count > 0)
@@ -2194,7 +2224,7 @@ namespace Service.Implement
                 //A: Setup and stuff you don't want timed
                 // PublishhMessage("Good morning!");
                 //  await _notificationService.Create(new CreateNotifyParams { Message = "Test", TaskID = 3675, AlertType = Data.Enum.AlertType.BeLate, URL = "/todolist/Demo-daily-is-late" });
-                var listTasks = GetAllTasks()
+                var listTasks = GetAllTasks().Include(x=>x.Comment).ThenInclude(x=>x.CommentDetails)
                     .Where(x => !x.DueDateTime.Equals(DateTime.MinValue))
                     .Where(x =>
                                (x.Tags.Select(x => x.UserID).Contains(userid)
