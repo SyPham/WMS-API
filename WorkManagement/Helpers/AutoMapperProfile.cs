@@ -78,17 +78,13 @@ namespace WorkManagement.Helpers
         }
         private Data.Enum.JobType CheckJobType(CreateTaskViewModel task)
         {
-            switch (task.JobTypeID)
+            return task.JobTypeID switch
             {
-                case Data.Enum.JobType.Project:
-                    return Data.Enum.JobType.Project;
-                case Data.Enum.JobType.Routine:
-                    return Data.Enum.JobType.Routine;
-                case Data.Enum.JobType.Abnormal:
-                    return Data.Enum.JobType.Abnormal;
-                default:
-                    return Data.Enum.JobType.Unknown;
-            }
+                Data.Enum.JobType.Project => Data.Enum.JobType.Project,
+                Data.Enum.JobType.Routine => Data.Enum.JobType.Routine,
+                Data.Enum.JobType.Abnormal => Data.Enum.JobType.Abnormal,
+                _ => Data.Enum.JobType.Unknown,
+            };
         }
         public AutoMapperProfile()
         {
@@ -121,7 +117,7 @@ namespace WorkManagement.Helpers
                 .ForMember(x => x.Tutorial, option => option.Ignore());
 
             CreateMap<Data.Models.Task, TreeViewTask>()//
-                .ForMember(d => d.Project, s => s.MapFrom(p => p.Project == null ? new Project() : p.Project))
+                .ForMember(d => d.Project, s => s.MapFrom(p => p.Project ?? new Project()))
                 .ForMember(d => d.Tutorial, s => s.MapFrom(p => p.Tutorial == null ? new TreeViewTutorial() :
                 new TreeViewTutorial
                 {
@@ -149,7 +145,7 @@ namespace WorkManagement.Helpers
                 .ForMember(d => d.VideoStatus, s => s.MapFrom(p => p.Tutorial == null ? false : true))
                 .ForMember(d => d.Priority, s => s.MapFrom(p => CastPriority(p.Priority)))
                 .ForMember(d => d.DueDate, s => s.MapFrom(p => p.DueDateTime))
-                .ForMember(d => d.LastComment, s => s.MapFrom(p => p.Comment.CommentDetails.OrderByDescending(x=>x.CreatedTime).Select(x=>x.Comment.Content).FirstOrDefault()))
+                .ForMember(d => d.LastComment, s => s.MapFrom(p => p.Comments.OrderByDescending(x=>x.CreatedTime).FirstOrDefault().Content))
                 .ForMember(d => d.DeputiesList, s => s.MapFrom(p => p.Deputies.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username })))
                 .ForMember(d => d.Deputies, s => s.MapFrom(p => p.Deputies.Select(x => x.UserID)))
                 .ForMember(d => d.DeputyName, s => s.MapFrom(p => p.Deputies != null ? string.Join(",", p.Deputies.Select(x => x.User.Username)) : "#N/A"))
@@ -160,7 +156,7 @@ namespace WorkManagement.Helpers
             CreateMap<TreeViewTask, Data.Models.Task>(); //
 
             CreateMap<Data.Models.Task, TreeViewTaskForHistory>()//
-              .ForMember(d => d.Project, s => s.MapFrom(p => p.Project == null ? new Project() : p.Project))
+              .ForMember(d => d.Project, s => s.MapFrom(p => p.Project ?? new Project()))
               .ForMember(d => d.Tutorial, s => s.MapFrom(p => p.Tutorial == null ? new TreeViewTutorial() :
               new TreeViewTutorial
               {

@@ -37,8 +37,7 @@ namespace Service.Implement
         private readonly IOCService _ocService;
         private readonly INotificationService _notificationService;
         private readonly IHubContext<WorkingManagementHub> _hubContext;
-        private IConfiguration _configuration;
-        private MapperConfiguration _configMapper;
+        private readonly IConfiguration _configuration;
 
         #endregion
 
@@ -49,7 +48,6 @@ namespace Service.Implement
             IMapper mapper, IUserService userService,
             IHubContext<WorkingManagementHub> hubContext,
             IProjectService projectService,
-            MapperConfiguration configMapper,
             IConfiguration configuration,
             IOCService ocService)
         {
@@ -60,7 +58,6 @@ namespace Service.Implement
             _ocService = ocService;
             _hubContext = hubContext;
             _notificationService = notificationService;
-            _configMapper = configMapper;
             _configuration = configuration;
         }
 
@@ -1033,7 +1030,10 @@ namespace Service.Implement
             {
                 var item = await _context.Tasks.FindAsync(id);
                 if (!item.CreatedBy.Equals(userid))
-                    return false;
+                    return new  { 
+                      status = -1,
+                      message = "Sorry! Can not delete this task because you do not create this task!"
+                    };
                 var tasks = await GetListTree(item.ParentID, item.ID);
                 var arrTasks = GetAllTaskDescendants(tasks).Select(x => x.ID).ToList();
 
@@ -1045,16 +1045,30 @@ namespace Service.Implement
                 {
                     _context.CommentDetails.RemoveRange(comment.CommentDetails);
                 }
-                _context.Comments.RemoveRange(comments));
+                _context.Comments.RemoveRange(comments);
+                var notifications = await _context.Notifications.Where(x => arrTasks.Contains(x.TaskID)).Include(x => x.NotificationDetails).ToListAsync();
+                foreach (var notification in notifications)
+                {
+                    _context.NotificationDetails.RemoveRange(notification.NotificationDetails);
+                }
+                _context.Notifications.RemoveRange(notifications);
                 _context.Tasks.RemoveRange(await _context.Tasks.Where(x => arrTasks.Contains(x.ID)).ToListAsync());
                 _context.Tutorials.RemoveRange(await _context.Tutorials.Where(x => arrTasks.Contains(x.TaskID ?? 0)).ToListAsync());
 
                 await _context.SaveChangesAsync();
-                return true;
+                return new
+                {
+                    status = 1,
+                    message = "The task has been deleted successfully!"
+                };
             }
             catch (Exception ex)
             {
-                return false;
+                return new
+                {
+                    status = 0,
+                    message = ex.Message
+                };
             }
         }
 
@@ -1133,36 +1147,36 @@ namespace Service.Implement
             userlistForHub.AddRange(follows.Select(x => x.UserID));
             return userlistForHub.Distinct().ToList();
         }
-        private async Task<Data.Models.Task> UpdatePeriodForDone(CloneTaskViewModel task)
-        {
-            var update = await _context.Tasks.FindAsync(task.ID);
-            switch (task.periodType)
-            {
-                case Data.Enum.PeriodType.Daily:
-                    if (update.DueDateTime.DayOfWeek == DayOfWeek.Sunday)
-                        update.DueDateTime = update.DueDateTime.AddDays(2);
-                    else
-                        update.DueDateTime = update.DueDateTime.AddDays(1);
-                    break;
-                case Data.Enum.PeriodType.Weekly:
-                    update.DueDateTime = update.DueDateTime.AddDays(7);
-                    break;
-                case Data.Enum.PeriodType.Monthly:
-                    if (update.DueDateTime.AddMonths(1).DayOfWeek == DayOfWeek.Sunday)
-                    {
-                        update.DueDateTime = update.DueDateTime.AddMonths(1).AddDays(1);
-                    }
-                    else
-                    {
-                        update.DueDateTime = update.DueDateTime.AddMonths(1);
-                    }
-                    break;
-                default:
-                    break;
-            }
-            await _context.SaveChangesAsync();
-            return update;
-        }
+        //private async Task<Data.Models.Task> UpdatePeriodForDone(CloneTaskViewModel task)
+        //{
+        //    var update = await _context.Tasks.FindAsync(task.ID);
+        //    switch (task.periodType)
+        //    {
+        //        case Data.Enum.PeriodType.Daily:
+        //            if (update.DueDateTime.DayOfWeek == DayOfWeek.Sunday)
+        //                update.DueDateTime = update.DueDateTime.AddDays(2);
+        //            else
+        //                update.DueDateTime = update.DueDateTime.AddDays(1);
+        //            break;
+        //        case Data.Enum.PeriodType.Weekly:
+        //            update.DueDateTime = update.DueDateTime.AddDays(7);
+        //            break;
+        //        case Data.Enum.PeriodType.Monthly:
+        //            if (update.DueDateTime.AddMonths(1).DayOfWeek == DayOfWeek.Sunday)
+        //            {
+        //                update.DueDateTime = update.DueDateTime.AddMonths(1).AddDays(1);
+        //            }
+        //            else
+        //            {
+        //                update.DueDateTime = update.DueDateTime.AddMonths(1);
+        //            }
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //    await _context.SaveChangesAsync();
+        //    return update;
+        //}
         private async Task<List<int>> CloneRelatedTable(CloneTaskViewModel task)
         {
             var userlistForHub = new List<int>();
@@ -1206,32 +1220,28 @@ namespace Service.Implement
             return userlistForHub.Distinct().ToList();
 
         }
-        private async System.Threading.Tasks.Task ClonePICForDone(CloneTaskViewModel task)
-        {
-            var pic = _context.Tags.Where(x => x.TaskID == task.IDTemp).ToList();
-            var list = new List<Tag>();
-            foreach (var item in pic)
-            {
-                list.Add(new Tag { TaskID = task.ID, UserID = item.UserID });
-            }
-            await _context.AddRangeAsync(list);
-            await _context.SaveChangesAsync();
-        }
+        //private async System.Threading.Tasks.Task ClonePICForDone(CloneTaskViewModel task)
+        //{
+        //    var pic = _context.Tags.Where(x => x.TaskID == task.IDTemp).ToList();
+        //    var list = new List<Tag>();
+        //    foreach (var item in pic)
+        //    {
+        //        list.Add(new Tag { TaskID = task.ID, UserID = item.UserID });
+        //    }
+        //    await _context.AddRangeAsync(list);
+        //    await _context.SaveChangesAsync();
+        //}
 
         private async Task<bool> CheckExistTask(Data.Models.Task task)
         {
             var currentDate = DateTime.Now;
-            switch (task.periodType)
+            return task.periodType switch
             {
-                case Data.Enum.PeriodType.Daily:
-                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime));
-                case Data.Enum.PeriodType.Weekly:
-                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime));
-                case Data.Enum.PeriodType.Monthly:
-                    return await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime));
-                default:
-                    return false;
-            }
+                Data.Enum.PeriodType.Daily => await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime)),
+                Data.Enum.PeriodType.Weekly => await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime)),
+                Data.Enum.PeriodType.Monthly => await _context.Tasks.AnyAsync(x => x.Code == task.Code && x.DueDateTime.Equals(task.DueDateTime)),
+                _ => false,
+            };
         }
 
         private async System.Threading.Tasks.Task UpdateDueDateViaPeriod(Data.Models.Task task)
@@ -1295,35 +1305,25 @@ namespace Service.Implement
         }
         private bool CheckPeriodOnTime(Data.Models.Task task)
         {
-            switch (task.periodType)
+            return task.periodType switch
             {
-                case Data.Enum.PeriodType.Daily:
-                    return CheckDailyOntime(task);
-                case Data.Enum.PeriodType.Weekly:
-                    return CheckWeeklyOntime(task);
-                case Data.Enum.PeriodType.Monthly:
-                    return CheckMonthlyOntime(task);
-                case Data.Enum.PeriodType.SpecificDate:
-                    return CheckSpecificDateOntime(task);
-                default:
-                    return false;
-            }
+                Data.Enum.PeriodType.Daily => CheckDailyOntime(task),
+                Data.Enum.PeriodType.Weekly => CheckWeeklyOntime(task),
+                Data.Enum.PeriodType.Monthly => CheckMonthlyOntime(task),
+                Data.Enum.PeriodType.SpecificDate => CheckSpecificDateOntime(task),
+                _ => false,
+            };
         }
         private string UpdateDueDateViaPeriodHisoty(Data.Models.Task task)
         {
-            switch (task.periodType)
+            return task.periodType switch
             {
-                case Data.Enum.PeriodType.Daily:
-                    return task.DueDateTime.ToSafetyString().ToParseStringDateTime().ToString("d MMM, yyyy hh:mm:ss tt");
-                case Data.Enum.PeriodType.Weekly:
-                    return task.DueDateTime.ToSafetyString().ToParseStringDateTime().ToString("d MMM, yyyy hh:mm:ss tt");
-                case Data.Enum.PeriodType.Monthly:
-                    return task.DueDateTime.ToSafetyString().ToParseStringDateTime().ToString("d MMM, yyyy hh:mm:ss tt");
-                case Data.Enum.PeriodType.SpecificDate:
-                    return task.DueDateTime.ToSafetyString().ToParseStringDateTime().ToString("d MMM, yyyy hh:mm:ss tt");
-                default:
-                    return "";
-            }
+                Data.Enum.PeriodType.Daily => task.DueDateTime.ToSafetyString().ToParseStringDateTime().ToString("d MMM, yyyy hh:mm:ss tt"),
+                Data.Enum.PeriodType.Weekly => task.DueDateTime.ToSafetyString().ToParseStringDateTime().ToString("d MMM, yyyy hh:mm:ss tt"),
+                Data.Enum.PeriodType.Monthly => task.DueDateTime.ToSafetyString().ToParseStringDateTime().ToString("d MMM, yyyy hh:mm:ss tt"),
+                Data.Enum.PeriodType.SpecificDate => task.DueDateTime.ToSafetyString().ToParseStringDateTime().ToString("d MMM, yyyy hh:mm:ss tt"),
+                _ => "",
+            };
         }
 
         /// <summary>
@@ -1605,20 +1605,22 @@ namespace Service.Implement
                     var temp = _mapper.Map<CloneTaskViewModel>(item);
                     temp.IDTemp = item.ID;
                     temp.ParentTemp = item.ParentID;
-                    var task = new Data.Models.Task();
-                    task.Code = item.Code;
-                    task.JobName = item.JobName;
-                    task.ParentID = item.ParentID;
-                    task.Level = item.Level;
-                    task.ProjectID = item.ProjectID;
-                    task.CreatedBy = item.CreatedBy;
-                    task.OCID = item.OCID;
-                    task.FromWhoID = item.FromWhoID;
-                    task.Priority = item.Priority;
-                    task.periodType = item.periodType;
-                    task.DueDateTime = MapDueDateTime(item);
-                    task.JobTypeID = item.JobTypeID;
-                    task.CreatedDate = DateTime.Now;
+                    var task = new Data.Models.Task
+                    {
+                        Code = item.Code,
+                        JobName = item.JobName,
+                        ParentID = item.ParentID,
+                        Level = item.Level,
+                        ProjectID = item.ProjectID,
+                        CreatedBy = item.CreatedBy,
+                        OCID = item.OCID,
+                        FromWhoID = item.FromWhoID,
+                        Priority = item.Priority,
+                        periodType = item.periodType,
+                        DueDateTime = MapDueDateTime(item),
+                        JobTypeID = item.JobTypeID,
+                        CreatedDate = DateTime.Now
+                    };
                     var taskModel = await CreateTaskAsync(task);
                     temp.ID = taskModel.ID;
                     userListForHub.Add(taskModel.FromWhoID);
@@ -2087,10 +2089,9 @@ namespace Service.Implement
             var url = "https://notify-bot.line.me/oauth/token";
             var lineNotifyConfig = _configuration.GetSection("LineNotifyConfig").Get<LineNotifyConfig>();
             lineNotifyConfig.code = code;
-            using (var client = new HttpClient())
-            {
-                // tin nhắn sẽ được thông báo
-                var content = new FormUrlEncodedContent(new Dictionary<string, string>
+            using var client = new HttpClient();
+            // tin nhắn sẽ được thông báo
+            var content = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     { "grant_type", lineNotifyConfig.grant_type },
                     { "code", code },
@@ -2098,48 +2099,27 @@ namespace Service.Implement
                     { "client_id", lineNotifyConfig.client_id },
                     { "client_secret", lineNotifyConfig.client_secret },
                 });
-                // thêm mã token vào header
-                //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ACCESS_TOKEN);
+            // thêm mã token vào header
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ACCESS_TOKEN);
 
-                // Thực hiện gửi thông báo
-                var result = await client.PostAsync(url, content);
-                if (result.IsSuccessStatusCode)
-                {
-                    string res = result.Content.ReadAsStringAsync().Result;
-                    return res;
-
-                }
-                return result;
-                // Luu token notifi vao db
-            }
-        }
-        private async void PublishhMessage(string message = "Test")
-        {
-            // mã token truy cập
-
-            var ACCESS_TOKEN = "7WFjkrUVVugK9W6OPrOgAKhdOZIkRPU8pSd5ZOMb8cY";
-
-            using (var client = new HttpClient())
+            // Thực hiện gửi thông báo
+            var result = await client.PostAsync(url, content);
+            if (result.IsSuccessStatusCode)
             {
-                // tin nhắn sẽ được thông báo
-                var content = new FormUrlEncodedContent(new Dictionary<string, string>
-                {
-                    { "message", message },
-                });
+                string res = result.Content.ReadAsStringAsync().Result;
+                return res;
 
-                // thêm mã token vào header
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ACCESS_TOKEN);
-
-                // Thực hiện gửi thông báo
-                var result = await client.PostAsync("https://notify-api.line.me/api/notify", content);
             }
+            return result;
+            // Luu token notifi vao db
         }
+      
         public async Task<List<HierarchyNode<TreeViewTask>>> TodolistSortBy(string beAssigned, string assigned, int userid)
         {
 
             try
             {
-                var listTasks = GetAllTasks().Where(x =>
+                var listTasks = GetAllTasks().Include(x => x.Comments).Where(x =>
                             (x.Tags.Select(x => x.UserID).Contains(userid)
                             || x.Deputies.Select(x => x.UserID).Contains(userid)
                             || x.FromWhoID == userid
@@ -2178,7 +2158,7 @@ namespace Service.Implement
         {
             try
             {
-                var listTasks = GetAllTasks().Where(x =>
+                var listTasks = GetAllTasks().Include(x => x.Comments).Where(x =>
                             (x.Tags.Select(x => x.UserID).Contains(userid)
                             || x.Deputies.Select(x => x.UserID).Contains(userid)
                             || x.FromWhoID == userid
@@ -2221,10 +2201,7 @@ namespace Service.Implement
         {
             try
             {
-                //A: Setup and stuff you don't want timed
-                // PublishhMessage("Good morning!");
-                //  await _notificationService.Create(new CreateNotifyParams { Message = "Test", TaskID = 3675, AlertType = Data.Enum.AlertType.BeLate, URL = "/todolist/Demo-daily-is-late" });
-                var listTasks = GetAllTasks().Include(x=>x.Comment).ThenInclude(x=>x.CommentDetails)
+                var listTasks = GetAllTasks().Include(x=>x.Comments)
                     .Where(x => !x.DueDateTime.Equals(DateTime.MinValue))
                     .Where(x =>
                                (x.Tags.Select(x => x.UserID).Contains(userid)

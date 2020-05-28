@@ -22,11 +22,9 @@ namespace WorkManagement.Controllers
     public class TasksController : ControllerBase
     {
         private readonly ITaskService _taskService;
-        private readonly IHubContext<WorkingManagementHub> _hubContext;
-        public TasksController(ITaskService taskService, IHubContext<WorkingManagementHub> hubContext)
+        public TasksController(ITaskService taskService)
         {
             _taskService = taskService;
-            _hubContext = hubContext;
         }
         [HttpGet("{sort}")]
         [HttpGet("{priority}/{sort}")]
@@ -149,7 +147,7 @@ namespace WorkManagement.Controllers
         public async Task<IActionResult> Done(int id)
         {
             string token = Request.Headers["Authorization"];
-            string url = $"{Request.Headers["Origin"]}/#/follow/";
+           // string url = $"{Request.Headers["Origin"]}/#/follow/";
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             var model = await _taskService.Done(id, userID);
             if (model.Item1)

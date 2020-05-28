@@ -91,6 +91,56 @@ namespace WorkManagement.Controllers
            // await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, "message");
             return Ok(model.Item3);
         }
+        public bool deletefile(string fname)
+        {
+            string _imageToBeDeleted = Path.Combine(_environment.WebRootPath + "\\images\\comments\\", fname);
+            try
+            {
+                if ((System.IO.File.Exists(_imageToBeDeleted)))
+                {
+                    System.IO.File.Delete(_imageToBeDeleted);
+                }
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+                throw;
+            }
+           
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var model = await _commentService.Delete(id);
+            if(model.Images.Count > 0)
+            {
+                foreach (var imageName in model.Images)
+                {
+                    deletefile(imageName);
+                }
+            }
+            return Ok(model.Status);
+        }
+        [HttpPut("{id}/{taskid}/{userid}")]
+        public async Task<IActionResult> Pin(int id, int taskid, int userid)
+        {
+            var model = await _commentService.Pin(id, taskid, userid);
+            return Ok(model);
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Unpin(int id)
+        {
+            var model = await _commentService.Unpin(id);
+            return Ok(model);
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Edit(int id, [FromBody] string message)
+        {
+            var model = await _commentService.Edit(id, message);
+            return Ok(model);
+        }
         [HttpPost]
         public async Task<IActionResult> AddSub(AddSubViewModel subComment)
         {

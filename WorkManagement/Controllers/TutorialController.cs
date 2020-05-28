@@ -27,22 +27,14 @@ namespace WorkManagement.Controllers
         private readonly ITutorialService _tutorialService;
         public readonly IWebHostEnvironment _environment;
         private readonly IConfiguration _configuaration;
-        private readonly IMapper _mapper;
 
-        public TutorialController(ITutorialService tutorialService, IMapper mapper, IWebHostEnvironment environment, IConfiguration configuaration)
+        public TutorialController(ITutorialService tutorialService, IWebHostEnvironment environment, IConfiguration configuaration)
         {
             _tutorialService = tutorialService; _environment = environment;
             _configuaration = configuaration;
-            _mapper = mapper;
 
         }
-        // GET: api/Projects
-        [HttpPost]
-        public ActionResult TestJson(string json)
-        {
-            var s = JsonConvert.DeserializeObject<object>(json);
-            return Ok(json);
-        }
+       
         // GET: api/Projects
         [HttpGet("{projectId}")]
         public async Task<ActionResult> GetListTree(int projectId)
@@ -73,18 +65,16 @@ namespace WorkManagement.Controllers
                     {
                         Directory.CreateDirectory(_environment.WebRootPath + "\\video\\");
                     }
-                    using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\video\\" + file.FileName))
-                    {
-                        file.CopyTo(fileStream);
-                        fileStream.Flush();
-                        tutorial.ID = id.ToInt();
-                        var item = await _tutorialService.FindItem(tutorial.ID);
-                        item.Name = name;
-                        item.Path = path;
-                        item.URL = _configuaration["AppSettings:applicationUrl"] + $"/video/{file.FileName}";
-                        //return "\\image\\" + file.FileName;
-                        await _tutorialService.Save();
-                    }
+                    using FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\video\\" + file.FileName);
+                    file.CopyTo(fileStream);
+                    fileStream.Flush();
+                    tutorial.ID = id.ToInt();
+                    var item = await _tutorialService.FindItem(tutorial.ID);
+                    item.Name = name;
+                    item.Path = path;
+                    item.URL = _configuaration["AppSettings:applicationUrl"] + $"/video/{file.FileName}";
+                    //return "\\image\\" + file.FileName;
+                    await _tutorialService.Save();
                 }
                 else
                 {
@@ -182,28 +172,30 @@ namespace WorkManagement.Controllers
                     {
                         Directory.CreateDirectory(_environment.WebRootPath + "\\video\\");
                     }
-                    using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\video\\" + file.FileName))
-                    {
-                        file.CopyTo(fileStream);
-                        fileStream.Flush();
+                    using FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\video\\" + file.FileName);
+                    file.CopyTo(fileStream);
+                    fileStream.Flush();
 
-                        var item = new Tutorial();
-                        item.ParentID = parentid.ToInt();
-                        //Level cha tang len 1 va gan parentid cho subtask
-                        var taskParent = _tutorialService.FindItem(item.ParentID);
-                        item.Name = name.ToSafetyString();
-                        item.Level = level.ToInt();
-                        item.ParentID = parentid.ToInt();
-                        item.ProjectID = projectid.ToInt();
-                        item.Path = path.ToSafetyString();
-                        item.URL = _configuaration["AppSettings:applicationUrl"] + $"/video/{file.FileName}";
-                        await _tutorialService.Create(item);
-                    }
+                    var item = new Tutorial
+                    {
+                        ParentID = parentid.ToInt()
+                    };
+                    //Level cha tang len 1 va gan parentid cho subtask
+                    var taskParent = _tutorialService.FindItem(item.ParentID);
+                    item.Name = name.ToSafetyString();
+                    item.Level = level.ToInt();
+                    item.ParentID = parentid.ToInt();
+                    item.ProjectID = projectid.ToInt();
+                    item.Path = path.ToSafetyString();
+                    item.URL = _configuaration["AppSettings:applicationUrl"] + $"/video/{file.FileName}";
+                    await _tutorialService.Create(item);
                 }
                 else
                 {
-                    var item = new Tutorial();
-                    item.ParentID = parentid.ToInt();
+                    Tutorial item = new Tutorial
+                    {
+                        ParentID = parentid.ToInt()
+                    };
                     //Level cha tang len 1 va gan parentid cho subtask
                     var taskParent = _tutorialService.FindItem(item.ParentID);
                     item.Name = name.ToSafetyString();

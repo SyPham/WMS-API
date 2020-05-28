@@ -11,6 +11,7 @@ using Service.Hub;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -185,6 +186,7 @@ namespace Service.Implement
                         UserID = comment.UserID
                     });
                     await _hubContext.Clients.All.SendAsync("ReceiveMessage", listUsers, "message");
+                    //await _hubContext.Clients.All.SendAsync("ReceiveMessageForCurd", listUsers, "message");
 
                     return Tuple.Create(true, string.Join(",", listUsers.ToArray()), comment);
                 }
@@ -194,7 +196,7 @@ namespace Service.Implement
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return Tuple.Create(false, string.Empty, new Comment());
             }
@@ -203,7 +205,15 @@ namespace Service.Implement
         {
             try
             {
+                
                 var item = _context.Comments.Find(subcomment.ParentID);
+                var item2 = _context.Comments.Find(subcomment.ID);
+                if (subcomment.ID > 0 && !subcomment.Content.Equals(item2.Content))
+                {
+                    item.Content = subcomment.Content;
+                    await _context.SaveChangesAsync();
+                    return Tuple.Create(true, string.Empty, new Comment());
+                }
                 var comment = new Comment
                 {
                     TaskID = subcomment.TaskID,
@@ -257,8 +267,8 @@ namespace Service.Implement
         private async Task<List<CommentTreeView>> GetAll(int taskID, int userID)
         {
             //var task =await _context.Tasks.FindAsync(taskID);
-            var detail = _context.CommentDetails;
-            return await _context.Comments
+            //var detail = _context.CommentDetails;
+            return await _context.Comments.Include(x=>x.CommentDetails)
                 .Join(_context.Users,
                 comt => comt.UserID,
                 user => user.ID,
@@ -272,9 +282,10 @@ namespace Service.Implement
                     ImageBase64 = _.user.ImageBase64,
                     Content = _.comt.Content,
                     Level = _.comt.Level,
+                    Pin = _.comt.Pin,
                     ParentID = _.comt.ParentID,
                     CreatedTime = _.comt.CreatedTime,
-                    Seen = detail.FirstOrDefault(d => d.CommentID.Equals(_.comt.ID) && d.UserID.Equals(userID)) == null ? false : true
+                    Seen = _.comt.CommentDetails.FirstOrDefault(d => d.CommentID.Equals(_.comt.ID) && d.UserID.Equals(userID)) == null ? false : true
                 })
                 .ToListAsync();
         }
@@ -296,6 +307,7 @@ namespace Service.Implement
                     ParentID = _.comt.ParentID,
                     TaskID = _.comt.TaskID,
                     Level = _.comt.Level,
+                    Pin = _.comt.Pin,
                     CreatedTime = _.comt.CreatedTime,
                     Seen = detail.FirstOrDefault(d => d.CommentID.Equals(_.comt.ID) && d.UserID.Equals(userID)) == null ? false : true
                 })
@@ -304,7 +316,7 @@ namespace Service.Implement
         public List<CommentTreeView> GetChildren(List<CommentTreeView> comments, int parentid)
         {
             var uploadImage = _context.UploadImages;
-            var appSettings = _configuaration.GetSection("AppSettings").Get<AppSettings>();
+            //var appSettings = _configuaration.GetSection("AppSettings").Get<AppSettings>();
             return comments
                     .Where(c => c.ParentID == parentid)
                     .Select(c => new CommentTreeView()
@@ -317,8 +329,9 @@ namespace Service.Implement
                         ParentID = c.ParentID,
                         CreatedTime = c.CreatedTime,
                         Seen = c.Seen,
+                        Pin = c.Pin,
                         Level = c.Level,
-                        Images = uploadImage.Where(x => x.CommentID == c.ID).Select(x => appSettings.applicationUrl + "/images/comments/" + x.Image).ToList() ?? new List<string>(),
+                        Images = uploadImage.Where(x => x.CommentID == c.ID).Select(x => "comments/" + x.Image).ToList() ?? new List<string>(),
                         children = GetChildren(comments, c.ID)
                     })
                     .OrderByDescending(x => x.CreatedTime)
@@ -326,7 +339,6 @@ namespace Service.Implement
         }
         public async Task<IEnumerable<CommentTreeView>> GetAllTreeView(int taskid, int userid)
         {
-            var appSettings = _configuaration.GetSection("AppSettings").Get<AppSettings>();
             var uploadImage = _context.UploadImages;
             var listComments = await GetAll(taskid, userid);
             List<CommentTreeView> hierarchy = new List<CommentTreeView>();
@@ -340,10 +352,11 @@ namespace Service.Implement
                                 ImageBase64 = c.ImageBase64,
                                 ParentID = c.ParentID,
                                 Seen = c.Seen,
+                                Pin = c.Pin,
                                 CreatedTime = c.CreatedTime,
                                 TaskID = c.TaskID,
                                 Level = c.Level,
-                                Images = uploadImage.Where(x => x.CommentID == c.ID).Select(x => appSettings.applicationUrl + "/images/comments/" + x.Image).ToList() ?? new List<string>(),
+                                Images = uploadImage.Where(x => x.CommentID == c.ID).Select(x => "comments/" + x.Image).ToList() ?? new List<string>(),
                                 children = GetChildren(listComments, c.ID)
                             })
                             .ToList();
@@ -368,7 +381,62 @@ namespace Service.Implement
             }
             throw new NotImplementedException();
         }
+        public async Task<object> Unpin(int comID)
+        {
+            try
+            {
+                var com = await _context.Comments.FirstOrDefaultAsync(d => d.ID.Equals(comID));
+                com.Pin = false;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            throw new NotImplementedException();
+        }
+        public async Task<object> Pin(int comID, int taskid, int userid)
+        {
+            try
+            {
+                var list = _context.Comments.Where(x=>x.UserID== userid && x.TaskID == taskid && x.Pin == true).ToList();
+                list.ForEach(item =>
+                {
+                    item.Pin = false;
+                });
+                await _context.SaveChangesAsync();
 
+                var com = await _context.Comments.FirstOrDefaultAsync(d => d.ID.Equals(comID));
+                com.Pin = true;
+                 await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            throw new NotImplementedException();
+        }
+        public async Task<object> Edit(int comtID, string message)
+        {
+            try
+            {
+
+                var com = await _context.Comments.FirstOrDefaultAsync(d => d.ID.Equals(comtID));
+                com.Content = message;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            throw new NotImplementedException();
+        }
         public async Task<IEnumerable<TaskHasComment>> GetAllCommentWithTask(int userID)
         {
 
@@ -404,6 +472,41 @@ namespace Service.Implement
                     CommentTreeViews = x.ct
                 }).ToList();
             return tasks;
+        }
+
+        public async Task<DeleteResult> Delete(int comtID)
+        {
+            var entity = await _context.Comments.FindAsync(comtID);
+            var result = new DeleteResult();
+            if (entity == null)
+            {
+                result.Status = false;
+                return result;
+            }
+            if (_context.UploadImages.Where(x => x.CommentID == comtID).Any())
+            {
+                var uploadImages = _context.UploadImages.Where(x => x.CommentID == comtID);
+                result.Images = uploadImages.Select(x => x.Image).ToList();
+                _context.UploadImages.RemoveRange(uploadImages);
+            }
+            foreach (var comment in _context.Comments.Include(x => x.CommentDetails))
+            {
+                _context.CommentDetails.RemoveRange(comment.CommentDetails);
+
+            }
+            _context.Comments.Remove(entity);
+            try
+            {
+                await _context.SaveChangesAsync();
+                result.Status = true;
+                return result;
+            }
+            catch (Exception)
+            {
+                result.Status = false;
+                return result;
+
+            }
         }
     }
 }

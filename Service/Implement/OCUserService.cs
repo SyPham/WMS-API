@@ -14,14 +14,10 @@ namespace Service.Implement
     public class OCUserService : IOCUserService
     {
         private readonly DataContext _context;
-        private readonly IUserService _userService;
-        private readonly IOCService _oCService;
 
-        public OCUserService(DataContext context, IUserService userService, IOCService oCService)
+        public OCUserService(DataContext context)
         {
             _context = context;
-            _userService = userService;
-            _oCService = oCService;
         }
 
         public async Task<object> AddOrUpdate(int userid, int ocid, bool status)
@@ -55,10 +51,12 @@ namespace Service.Implement
                         user.LevelOC = ocModel.Level;
                         user.OCID = ocid;
 
-                        var oc = new OCUser();
-                        oc.OCID = ocid;
-                        oc.UserID = userid;
-                        oc.Status = true;
+                        var oc = new OCUser
+                        {
+                            OCID = ocid,
+                            UserID = userid,
+                            Status = true
+                        };
                         _context.OCUsers.Add(oc);
 
                     }

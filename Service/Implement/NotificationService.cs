@@ -18,14 +18,12 @@ namespace Service.Implement
     public class NotificationService : INotificationService
     {
         private readonly DataContext _context;
-        private readonly IMapper _mapper;
         private readonly ILineService _lineService;
-        private MapperConfiguration _configMapper;
+        private readonly MapperConfiguration _configMapper;
         const int ADMIN = 1;
-        public NotificationService(DataContext context, IMapper mapper, MapperConfiguration configMapper, ILineService lineService)
+        public NotificationService(DataContext context, MapperConfiguration configMapper, ILineService lineService)
         {
             _context = context;
-            _mapper = mapper;
             _configMapper = configMapper;
             _lineService = lineService;
         }
@@ -97,7 +95,11 @@ namespace Service.Implement
             {
                 return false;
             }
+            foreach (var notifications in _context.Notifications.Include(x=>x.NotificationDetails))
+            {
+                _context.NotificationDetails.RemoveRange(notifications.NotificationDetails);
 
+            }
             _context.Notifications.Remove(entity);
             try
             {

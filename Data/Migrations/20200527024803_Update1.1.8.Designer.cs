@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200527024803_Update1.1.8")]
+    partial class Update118
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,9 +85,6 @@ namespace Data.Migrations
                     b.Property<int>("ParentID")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Pin")
-                        .HasColumnType("bit");
-
                     b.Property<string>("TaskCode")
                         .HasColumnType("nvarchar(max)");
 
@@ -114,6 +113,9 @@ namespace Data.Migrations
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("Pin")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Seen")
                         .HasColumnType("bit");

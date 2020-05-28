@@ -100,7 +100,7 @@ namespace Service.Helpers
 
                 return flag;
 
-            double result = 0;
+            double result;
 
             double.TryParse(value.ToString(), out result);
 
@@ -580,7 +580,7 @@ namespace Service.Helpers
             if (value == null)
                 return 0;
             //Khai báo giá trị chứa kết quả mặ định, mặc định là 0
-            byte result = 0;
+            byte result;
 
             //Thử ép value thành kiểu byte
             byte.TryParse(value.ToString(), out result);
@@ -599,7 +599,7 @@ namespace Service.Helpers
         {
             if (value == null || value.ToString() == string.Empty)
                 return 0;
-            sbyte result = 0;
+            sbyte result;
             sbyte.TryParse(value.ToString(), out result);
             return result;
         }
@@ -614,7 +614,7 @@ namespace Service.Helpers
         {
             if (value == null || value.ToString() == string.Empty)
                 return 0;
-            short result = 0;
+            short result;
             short.TryParse(value.ToString(), out result);
             return result;
         }
@@ -630,7 +630,7 @@ namespace Service.Helpers
             if (value == null || value.ToString() == string.Empty)
                 return 0;
 
-            ushort result = 0;
+            ushort result;
 
             ushort.TryParse(value.ToString(), out result);
 
@@ -648,7 +648,7 @@ namespace Service.Helpers
             if (value == null || value.ToString() == string.Empty)
                 return 0;
 
-            ushort result = 0;
+            ushort result;
 
             ushort.TryParse(value.ToString(), out result);
 
@@ -665,7 +665,7 @@ namespace Service.Helpers
         {
             if (value == null || value.ToString() == string.Empty)
                 return 0;
-            int result = 0;
+            int result;
             int.TryParse(value.ToString(), out result);
             return result;
         }
@@ -680,7 +680,7 @@ namespace Service.Helpers
         {
             if (value == null || value.ToString() == string.Empty)
                 return 0;
-            float result = 0;
+            float result;
             float.TryParse(value.ToString(), out result);
             return result;
         }
@@ -697,7 +697,7 @@ namespace Service.Helpers
 
                 return 0;
 
-            double result = 0;
+            double result;
 
             double.TryParse(value.ToString(), out result);
 
@@ -716,7 +716,7 @@ namespace Service.Helpers
 
                 return 0;
 
-            long result = 0;
+            long result;
 
             long.TryParse(value.ToString(), out result);
 
@@ -735,7 +735,7 @@ namespace Service.Helpers
 
                 return 0;
 
-            ulong result = 0;
+            ulong result;
 
             ulong.TryParse(value.ToString(), out result);
 
@@ -753,7 +753,7 @@ namespace Service.Helpers
             if (value == null || value.ToString() == string.Empty)
                 return 0;
 
-            decimal result = 0;
+            decimal result;
 
             decimal.TryParse(value.ToString(), out result);
 

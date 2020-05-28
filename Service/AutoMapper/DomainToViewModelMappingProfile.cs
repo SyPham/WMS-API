@@ -19,29 +19,7 @@ namespace Service.AutoMapper
 {
     public class DomainToViewModelMappingProfile : Profile
     {
-        private string CheckStatus(Data.Models.Task task)
-        {
-            string result = "#N/A";
-            var currentDate = DateTime.Now;
-            switch (task.periodType)
-            {
-                case Data.Enum.PeriodType.Daily:
-                    result = currentDate.CompareTo(task.DueDateTime) > 0 ? "Delay" : "On going";
-                    break;
-                case Data.Enum.PeriodType.Weekly:
-                    result = currentDate.CompareTo(task.DueDateTime) > 0 ? "Delay" : "On going";
-                    break;
-                case Data.Enum.PeriodType.Monthly:
-                    result = currentDate.CompareTo(task.DueDateTime) > 0 ? "Delay" : "On going";
-                    break;
-                case Data.Enum.PeriodType.SpecificDate:
-                    result = currentDate.CompareTo(task.DueDateTime) > 0 ? "Delay" : "On going";
-                    break;
-                default:
-                    break;
-            }
-            return result;
-        }
+       
         public string CastPriority(string value)
         {
             value = value.ToSafetyString().ToUpper() ?? "";
@@ -88,7 +66,7 @@ namespace Service.AutoMapper
                 .ForMember(d => d.CreatedBy, s => s.MapFrom(p => p.CreatedBy));
 
             CreateMap<Data.Models.Task, TreeViewTask>()
-           .ForMember(d => d.Project, s => s.MapFrom(p => p.Project == null ? new Project() : p.Project))
+           .ForMember(d => d.Project, s => s.MapFrom(p => p.Project ?? new Project()))
            .ForMember(d => d.Tutorial, s => s.MapFrom(p => p.Tutorial == null ? new TreeViewTutorial() :
            new TreeViewTutorial
            {
@@ -116,6 +94,7 @@ namespace Service.AutoMapper
            .ForMember(d => d.User, s => s.MapFrom(p => p.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
            .ForMember(d => d.FromWho, s => s.MapFrom(p => p.User == null ? new BeAssigned() : new BeAssigned { ID = p.User.ID, Username = p.User.Username }))
            .ForMember(d => d.FromWhere, s => s.MapFrom(p => p.OC == null ? new FromWhere() : new FromWhere { ID = p.OC.ID, Name = p.OC.Name }))
+           .ForMember(d => d.LastComment, s => s.MapFrom(p => p.Comments.OrderByDescending(x => x.CreatedTime).FirstOrDefault().Content))
 
            .ForMember(d => d.DeputiesList, s => s.MapFrom(p => p.Deputies.Select(x => new BeAssigned { ID = x.UserID, Username = x.User.Username })))
            .ForMember(d => d.Deputies, s => s.MapFrom(p => p.Deputies.Select(x => x.UserID).ToList()))
@@ -125,7 +104,7 @@ namespace Service.AutoMapper
            .ForMember(d => d.PICs, s => s.MapFrom(p => p.Tags.Any() == true ? p.Tags.Select(x => x.UserID).ToList() : new List<int>()));
 
             CreateMap<Data.Models.Task, TreeViewTaskForHistory>()
-            .ForMember(d => d.Project, s => s.MapFrom(p => p.Project == null ? new Project() : p.Project))
+            .ForMember(d => d.Project, s => s.MapFrom(p => p.Project ?? new Project()))
             .ForMember(d => d.Tutorial, s => s.MapFrom(p => p.Tutorial == null ? new TreeViewTutorial() :
             new TreeViewTutorial
             {

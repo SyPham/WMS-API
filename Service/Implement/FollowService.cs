@@ -17,12 +17,10 @@ namespace Service.Implement
     public class FollowService 
     {
         private readonly DataContext _context;
-        private readonly IMapper _mapper;
 
-        public FollowService(DataContext context, IMapper mapper)
+        public FollowService(DataContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         private bool disposed = false;

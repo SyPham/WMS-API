@@ -2,40 +2,34 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
+using Data.Models;
+using Data.ViewModel.Comment;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.SignalR;
 using Service.Helpers;
+using Service.Hub;
 using Service.Interface;
 using WorkManagement.Helpers;
-using static System.Net.Mime.MediaTypeNames;
+using WorkManagement.Hub;
 
 namespace WorkManagement.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class HomeController : ControllerBase
+    public class NotificationsController : ControllerBase
     {
         private readonly INotificationService _notificationService;
-
-        public HomeController(INotificationService notificationService)
+        public NotificationsController(INotificationService notificationService
+            )
         {
-
             _notificationService = notificationService;
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Seen(int id)
-        {
 
-            return Ok(await _notificationService.Seen(id));
-        }
-        
         [HttpGet("{page}/{pageSize}/{userid}")]
         [HttpGet("{page}/{pageSize}")]
         public async Task<IActionResult> GetAllNotificationCurrentUser(int page, int pageSize, int userid)
@@ -46,16 +40,13 @@ namespace WorkManagement.Controllers
                 userID = userid;
             return Ok(await _notificationService.GetAllByUserID(userID, page, pageSize));
         }
-        [HttpGet("{page}/{pageSize}")]
-        [HttpGet("{page}/{pageSize}/{userid}")]
-        public async Task<IActionResult> GetNotificationByUser(int page, int pageSize, int userid)
-        {
-            string token = Request.Headers["Authorization"];
-            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
-            if (userid > 0)
-                userID = userid;
-            return Ok(await _notificationService.GetNotificationByUser(userID, page, pageSize));
-        }
         
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var model = await _notificationService.Delete(id);
+            return Ok(model);
+        }
+    
     }
 }

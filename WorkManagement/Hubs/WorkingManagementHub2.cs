@@ -95,7 +95,7 @@ namespace WorkManagement.Hub
         }
         public async System.Threading.Tasks.Task CheckAlert(string user)
         {
-            int userId = user.ToInt();
+           // int userId = user.ToInt();
             var id = Context.ConnectionId;//"LzX9uE94Ovlp6Yx8s6PvhA"
            await _taskService.TaskListIsLate();
            await Clients.User(id).SendAsync("ReceiveCheckAlert", user);

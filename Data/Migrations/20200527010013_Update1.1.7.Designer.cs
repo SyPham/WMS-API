@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200527010013_Update1.1.7")]
+    partial class Update117
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,9 +85,6 @@ namespace Data.Migrations
                     b.Property<int>("ParentID")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Pin")
-                        .HasColumnType("bit");
-
                     b.Property<string>("TaskCode")
                         .HasColumnType("nvarchar(max)");
 
@@ -97,7 +96,8 @@ namespace Data.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("TaskID");
+                    b.HasIndex("TaskID")
+                        .IsUnique();
 
                     b.ToTable("Comments");
                 });
@@ -114,6 +114,9 @@ namespace Data.Migrations
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("Pin")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Seen")
                         .HasColumnType("bit");
@@ -695,9 +698,9 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Models.Comment", b =>
                 {
-                    b.HasOne("Data.Models.Task", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("TaskID")
+                    b.HasOne("Data.Models.Task", "Task")
+                        .WithOne("Comment")
+                        .HasForeignKey("Data.Models.Comment", "TaskID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

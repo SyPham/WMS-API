@@ -23,7 +23,7 @@ namespace WorkManagement.Controllers
         private readonly string _redirectUri;
         private readonly string _state;
         private readonly string _successUri;
-        IConfiguration _config;
+        readonly IConfiguration _config;
         public LineNotifyController(IConfiguration config)
         {
             _config = config;
@@ -86,24 +86,24 @@ namespace WorkManagement.Controllers
         /// <returns></returns>
         private async Task<string> FetchToken(string code)
         {
-            using (var client = new HttpClient())
+            using var client = new HttpClient
             {
-                client.Timeout = new TimeSpan(0, 0, 60);
-                client.BaseAddress = new Uri(_tokenUrl);
+                Timeout = new TimeSpan(0, 0, 60),
+                BaseAddress = new Uri(_tokenUrl)
+            };
 
-                var content = new FormUrlEncodedContent(new[]
-                {
+            var content = new FormUrlEncodedContent(new[]
+            {
                     new KeyValuePair<string, string>("grant_type", "authorization_code"),
                     new KeyValuePair<string, string>("code", code),
                     new KeyValuePair<string, string>("redirect_uri", _redirectUri),
                     new KeyValuePair<string, string>("client_id", _clientId),
                     new KeyValuePair<string, string>("client_secret", _clientSecret)
                 });
-                var response = await client.PostAsync("", content);
-                var data = await response.Content.ReadAsStringAsync();
+            var response = await client.PostAsync("", content);
+            var data = await response.Content.ReadAsStringAsync();
 
-                return JsonConvert.DeserializeObject<JObject>(data)["access_token"].ToString();
-            }
+            return JsonConvert.DeserializeObject<JObject>(data)["access_token"].ToString();
         }
     }
 }

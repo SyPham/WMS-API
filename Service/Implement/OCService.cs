@@ -36,11 +36,13 @@ namespace Service.Implement
             var levels = new List<TreeView>();
             foreach (var item in listLevels)
             {
-                var levelItem = new TreeView();
-                levelItem.key = item.ID;
-                levelItem.title = item.Name;
-                levelItem.levelnumber = item.Level;
-                levelItem.parentid = item.ParentID;
+                var levelItem = new TreeView
+                {
+                    key = item.ID,
+                    title = item.Name,
+                    levelnumber = item.Level,
+                    parentid = item.ParentID
+                };
                 levels.Add(levelItem);
             }
 
@@ -66,11 +68,13 @@ namespace Service.Implement
             var levels = new List<TreeView>();
             foreach (var item in listLevels)
             {
-                var levelItem = new TreeView();
-                levelItem.key = item.ID;
-                levelItem.title = item.Name;
-                levelItem.levelnumber = item.Level;
-                levelItem.parentid = item.ParentID;
+                var levelItem = new TreeView
+                {
+                    key = item.ID,
+                    title = item.Name,
+                    levelnumber = item.Level,
+                    parentid = item.ParentID
+                };
                 levels.Add(levelItem);
             }
 
@@ -128,10 +132,12 @@ namespace Service.Implement
 
         public string GetNode(int id)
         {
-            var list = new List<OC>();
+            List<OC> list = new List<OC>();
             list = _context.OCs.ToList();
-            var list2 = new List<OC>();
-            list2.Add(list.FirstOrDefault(x => x.ID == id));
+            List<OC> list2 = new List<OC>
+            {
+                list.FirstOrDefault(x => x.ID == id)
+            };
             var parentID = list.FirstOrDefault(x => x.ID == id).ParentID;
             foreach (var item in list)
             {
@@ -176,11 +182,13 @@ namespace Service.Implement
             var levels = new List<TreeViewOC>();
             foreach (var item in listLevels)
             {
-                var levelItem = new TreeViewOC();
-                levelItem.ID = item.ID;
-                levelItem.Name = item.Name;
-                levelItem.Level = item.Level;
-                levelItem.ParentID = item.ParentID;
+                var levelItem = new TreeViewOC
+                {
+                    ID = item.ID,
+                    Name = item.Name,
+                    Level = item.Level,
+                    ParentID = item.ParentID
+                };
                 levels.Add(levelItem);
             }
 

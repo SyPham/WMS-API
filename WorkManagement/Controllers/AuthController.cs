@@ -69,7 +69,7 @@ namespace WorkManagement.Controllers
             var subscribeLine = new bool();
             if (!user.AccessTokenLineNotify.IsNullOrEmpty())
             {
-               await _lineService.SendWithSticker(new MessageParams {Message = $"Hi {user.Username}! Welcome to Work Management System!", Token = user.AccessTokenLineNotify, StickerPackageId = "2", StickerId = "41" });
+               // await _lineService.SendWithSticker(new MessageParams {Message = $"Hi {user.Username}! Welcome to Task Management System!", Token = user.AccessTokenLineNotify, StickerPackageId = "2", StickerId = "41" });
                 subscribeLine = true;
             }
             var userprofile = new UserProfileDto()

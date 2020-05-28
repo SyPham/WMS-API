@@ -34,10 +34,12 @@ namespace Service.Implement
             var tasks = new List<TreeViewTask>();
             foreach (var item in listTasks)
             {
-                var levelItem = new TreeViewTask();
-                levelItem.ID = item.ID;
-                levelItem.Level = item.Level;
-                levelItem.ParentID = item.ParentID;
+                var levelItem = new TreeViewTask
+                {
+                    ID = item.ID,
+                    Level = item.Level,
+                    ParentID = item.ParentID
+                };
                 tasks.Add(levelItem);
             }
 
@@ -69,31 +71,12 @@ namespace Service.Implement
                      .Include(x => x.User)
                      .Select(x => new BeAssigned { ID = x.User.ID, Username = x.User.Username }).ToList();
 
-                var levelItem = new TreeViewTask();
-                levelItem.ID = item.ID;
-                //levelItem.PIC = string.Join(" , ", _context.Tags.Where(x => x.TaskID == item.ID).Include(x => x.User).Select(x => x.User.Username).ToArray());
-                //levelItem.ProjectName = item.ProjectID == 0 ? "#N/A" : _context.Projects.Find(item.ProjectID).Name;
-                //levelItem.ProjectID = item.ProjectID;
-                //levelItem.Deadline = String.Format("{0:s}", item.DueDate);
-                //levelItem.BeAssigneds = beAssigneds;
-                levelItem.Level = item.Level;
-
-                levelItem.ParentID = item.ParentID;
-                //levelItem.Priority = CastPriority(item.Priority);
-                //levelItem.PriorityID = item.Priority;
-                //levelItem.Description = item.Description;
-                //levelItem.DueDate = String.Format("{0:MMM d, yyyy}", item.DueDate);
-                //levelItem.CreatedDate = String.Format("{0:MMM d, yyyy}", item.CreatedDate);
-                //levelItem.User = item.User;
-                //levelItem.FromWhere = _context.OCs.Where(x => x.ID == item.OCID).Select(x => new FromWhere { ID = x.ID, Name = x.Name }).FirstOrDefault();
-
-                //levelItem.FromWho = _context.Users.Where(x => x.ID == item.FromWhoID).Select(x => new BeAssigned { ID = x.ID, Username = x.Username }).FirstOrDefault();
-                //levelItem.JobName = item.JobName.IsNotAvailable();
-                //levelItem.state = item.Status == false ? "Undone" : "Done";
-                //levelItem.Remark = item.Remark.IsNotAvailable();
-
-                //levelItem.From = item.OCID > 0 ? _context.OCs.Find(item.OCID).Name : _context.Users.Find(item.FromWhoID).Username.IsNotAvailable();
-
+                var levelItem = new TreeViewTask
+                {
+                    ID = item.ID,
+                    Level = item.Level,
+                    ParentID = item.ParentID
+                };
                 tasks.Add(levelItem);
             }
 
@@ -119,10 +102,6 @@ namespace Service.Implement
                                 BeAssigneds = c.BeAssigneds,
                                 Follow = c.Follow,
                                 DueDate = c.DueDate,
-                                //DueDateDaily = c.DueDateDaily,
-                                //DueDateWeekly = c.DueDateWeekly,
-                                //DueDateMonthly = c.DueDateMonthly,
-                                //SpecificDate = c.SpecificDate,
                                 children = GetChildren(tasks, c.ID)
                             })
                             .ToList();
@@ -546,8 +525,8 @@ namespace Service.Implement
                     room = item.Project.Room,
                     title = item.Project.Name,
                     createdBy = item.Project.CreatedBy,
-                    selectedManager = await _context.Managers.Include(x => x.User).Where(x => x.ProjectID == id).Select(x => new { ID = x.User.ID, Username = x.User.Username }).ToArrayAsync(),
-                    selectedMember = await _context.TeamMembers.Include(x => x.User).Where(x => x.ProjectID == id).Select(x => new { ID = x.User.ID, Username = x.User.Username }).ToArrayAsync(),
+                    selectedManager = await _context.Managers.Include(x => x.User).Where(x => x.ProjectID == id).Select(x => new { x.User.ID,  x.User.Username }).ToArrayAsync(),
+                    selectedMember = await _context.TeamMembers.Include(x => x.User).Where(x => x.ProjectID == id).Select(x => new {x.User.ID,  x.User.Username }).ToArrayAsync(),
                 };
             }
             catch (Exception)
